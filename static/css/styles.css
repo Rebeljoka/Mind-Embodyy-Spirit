@@ -1,1 +1,3 @@
 @source "../../**/*.{html,py,js}";
+@import "tailwindcss";
+@plugin "daisyui";
