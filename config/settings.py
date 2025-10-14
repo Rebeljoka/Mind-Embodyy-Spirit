@@ -57,6 +57,11 @@ INSTALLED_APPS = [
     'theme',
     'cloudinary',
     'cloudinary_storage',
+    # Local apps
+    'accounts',
+    'gallery',
+    'newsletter',
+    'orders',
 ]
 
 if DEBUG:
