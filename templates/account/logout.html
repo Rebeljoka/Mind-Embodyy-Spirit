@@ -21,10 +21,10 @@
                 <!-- Logout Form -->
                 <form method="post" action="{% url 'account_logout' %}">
                     {% csrf_token %}
-                    
+
                     <!-- Hidden redirect field if it exists -->
                     {% if redirect_field_value %}
-                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                     {% endif %}
 
                     <!-- Action Buttons -->

@@ -23,16 +23,18 @@
 
 				<form method="post" action="{% url 'account_signup' %}" class="space-y-4">
 					{% csrf_token %}
-					
+
 					{% if form.non_field_errors %}
 					<div class="alert alert-error">
-						<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+						<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+							viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
 						</svg>
 						<span>{{ form.non_field_errors }}</span>
 					</div>
 					{% endif %}
-					
+
 					{% if redirect_field_value %}
 					<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
 					{% endif %}
@@ -42,15 +44,9 @@
 						<label class="label" for="id_email">
 							<span class="label-text">{% trans "Your email" %}</span>
 						</label>
-						<input 
-							type="email" 
-							name="email" 
-							id="id_email" 
-							class="input input-bordered w-full {% if form.email.errors %}input-error{% endif %}" 
-							placeholder="name@company.com" 
-							value="{{ form.email.value|default:'' }}" 
-							required 
-						/>
+						<input type="email" name="email" id="id_email"
+							class="input input-bordered w-full {% if form.email.errors %}input-error{% endif %}"
+							placeholder="name@company.com" value="{{ form.email.value|default:'' }}" required />
 						{% if form.email.errors %}
 						<label class="label">
 							<span class="label-text-alt text-error">{{ form.email.errors }}</span>
@@ -63,14 +59,9 @@
 						<label class="label" for="id_password1">
 							<span class="label-text">{% trans "Password" %}</span>
 						</label>
-						<input 
-							type="password" 
-							name="password1" 
-							id="id_password1" 
-							placeholder="••••••••" 
-							class="input input-bordered w-full {% if form.password1.errors %}input-error{% endif %}" 
-							required 
-						/>
+						<input type="password" name="password1" id="id_password1" placeholder="••••••••"
+							class="input input-bordered w-full {% if form.password1.errors %}input-error{% endif %}"
+							required />
 						{% if form.password1.errors %}
 						<label class="label">
 							<span class="label-text-alt text-error">{{ form.password1.errors }}</span>
@@ -88,14 +79,9 @@
 						<label class="label" for="id_password2">
 							<span class="label-text">{% trans "Confirm password" %}</span>
 						</label>
-						<input 
-							type="password" 
-							name="password2" 
-							id="id_password2" 
-							placeholder="••••••••" 
-							class="input input-bordered w-full {% if form.password2.errors %}input-error{% endif %}" 
-							required 
-						/>
+						<input type="password" name="password2" id="id_password2" placeholder="••••••••"
+							class="input input-bordered w-full {% if form.password2.errors %}input-error{% endif %}"
+							required />
 						{% if form.password2.errors %}
 						<label class="label">
 							<span class="label-text-alt text-error">{{ form.password2.errors }}</span>
