@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'gallery',
     'newsletter',
     'orders',
+    'core',
 ]
 
 if DEBUG:
@@ -172,12 +173,17 @@ AUTH_PASSWORD_VALIDATORS = [
             'NumericPasswordValidator'
         ),
     },
-    {
-        'NAME': 'django.contrib.auth.backends.ModelBackend',
-    },
-    {
-        'NAME': 'allauth.account.auth_backends.AuthenticationBackend',
-    },
+]
+
+# Authentication backends belong in AUTHENTICATION_BACKENDS, not
+# in AUTH_PASSWORD_VALIDATORS. The validators above are Django's built-in
+# password validators; auth backends are responsible for authentication.
+
+
+# Authentication backends (order matters: ModelBackend first, then allauth)
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 

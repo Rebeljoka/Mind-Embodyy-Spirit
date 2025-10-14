@@ -4,3 +4,15 @@
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
 @source "../../**/*.{html,py,js}";
+
+:root {
+    --Headers: 'Poppins', sans-serif;
+    --UI: 'Raleway', monospace;
+    --Body: 'Playfair Display SC', serif;
+
+    --Background: #F5EFE6; /* Body background for a warm, gentle base */
+    --Section-Bg: #BFA9D4; /* Section backgrounds, subtle UI elements */
+    --Headings: #A6493F; /* Headings, highlights, call-to-action */
+    --Body-Text: #647687; /* Body text, secondary UI text */
+    --Buttons: #D6A944; /* Buttons, hover states, key highlights */
+}
