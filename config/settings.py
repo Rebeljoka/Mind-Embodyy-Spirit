@@ -15,7 +15,7 @@ import os
 import shutil
 import dj_database_url
 import cloudinary
-
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -100,7 +100,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
                 'django.template.context_processors.debug',
             ],
         },
@@ -132,6 +131,11 @@ else:
 cloudinary.config(
     secure=True  # 👈 Forces HTTPS for all Cloudinary URLs
 )
+
+CLOUDINARY_DEFAULT_TRANSFORMATIONS = {
+    'fetch_format': 'auto',
+    'quality': 'auto'
+}
 
 
 # Database
@@ -202,11 +206,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-TAILWIND_APP_NAME = 'theme'
+if DEBUG:
+    # Development settings
+    STATICFILES_DIRS = [BASE_DIR / 'static']
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+    TAILWIND_APP_NAME = 'theme'
+    NPM_BIN_PATH = 'npm.cmd'
+else:
+    # Production settings
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+    STATICFILES_DIRS = [
+        BASE_DIR / 'theme' / 'static',
+        BASE_DIR / 'static',
+    ]
 
+# WhiteNoise configuration
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -218,12 +235,10 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Detect npm binary path cross-platform. On Windows, npm may be available as
-# 'npm.cmd' while on macOS/Linux it's 'npm'. Use shutil.which to pick the
-# available executable; fallback to 'npm' for environments where it's on PATH.
-_npm_path = shutil.which('npm') or shutil.which('npm.cmd')
-# Allow override via NPM_BIN_PATH env var; otherwise use discovered path.
-NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
+# Only run npm check in local development (when DEBUG is True)
+if settings.DEBUG:
+    _npm_path = shutil.which('npm') or shutil.which('npm.cmd')
+    NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
 
 # Fail fast in environments where npm is required but not available.
 if not NPM_BIN_PATH:

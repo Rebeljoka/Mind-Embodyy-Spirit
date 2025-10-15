@@ -1,76 +1,150 @@
-{% tailwind_preload_css %}
 {% load static tailwind_tags i18n %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>{% block head_title %}MIND//EMBODY//SPIRIT{% endblock head_title %}</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {% block extra_head %}{% endblock extra_head %}
-    {% tailwind_css %}
-    {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
+<html lang="en" data-theme="caramellatte">
+    <head>
 
-<body class="bg-gray-50 text-black font-serif leading-normal tracking-normal">
+		<title>{% block head_title %}Const Collection | Art By Cecilia K.{% endblock head_title %}</title>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <div class="toast toast-top toast-end">
-        <div class="alert alert-info">
-            <span>Hello from daisyUi 👋</span>
-        </div>
-    </div>
+		<title></title>
+		<meta name="description" content="Discover original art by Cecilia Kristoffersson. Explore unique acrylic paintings, vibrant canvases, and creative work from a Swedish-Zimbabwean artist." />
+		<meta name="keywords" content="art, artist, Cecilia K, paintings, Sweden, Zimbabwe, acrylic, canvases, contemporary art, original artwork, art collection" />
+		<meta name="author" content="Cecilia Kristoffersson" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="index, follow" />
 
-    {# Account/allauth pages expect messages/menu available; render them before content so child templates
-       that override `content` still show messages and menu. #}
-    {% if messages %}
-        <div>
-            <strong>{% trans "Messages:" %}</strong>
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+		<!-- Open Graph for Facebook, LinkedIn, WhatsApp -->
+		<meta property="og:title" content="Const Collection | Art By Cecilia K." />
+		<meta property="og:description" content="Browse & collect original acrylic art by Cecilia Kristoffersson, inspired by Swedish and Zimbabwean creativity." />
+		<meta property="og:image" content="https://constcollection.com/path-to-social-share-image.jpg" />
+		<meta property="og:url" content="https://constcollection.com/" />
+		<meta property="og:type" content="website" />
 
-    <div>
-        <strong>{% trans "Account:" %}</strong>
-        <ul>
-            {% if user.is_authenticated %}
-                {% url 'account_email' as email_url_ %}
-                {% if email_url_ %}
-                    <li><a href="{{ email_url_ }}">{% trans "Change Email" %}</a></li>
-                {% endif %}
-                {% url 'account_change_password' as change_password_url_ %}
-                {% if change_password_url_ %}
-                    <li><a href="{{ change_password_url_ }}">{% trans "Change Password" %}</a></li>
-                {% endif %}
-                {% url 'account_logout' as logout_url_ %}
-                {% if logout_url_ %}
-                    <li><a href="{{ logout_url_ }}">{% trans "Sign Out" %}</a></li>
-                {% endif %}
-            {% else %}
-                {% url 'account_login' as login_url_ %}
-                {% if login_url_ %}
-                    <li><a href="{{ login_url_ }}">{% trans "Sign In" %}</a></li>
-                {% endif %}
-                {% url 'account_signup' as signup_url_ %}
-                {% if signup_url_ %}
-                    <li><a href="{{ signup_url_ }}">{% trans "Sign Up" %}</a></li>
-                {% endif %}
-            {% endif %}
-        </ul>
-    </div>
+		<!-- Twitter Cards -->
+		<meta name="twitter:title" content="Const Collection | Art By Cecilia K." />
+		<meta name="twitter:description" content="Discover unique acrylic paintings and art by Cecilia Kristoffersson." />
+		<meta name="twitter:image" content="https://constcollection.com/path-to-social-share-image.jpg" />
+		<meta name="twitter:card" content="summary_large_image" />
 
-    <main class="w-full">
-        {% block content %}
-        <section class="flex items-center justify-center h-screen">
-            <h1 class="text-5xl">Django + Tailwind = ❤️</h1>
-        </section>
-        {% endblock content %}
-    </main>
+		<!-- Tailwind CSS + Custom CSS -->
+		{% block extra_head %}{% endblock extra_head %} {% tailwind_css %} {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
+		<link rel="preload" as="style" href="{% static 'css/dist/styles.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 
-    {% block extra_body %}{% endblock extra_body %}
-</body>
+		<!-- Phosphor Icons -->
+		<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+        <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="{% static 'favicon/favicon.ico'  %}" />
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/icon-shortcut.ico' %}" />
+
+	</head>
+
+	<body class="bg-gray-50 text-black font-serif leading-normal tracking-normal h-16">
+		<!-- Navbar -->
+		<nav class="navbar justify-between bg-base-300">
+			<!-- Logo -->
+			<a class="btn btn-ghost text-lg">
+				<img alt="Logo" src="images/logo.webp" class="w-4" />
+				Const Collection
+			</a>
+
+			<!-- Menu for mobile -->
+			<div class="dropdown dropdown-end sm:hidden">
+				<button class="btn btn-ghost">
+					<i class="fa-solid fa-bars text-lg"></i>
+				</button>
+
+				<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
+					<div class="flex justify-center gap-2">
+						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black;">
+							<i class="ph ph-envelope text-white"></i>
+						</a>
+
+						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue;">
+							<i class="ph ph-facebook-logo text-white"></i>
+						</a>
+
+						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none;">
+							<i class="ph ph-instagram-logo text-white"></i>
+						</a>
+
+						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red;">
+							<i class="ph ph-youtube-logo text-white"></i>
+						</a>
+					</div>
+
+					<li><a>About</a></li>
+					<li><a>Pricing</a></li>
+					<li><a>Blog</a></li>
+					<li><a>Contact</a></li>
+					<a class="btn btn-sm btn-primary">Log in</a>
+				</ul>
+			</div>
+
+			<!-- Menu for desktop -->
+			<ul class="sm:menu-horizontal sm:flex gap-2">
+				<li><a>About</a></li>
+				<li><a>Pricing</a></li>
+				<li><a>Blog</a></li>
+				<li><a>Contact</a></li>
+				<a class="btn btn-sm btn-primary">Log in</a>
+			</ul>
+
+			<div class="hidden sm:flex gap-2">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black;">
+					<i class="ph ph-envelope text-white"></i>
+				</a>
+
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue;">
+					<i class="ph ph-facebook-logo text-white"></i>
+				</a>
+
+                <a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none;">
+					<i class="ph ph-instagram-logo text-white"></i>
+				</a>
+
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red;">
+					<i class="ph ph-youtube-logo text-white"></i>
+				</a>
+			</div>
+		</nav>
+
+		{# Account/allauth pages expect messages/menu available; render them before content so child templates that override `content` still show messages and menu. #} {% if messages %}
+		<div>
+			<strong>{% trans "Messages:" %}</strong>
+			<ul>
+				{% for message in messages %}
+				<li>{{ message }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+
+		<nav aria-label="Account">
+			<strong>{% trans "Account:" %}</strong>
+			<ul>
+				{% if user.is_authenticated %} {% url 'account_email' as email_url_ %} {% if email_url_ %}
+				<li><a href="{{ email_url_ }}">{% trans "Change Email" %}</a></li>
+				{% endif %} {% url 'account_change_password' as change_password_url_ %} {% if change_password_url_ %}
+				<li><a href="{{ change_password_url_ }}">{% trans "Change Password" %}</a></li>
+				{% endif %} {% url 'account_logout' as logout_url_ %} {% if logout_url_ %}
+				<li><a href="{{ logout_url_ }}">{% trans "Sign Out" %}</a></li>
+				{% endif %} {% else %} {% url 'account_login' as login_url_ %} {% if login_url_ %}
+				<li><a href="{{ login_url_ }}">{% trans "Sign In" %}</a></li>
+				{% endif %} {% url 'account_signup' as signup_url_ %} {% if signup_url_ %}
+				<li><a href="{{ signup_url_ }}">{% trans "Sign Up" %}</a></li>
+				{% endif %} {% endif %}
+			</ul>
+		</nav>
+
+		<main class="w-full">{% block content %} {% endblock content %}</main>
+
+		{% block extra_body %}{% endblock extra_body %}
+	</body>
 </html>
