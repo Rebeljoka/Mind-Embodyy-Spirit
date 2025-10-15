@@ -1,11 +1,32 @@
-@import "tailwindcss";
-@plugin "daisyui";
+/* =========================================================
+   1. TYPOGRAPHIC IMPORTS
+   ========================================================= */
 
-/**
-  * A catch-all path to Django template files, JavaScript, and Python files
-  * that contain Tailwind CSS classes and will be scanned by Tailwind to generate the final CSS file.
-  *
-  * If your final CSS file is not being updated after code changes, you may want to broaden or narrow
-  * the scope of this path.
-  */
-@source "../../../**/*.{html,py,js}";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* =========================================================
+   2. TAILWIND + DAISYUI + CUSTOM STYLES
+   ========================================================= */
+
+@source "../../../../**/*.{html,py,js}";
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: all;
+}
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+/* your custom site CSS */
+@import "../../../static/css/styles.css";
+
+/*
+  Tailwind v4 changes:
+  - `@tailwind base` / `@tailwind components` are replaced by importing `tailwindcss/preflight`.
+  - Plugins (like DaisyUI) should be configured in `tailwind.config.js` instead of using `@plugin`.
+  - Scanner/content globs belong in the `content` array of `tailwind.config.js` so the editor and
+    the Tailwind CLI can find your templates and source files.
+
+  See `theme/static_src/tailwind.config.js` for the project configuration.
+*/
+
+/* Your custom CSS and utility classes can follow below. */

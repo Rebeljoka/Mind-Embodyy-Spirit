@@ -27,7 +27,7 @@ urlpatterns = [
     path(
         '',
         TemplateView.as_view(template_name='core/index.html'),
-        name='home',
+        name='index',
     ),
 ]
 
