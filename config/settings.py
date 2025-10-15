@@ -11,18 +11,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
 import os
 import shutil
+import dj_database_url
 import cloudinary
 from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-if os.path.exists("env.py"):
+# Load environment variables from env.py if it exists
+if os.path.exists(BASE_DIR / "env.py"):
     import env  # noqa: F401
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'orders.middleware.RequireJSONForOrdersCreate',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -143,7 +144,9 @@ CLOUDINARY_DEFAULT_TRANSFORMATIONS = {
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'))
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
@@ -234,15 +237,26 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Initialize NPM_BIN_PATH with a default value
+NPM_BIN_PATH = None
+
 # Only run npm check in local development (when DEBUG is True)
 if settings.DEBUG:
     _npm_path = shutil.which('npm') or shutil.which('npm.cmd')
     NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
 
-    if not NPM_BIN_PATH:
-        raise RuntimeError(
-            "NPM executable not found on PATH (checked 'npm' and 'npm.cmd')"
-            "and "
-            "NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
-            "NPM_BIN_PATH to the path of the npm executable."
-        )
+# Fail fast in environments where npm is required but not available.
+if not NPM_BIN_PATH:
+    raise RuntimeError(
+        "NPM executable not found on PATH (checked 'npm' and 'npm.cmd') and "
+        "NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
+        "NPM_BIN_PATH to the path of the npm executable."
+    )
+
+
+# Views (route names) that the orders JSON-only middleware should enforce.
+# By default we enforce JSON on the `orders-create` route. This can be
+# overridden in test or deployment settings.
+ORDERS_JSON_ONLY_VIEWS = [
+    "orders-create",
+]
