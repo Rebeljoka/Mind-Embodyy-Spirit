@@ -236,10 +236,8 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Only run npm check and error when explicitly building the site locally
-BUILD_SITE = os.environ.get("BUILD_SITE", "False").lower() == "true"
-
-if BUILD_SITE:
+# Only run npm check and error in local development (when DEBUG is True)
+if DEBUG:
     _npm_path = shutil.which('npm') or shutil.which('npm.cmd')
     NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
     if not NPM_BIN_PATH:
