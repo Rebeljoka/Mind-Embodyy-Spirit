@@ -236,11 +236,10 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Initialize NPM_BIN_PATH with a default value
-NPM_BIN_PATH = None
+# Only run npm check and error when explicitly building the site locally
+BUILD_SITE = os.environ.get("BUILD_SITE", "False").lower() == "true"
 
-# Only run npm check and error in local development (when DEBUG is True)
-if DEBUG:
+if BUILD_SITE:
     _npm_path = shutil.which('npm') or shutil.which('npm.cmd')
     NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
     if not NPM_BIN_PATH:
@@ -249,8 +248,6 @@ if DEBUG:
             " and NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
             "NPM_BIN_PATH to the path of the npm executable."
         )
-else:
-    NPM_BIN_PATH = None
 
 
 # Views (route names) that the orders JSON-only middleware should enforce.
