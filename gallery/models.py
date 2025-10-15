@@ -48,6 +48,8 @@ class StockItem(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.sku})" if self.sku else self.title
+
+
 class Artist(models.Model):
     name = models.CharField(max_length=200)
     bio = models.TextField(blank=True)
@@ -68,6 +70,7 @@ class Artist(models.Model):
     def __str__(self):
         return self.name
 
+
 class Category(models.Model):
     name = models.CharField(max_length=120, unique=True)
     slug = models.SlugField(max_length=140, unique=True)
@@ -84,6 +87,7 @@ class Category(models.Model):
     # URL for category detail view
     def get_absolute_url(self):
         return reverse('gallery:category_detail', kwargs={'slug': self.slug})
+
 
 class Painting(models.Model):
     STATUS_CHOICES = [
@@ -138,7 +142,6 @@ class Painting(models.Model):
     def get_absolute_url(self):
         return reverse('gallery:painting_detail', kwargs={'slug': self.slug})
 
-
     def save(self, *args, **kwargs):
         # Auto-assign the primary artist if none provided
         if self.artist is None:
@@ -147,6 +150,7 @@ class Painting(models.Model):
             except Artist.DoesNotExist:
                 pass
         super().save(*args, **kwargs)
+
 
 class PaintingImage(models.Model):
     painting = models.ForeignKey(Painting, on_delete=models.CASCADE, related_name='images')
