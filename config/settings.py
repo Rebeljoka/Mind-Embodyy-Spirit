@@ -99,7 +99,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
                 'django.template.context_processors.debug',
             ],
         },
@@ -132,16 +131,18 @@ cloudinary.config(
     secure=True  # 👈 Forces HTTPS for all Cloudinary URLs
 )
 
+CLOUDINARY_DEFAULT_TRANSFORMATIONS = {
+    'fetch_format': 'auto',
+    'quality': 'auto'
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+        default=os.environ.get('DATABASE_URL'))
 }
 
 
@@ -202,7 +203,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 if DEBUG:
@@ -218,8 +219,7 @@ else:
         BASE_DIR / 'static',
     ]
 
-TAILWIND_APP_NAME = 'theme'
-
+# WhiteNoise configuration
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
