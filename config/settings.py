@@ -40,7 +40,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '*.herokuapp.com',
-    'https://mind-embodyy-spirit-92af4b6525c8.herokuapp.com/',
+    'mind-embodyy-spirit-92af4b6525c8.herokuapp.com',
 ]
 
 # Application definition
@@ -207,7 +207,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_URL = '/media/'
 
 if DEBUG:
