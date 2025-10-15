@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'theme',
     'cloudinary',
     'cloudinary_storage',
+    'rest_framework',
     # Local apps
     'accounts',
     'gallery',
