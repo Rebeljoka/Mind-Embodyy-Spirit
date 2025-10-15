@@ -232,3 +232,6 @@ __marimo__/
 .AppleDouble
 .LSOverride
 env.py
+env.py
+pycache/
+*.pyc
