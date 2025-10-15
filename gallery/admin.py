@@ -15,8 +15,3 @@ admin.site.register(Artist)
 admin.site.register(Category)
 admin.site.register(Painting)
 admin.site.register(PaintingImage)
-
-admin.site.register(Artist)
-admin.site.register(Category)
-admin.site.register(Painting)
-admin.site.register(PaintingImage)
