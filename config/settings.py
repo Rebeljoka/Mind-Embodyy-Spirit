@@ -74,6 +74,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'orders.middleware.RequireJSONForOrdersCreate',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -232,3 +233,11 @@ if not NPM_BIN_PATH:
         "NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
         "NPM_BIN_PATH to the path of the npm executable."
     )
+
+
+# Views (route names) that the orders JSON-only middleware should enforce.
+# By default we enforce JSON on the `orders-create` route. This can be
+# overridden in test or deployment settings.
+ORDERS_JSON_ONLY_VIEWS = [
+    "orders-create",
+]
