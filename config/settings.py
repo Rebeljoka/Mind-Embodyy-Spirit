@@ -235,6 +235,9 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Initialize NPM_BIN_PATH with a default value
+NPM_BIN_PATH = None
+
 # Only run npm check in local development (when DEBUG is True)
 if settings.DEBUG:
     _npm_path = shutil.which('npm') or shutil.which('npm.cmd')
