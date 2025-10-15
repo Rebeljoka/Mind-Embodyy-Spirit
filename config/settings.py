@@ -15,7 +15,6 @@ import os
 import shutil
 import dj_database_url
 import cloudinary
-from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -246,8 +245,8 @@ if DEBUG:
     NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
     if not NPM_BIN_PATH:
         raise RuntimeError(
-            "NPM executable not found on PATH (checked 'npm' and 'npm.cmd') and "
-            "NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
+            "NPM executable not found on PATH (checked 'npm' and 'npm.cmd')"
+            " and NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
             "NPM_BIN_PATH to the path of the npm executable."
         )
 
