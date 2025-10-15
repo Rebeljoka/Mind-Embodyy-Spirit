@@ -31,6 +31,7 @@ def gallery_collection(request):
     return render(request, 'gallery/collection.html', context)
 
 
+<<<<<<< HEAD
 def gallery_paintings_ajax(request):
     """AJAX endpoint that returns just the paintings grid HTML."""
     paintings = (
@@ -56,6 +57,8 @@ def gallery_paintings_ajax(request):
     return render(request, 'gallery/_paintings_grid.html', context)
 
 
+=======
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 def painting_detail(request, slug):
     """Display a single painting with all its images."""
     try:
@@ -66,6 +69,7 @@ def painting_detail(request, slug):
             slug=slug,
         )
 
+<<<<<<< HEAD
         # Get the content type ID for Painting model
         from django.contrib.contenttypes.models import ContentType
         painting_content_type = ContentType.objects.get_for_model(Painting)
@@ -73,6 +77,10 @@ def painting_detail(request, slug):
         context = {
             'painting': painting,
             'painting_content_type_id': painting_content_type.id,
+=======
+        context = {
+            'painting': painting,
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
         }
 
         return render(request, 'gallery/painting_detail.html', context)

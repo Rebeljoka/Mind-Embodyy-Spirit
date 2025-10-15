@@ -11,6 +11,10 @@
 		<!-- Logo and Brand -->
 		<a href="{% url 'index' %}" class="flex items-center justify-center mb-8">
 			{# <img class="w-10 h-10 mr-3" src="{% static 'images/logo.webp' %}" alt="logo" /> #}
+=======
+		<a href="{% url 'index' %}" class="flex items-center justify-center mb-8">
+			<img class="w-10 h-10 mr-3" src="{% static 'images/logo.webp' %}" alt="logo" />
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 			<span class="text-2xl font-bold">Const Collection</span>
 		</a>
 
@@ -23,6 +27,7 @@
 
 				<form method="post" action="{% url 'account_signup' %}" class="space-y-4">
 					{% csrf_token %}
+<<<<<<< HEAD
 
 					{% if form.non_field_errors %}
 					<div class="alert alert-error">
@@ -30,11 +35,22 @@
 							viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 								d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+=======
+					
+					{% if form.non_field_errors %}
+					<div class="alert alert-error">
+						<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 						</svg>
 						<span>{{ form.non_field_errors }}</span>
 					</div>
 					{% endif %}
+<<<<<<< HEAD
 
+=======
+					
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 					{% if redirect_field_value %}
 					<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
 					{% endif %}
@@ -44,9 +60,21 @@
 						<label class="label" for="id_email">
 							<span class="label-text">{% trans "Your email" %}</span>
 						</label>
+<<<<<<< HEAD
 						<input type="email" name="email" id="id_email"
 							class="input input-bordered w-full {% if form.email.errors %}input-error{% endif %}"
 							placeholder="name@company.com" value="{{ form.email.value|default:'' }}" required />
+=======
+						<input 
+							type="email" 
+							name="email" 
+							id="id_email" 
+							class="input input-bordered w-full {% if form.email.errors %}input-error{% endif %}" 
+							placeholder="name@company.com" 
+							value="{{ form.email.value|default:'' }}" 
+							required 
+						/>
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 						{% if form.email.errors %}
 						<label class="label">
 							<span class="label-text-alt text-error">{{ form.email.errors }}</span>
@@ -59,9 +87,20 @@
 						<label class="label" for="id_password1">
 							<span class="label-text">{% trans "Password" %}</span>
 						</label>
+<<<<<<< HEAD
 						<input type="password" name="password1" id="id_password1" placeholder="••••••••"
 							class="input input-bordered w-full {% if form.password1.errors %}input-error{% endif %}"
 							required />
+=======
+						<input 
+							type="password" 
+							name="password1" 
+							id="id_password1" 
+							placeholder="••••••••" 
+							class="input input-bordered w-full {% if form.password1.errors %}input-error{% endif %}" 
+							required 
+						/>
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 						{% if form.password1.errors %}
 						<label class="label">
 							<span class="label-text-alt text-error">{{ form.password1.errors }}</span>
@@ -79,9 +118,20 @@
 						<label class="label" for="id_password2">
 							<span class="label-text">{% trans "Confirm password" %}</span>
 						</label>
+<<<<<<< HEAD
 						<input type="password" name="password2" id="id_password2" placeholder="••••••••"
 							class="input input-bordered w-full {% if form.password2.errors %}input-error{% endif %}"
 							required />
+=======
+						<input 
+							type="password" 
+							name="password2" 
+							id="id_password2" 
+							placeholder="••••••••" 
+							class="input input-bordered w-full {% if form.password2.errors %}input-error{% endif %}" 
+							required 
+						/>
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 						{% if form.password2.errors %}
 						<label class="label">
 							<span class="label-text-alt text-error">{{ form.password2.errors }}</span>
@@ -106,4 +156,8 @@
 		</div>
 	</div>
 </section>
+<<<<<<< HEAD
 {% endblock content %}
+=======
+{% endblock content %}
+>>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
