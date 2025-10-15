@@ -54,8 +54,15 @@ class Artist(models.Model):
     name = models.CharField(max_length=200)
     bio = models.TextField(blank=True)
     website = models.URLField(blank=True)
-    portrait_image = models.ImageField(upload_to='artist/', blank=True, null=True)
-    is_primary = models.BooleanField(default=True, help_text="Mark the single site artist as primary")
+    portrait_image = models.ImageField(
+        upload_to='artist/',
+        blank=True,
+        null=True,
+    )
+    is_primary = models.BooleanField(
+        default=True,
+        help_text="Mark the single site artist as primary",
+    )
 
     class Meta:
         ordering = ["name"]
@@ -75,7 +82,13 @@ class Category(models.Model):
     name = models.CharField(max_length=120, unique=True)
     slug = models.SlugField(max_length=140, unique=True)
     description = models.TextField(blank=True)
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='children')
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='children',
+    )
     created_at = models.DateTimeField(auto_now_add=True)  # Optional timestamp
 
     class Meta:
@@ -103,17 +116,39 @@ class Painting(models.Model):
     cover_image = CloudinaryField('image', blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     date_created = models.DateTimeField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available', db_index=True)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='available',
+        db_index=True,
+    )
     is_published = models.BooleanField(default=True, db_index=True)
 
     # Link to the single site artist; protect from deletion
-    artist = models.ForeignKey(Artist, on_delete=models.PROTECT, related_name='paintings', null=True, blank=True)
+    artist = models.ForeignKey(
+        Artist,
+        on_delete=models.PROTECT,
+        related_name='paintings',
+        null=True,
+        blank=True,
+    )
 
     # Artwork metadata
     medium = models.CharField(max_length=120, blank=True)
     materials = models.CharField(max_length=255, blank=True)
-    year = models.PositiveSmallIntegerField(null=True, blank=True, validators=[MinValueValidator(1000), MaxValueValidator(9999)])
-    dimensions = models.CharField(max_length=120, blank=True, help_text="e.g. 40 x 50 cm")
+    year = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        validators=[
+            MinValueValidator(1000),
+            MaxValueValidator(9999),
+        ],
+    )
+    dimensions = models.CharField(
+        max_length=120,
+        blank=True,
+        help_text="e.g. 40 x 50 cm",
+    )
     provenance = models.TextField(blank=True)
     exhibition_history = models.TextField(blank=True)
 
@@ -125,7 +160,11 @@ class Painting(models.Model):
     meta_description = models.CharField(max_length=160, blank=True)
 
     # Taxonomy and tags
-    categories = models.ManyToManyField('Category', blank=True, related_name='paintings')
+    categories = models.ManyToManyField(
+        'Category',
+        blank=True,
+        related_name='paintings',
+    )
     # tags = TaggableManager(blank=True)
 
     class Meta:
@@ -153,9 +192,16 @@ class Painting(models.Model):
 
 
 class PaintingImage(models.Model):
-    painting = models.ForeignKey(Painting, on_delete=models.CASCADE, related_name='images')
+    painting = models.ForeignKey(
+        Painting,
+        on_delete=models.CASCADE,
+        related_name='images',
+    )
     image = CloudinaryField('image')
-    alt_text = models.CharField(max_length=255, help_text="Accessible description of the image")
+    alt_text = models.CharField(
+        max_length=255,
+        help_text="Accessible description of the image",
+    )
     caption = models.CharField(max_length=255, blank=True)
     credit = models.CharField(max_length=255, blank=True)
     license = models.CharField(max_length=120, blank=True)

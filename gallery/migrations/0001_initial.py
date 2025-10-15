@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ("title", models.CharField(max_length=255)),
                 (
                     "sku",
-                    models.CharField(  # noqa
+                    models.CharField(
                         blank=True,
                         db_index=True,
                         max_length=64,
@@ -39,34 +39,60 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
             ],
-    dependencies = [
-    ]
-
-    operations = [
+        ),
         migrations.CreateModel(
             name='Artist',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID',
+                )),
                 ('name', models.CharField(max_length=200)),
                 ('bio', models.TextField(blank=True)),
                 ('website', models.URLField(blank=True)),
-                ('portrait_image', models.ImageField(blank=True, null=True, upload_to='artist/')),
-                ('is_primary', models.BooleanField(default=True, help_text='Mark the single site artist as primary')),
+                ('portrait_image', models.ImageField(
+                    blank=True,
+                    null=True,
+                    upload_to='artist/',
+                )),
+                ('is_primary', models.BooleanField(
+                    default=True,
+                    help_text='Mark the single site artist as primary',
+                )),
             ],
             options={
                 'ordering': ['name'],
-                'constraints': [models.UniqueConstraint(condition=models.Q(('is_primary', True)), fields=('is_primary',), name='unique_primary_artist')],
+                'constraints': [
+                    models.UniqueConstraint(
+                        condition=models.Q(('is_primary', True)),
+                        fields=('is_primary',),
+                        name='unique_primary_artist',
+                    ),
+                ],
             },
         ),
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID',
+                )),
                 ('name', models.CharField(max_length=120, unique=True)),
                 ('slug', models.SlugField(max_length=140, unique=True)),
                 ('description', models.TextField(blank=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='gallery.category')),
+                ('parent', models.ForeignKey(
+                    blank=True,
+                    null=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='children',
+                    to='gallery.category',
+                )),
             ],
             options={
                 'ordering': ['name'],
@@ -75,26 +101,76 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Painting',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID',
+                )),
                 ('title', models.CharField(max_length=255)),
                 ('slug', models.SlugField(max_length=255, unique=True)),
                 ('description', models.TextField(blank=True)),
-                ('cover_image', cloudinary.models.CloudinaryField(blank=True, max_length=255, null=True, verbose_name='image')),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('cover_image', cloudinary.models.CloudinaryField(
+                    blank=True,
+                    max_length=255,
+                    null=True,
+                    verbose_name='image',
+                )),
+                ('price', models.DecimalField(
+                    decimal_places=2,
+                    max_digits=10,
+                )),
                 ('date_created', models.DateTimeField()),
-                ('status', models.CharField(choices=[('available', 'Available'), ('reserved', 'Reserved'), ('sold', 'Sold'), ('archived', 'Archived')], db_index=True, default='available', max_length=20)),
-                ('is_published', models.BooleanField(db_index=True, default=True)),
+                ('status', models.CharField(
+                    choices=[
+                        ('available', 'Available'),
+                        ('reserved', 'Reserved'),
+                        ('sold', 'Sold'),
+                        ('archived', 'Archived'),
+                    ],
+                    db_index=True,
+                    default='available',
+                    max_length=20,
+                )),
+                ('is_published', models.BooleanField(
+                    db_index=True,
+                    default=True,
+                )),
                 ('medium', models.CharField(blank=True, max_length=120)),
                 ('materials', models.CharField(blank=True, max_length=255)),
-                ('year', models.PositiveSmallIntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(1000), django.core.validators.MaxValueValidator(9999)])),
-                ('dimensions', models.CharField(blank=True, help_text='e.g. 40 x 50 cm', max_length=120)),
+                ('year', models.PositiveSmallIntegerField(
+                    blank=True,
+                    null=True,
+                    validators=[
+                        django.core.validators.MinValueValidator(1000),
+                        django.core.validators.MaxValueValidator(9999),
+                    ],
+                )),
+                ('dimensions', models.CharField(
+                    blank=True,
+                    help_text='e.g. 40 x 50 cm',
+                    max_length=120,
+                )),
                 ('provenance', models.TextField(blank=True)),
                 ('exhibition_history', models.TextField(blank=True)),
                 ('metadata', models.JSONField(blank=True, null=True)),
                 ('meta_title', models.CharField(blank=True, max_length=60)),
-                ('meta_description', models.CharField(blank=True, max_length=160)),
-                ('artist', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='paintings', to='gallery.artist')),
-                ('categories', models.ManyToManyField(blank=True, related_name='paintings', to='gallery.category')),
+                ('meta_description', models.CharField(
+                    blank=True,
+                    max_length=160,
+                )),
+                ('artist', models.ForeignKey(
+                    blank=True,
+                    null=True,
+                    on_delete=django.db.models.deletion.PROTECT,
+                    related_name='paintings',
+                    to='gallery.artist',
+                )),
+                ('categories', models.ManyToManyField(
+                    blank=True,
+                    related_name='paintings',
+                    to='gallery.category',
+                )),
             ],
             options={
                 'ordering': ['-date_created', 'title'],
@@ -103,15 +179,30 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PaintingImage',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', cloudinary.models.CloudinaryField(max_length=255, verbose_name='image')),
-                ('alt_text', models.CharField(help_text='Accessible description of the image', max_length=255)),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID',
+                )),
+                ('image', cloudinary.models.CloudinaryField(
+                    max_length=255,
+                    verbose_name='image',
+                )),
+                ('alt_text', models.CharField(
+                    help_text='Accessible description of the image',
+                    max_length=255,
+                )),
                 ('caption', models.CharField(blank=True, max_length=255)),
                 ('credit', models.CharField(blank=True, max_length=255)),
                 ('license', models.CharField(blank=True, max_length=120)),
                 ('display_order', models.PositiveIntegerField(default=0)),
                 ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('painting', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='gallery.painting')),
+                ('painting', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='images',
+                    to='gallery.painting',
+                )),
             ],
             options={
                 'ordering': ['display_order', 'id'],
@@ -119,18 +210,30 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='painting',
-            index=models.Index(fields=['status'], name='gallery_pai_status_e463fd_idx'),
+            index=models.Index(
+                fields=['status'],
+                name='gallery_pai_status_e463fd_idx',
+            ),
         ),
         migrations.AddIndex(
             model_name='painting',
-            index=models.Index(fields=['is_published'], name='gallery_pai_is_publ_a9dd94_idx'),
+            index=models.Index(
+                fields=['is_published'],
+                name='gallery_pai_is_publ_a9dd94_idx',
+            ),
         ),
         migrations.AddIndex(
             model_name='painting',
-            index=models.Index(fields=['-date_created'], name='gallery_pai_date_cr_2e0635_idx'),
+            index=models.Index(
+                fields=['-date_created'],
+                name='gallery_pai_date_cr_2e0635_idx',
+            ),
         ),
         migrations.AddConstraint(
             model_name='paintingimage',
-            constraint=models.UniqueConstraint(fields=('painting', 'display_order'), name='unique_painting_image_order'),
+            constraint=models.UniqueConstraint(
+                fields=('painting', 'display_order'),
+                name='unique_painting_image_order',
+            ),
         ),
     ]

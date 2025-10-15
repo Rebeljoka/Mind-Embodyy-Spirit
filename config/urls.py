@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('orders/', include('orders.urls')),
+    path('gallery/', include('gallery.urls')),
     # Root landing page
     path(
         '',
