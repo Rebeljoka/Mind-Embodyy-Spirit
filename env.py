@@ -1,7 +1,7 @@
 import os
 
 # Default to non-debug unless explicitly set in the environment
-os.environ.setdefault("DEBUG", "True")
+os.environ.setdefault("DEBUG", "False")
 
 # Only set SECRET_KEY if it's not already provided (prevents overwriting)
 os.environ.setdefault(
