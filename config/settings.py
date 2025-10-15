@@ -249,6 +249,8 @@ if DEBUG:
             " and NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
             "NPM_BIN_PATH to the path of the npm executable."
         )
+else:
+    NPM_BIN_PATH = None
 
 
 # Views (route names) that the orders JSON-only middleware should enforce.
