@@ -40,7 +40,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '*.herokuapp.com',
-    'https://mind-embodyy-spirit-92af4b6525c8.herokuapp.com/',
+    'mind-embodyy-spirit-92af4b6525c8.herokuapp.com',
 ]
 
 # Application definition
