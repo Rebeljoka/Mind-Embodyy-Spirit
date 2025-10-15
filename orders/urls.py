@@ -7,9 +7,23 @@ from .admin_api import RefundPaymentView
 
 urlpatterns = [
     path("create/", api.CreateOrderView.as_view(), name="orders-create"),
-    path("start-payment/<int:order_id>/", api.StartPaymentView.as_view(), name="orders-start-payment"),
+    path(
+        "start-payment/<int:order_id>/",
+        api.StartPaymentView.as_view(),
+        name="orders-start-payment"
+    ),
     path("webhook/", stripe_webhook, name="orders-webhook"),
-    path("refund/<int:payment_id>/", RefundPaymentView.as_view(), name="orders-refund"),
-    # Minimal schema endpoint for the orders API
-    path("schema/", get_schema_view(title="Orders API", description="Schema for orders endpoints"), name="orders-schema"),
+    path(
+        "refund/<int:payment_id>/",
+        RefundPaymentView.as_view(),
+        name="orders-refund",
+    ),
+    path(
+        "schema/",
+        get_schema_view(
+            title="Orders API",
+            description="Schema for orders endpoints"
+        ),
+        name="orders-schema"
+    ),
 ]

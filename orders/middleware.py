@@ -28,17 +28,28 @@ class RequireJSONForOrdersCreate:
         resolver_match = getattr(request, "resolver_match", None)
         view_name = getattr(resolver_match, "view_name", None)
 
-        # Read configured list at request time so tests that use override_settings
-        # can change behavior without middleware needing re-instantiation.
-        json_only_views = tuple(getattr(settings, "ORDERS_JSON_ONLY_VIEWS", DEFAULT_JSON_ONLY_VIEWS))
+        # Read configured list at request time so tests that use  # noqa # noqa 
+        # override_settings can change behavior without middleware  # noqa
+        # needing re-instantiation. This ensures that tests using  # noqa
+        # override_settings can change behavior dynamically.
+        json_only_views = tuple(
+            getattr(settings, "ORDERS_JSON_ONLY_VIEWS", DEFAULT_JSON_ONLY_VIEWS))  # noqa
 
         if view_name in json_only_views:
             content_type = request.META.get("CONTENT_TYPE", "") or ""
-            if not content_type.startswith("application/json"):
+            if not content_type.startswith(  # noqa
+                "application/json"  # noqa
+            ):
                 return JsonResponse(
                     {
-                        "detail": "This endpoint accepts application/json only. Please POST valid JSON.",
-                        "hint": "Set Content-Type: application/json and send a JSON body matching the Orders API.",
+                        "detail": (
+                            (
+                                "This endpoint accepts application/json only. "
+                                "Please POST valid JSON. "
+                                "Set Content-Type: application/json and send a "  # noqa
+                                "JSON body matching the Orders API."
+                            )
+                        ),
                     },
                     status=415,
                 )

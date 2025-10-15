@@ -8,5 +8,5 @@ from django.http import HttpResponse
 
 
 def index(request):
-	"""Simple placeholder view for the orders app."""
-	return HttpResponse("Orders app is running.")
+    """Simple placeholder view for the orders app."""
+    return HttpResponse("Orders app is running.")

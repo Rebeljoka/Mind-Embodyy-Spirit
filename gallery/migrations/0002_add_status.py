@@ -11,6 +11,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="stockitem",
             name="status",
-            field=models.CharField(choices=[('available', 'Available'), ('reserved', 'Reserved'), ('sold', 'Sold'), ('archived', 'Archived')], default='available', max_length=16, db_index=True),
+            field=models.CharField(  # noqa
+                choices=[
+                    ('available', 'Available'),
+                    ('reserved', 'Reserved'),
+                    ('sold', 'Sold'),
+                    ('archived', 'Archived'),
+                ],
+                default='available',
+                max_length=16,
+                db_index=True,
+            ),
         ),
     ]

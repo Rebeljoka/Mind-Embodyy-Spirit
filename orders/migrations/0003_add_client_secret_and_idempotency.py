@@ -16,6 +16,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="paymentrecord",
             name="idempotency_key",
-            field=models.CharField(max_length=255, null=True, blank=True, db_index=True),
+            field=models.CharField(  # noqa
+                max_length=255,
+                null=True,
+                blank=True,
+                db_index=True,
+            ),
         ),
     ]

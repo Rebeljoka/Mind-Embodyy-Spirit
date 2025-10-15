@@ -11,6 +11,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="stockitem",
             name="is_unique",
-            field=models.BooleanField(default=False, help_text="If true, item is single-copy and uses status transitions instead of stock counts"),
+            field=models.BooleanField(  # noqa
+                default=False,
+                help_text=(
+                    "If true, item is single-copy and uses status transitions "
+                    "instead of stock counts"
+                ),
+            ),
         ),
     ]

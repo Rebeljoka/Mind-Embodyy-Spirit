@@ -1,5 +1,3 @@
-import json
-
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -29,9 +27,14 @@ def stripe_webhook(request):
             return JsonResponse({"received": True, "skipped": True})
         # record the event as processed
         try:
-            ProcessedEvent.objects.create(provider="stripe", event_id=event_id, payload=event)
+            ProcessedEvent.objects.create(
+                provider="stripe",
+                event_id=event_id,  # noqa: E501
+                payload=event,
+            )
         except Exception:
-            # if create fails (race condition) proceed — we'll still try to process but avoid throwing
+            # if create fails (race condition) proceed — we'll still try to
+            # process but avoid throwing
             pass
 
     # handle payment succeeded
@@ -42,61 +45,112 @@ def stripe_webhook(request):
             try:
                 order = Order.objects.get(pk=order_id)
                 # mark payment record(s) for the order as succeeded
-                PaymentRecord.objects.filter(order=order, provider_payment_id=data.get("id")).update(status=PaymentRecord.STATUS_SUCCEEDED, provider_payment_id=data.get("id"), raw_response=data)
+                PaymentRecord.objects.filter(
+                    order=order,
+                    provider_payment_id=data.get("id"),
+                ).update(
+                    status=PaymentRecord.STATUS_SUCCEEDED,
+                    provider_payment_id=data.get("id"),
+                    raw_response=data,
+                )
 
-                # Decrement stock atomically. If any product lacks stock, mark order.stock_shortage
+                # Decrement stock atomically. If any product lacks stock, mark
+                # order.stock_shortage
                 shortage = False
-                # Build mapping of product SKUs to ordered quantities from snapshot order items
-                sku_map = {it.product_sku: it.quantity for it in order.order_items.all() if it.product_sku}
+                # Build mapping of product SKUs to ordered quantities
+                # from snapshot order items
+                sku_map = {
+                    item.product_sku: item.quantity
+                    for item in order.items if item.product_sku  # type: ignore  # noqa
+                }
                 if sku_map:
                     with transaction.atomic():
-                        products = list(StockItem.objects.select_for_update().filter(sku__in=list(sku_map.keys())))
+                        products = list(
+                            StockItem.objects.select_for_update().filter(
+                                sku__in=list(sku_map.keys())
+                            )
+                        )
                         prod_map = {p.sku: p for p in products}
                         for sku, qty in sku_map.items():
                             stock_item = prod_map.get(sku)
                             if not stock_item:
                                 shortage = True
                                 continue
-                            # If this is a unique single-item use status transitions
+                            # If this is a unique single-item,
+                            # use status transitions
                             if getattr(stock_item, 'is_unique', False):
                                 # Only handle single-item sales when qty == 1
                                 if qty == 1:
-                                    if stock_item.status in (StockItem.STATUS_AVAILABLE, StockItem.STATUS_RESERVED):
-                                        stock_item.status = StockItem.STATUS_SOLD
+                                    if stock_item.status in (
+                                        StockItem.STATUS_AVAILABLE,
+                                        StockItem.STATUS_RESERVED,
+                                    ):
+                                        stock_item.status = (
+                                            StockItem.STATUS_SOLD
+                                        )
                                         stock_item.save()
                                     else:
+                                        # requested qty > 1 for single-item SKU
+                                        # cannot fulfill
                                         shortage = True
                                 else:
-                                    # requested qty > 1 for a single-item SKU -> cannot fulfill
+                                    # requested qty > 1 for a single-item SKU
+                                    # -> cannot fulfill
                                     shortage = True
                             else:
-                                # multi-quantity: decrement count
-                                if stock_item.stock >= qty:
+                                # For multi-quantity items, decrement
+                                # the stock count accordingly.
+                                if stock_item.stock >= qty:  # noqa: E501
                                     stock_item.stock = stock_item.stock - qty
                                     stock_item.save()
                                 else:
                                     shortage = True
 
                 if shortage:
+                    # Mark order as having stock shortage.
+                    # This indicates insufficient stock for
+                    # fulfillment.
                     order.stock_shortage = True
-                order.status = Order.STATUS_PROCESSING
+                order.status = (
+                    Order.STATUS_PROCESSING
+                )
                 order.save()
 
-                # Send an order confirmation email (synchronous, small MVP behavior)
+                # Send an order confirmation email
+                # (synchronous, small MVP behavior)
                 try:
                     subject = f"Order {order.order_number} confirmation"
-                    body = f"Thank you for your order {order.order_number}. Status: {order.status}. Total: {order.total} {order.currency}"
-                    recipient = order.guest_email or (order.user.email if order.user else None)
+                    body = (
+                        f"Thank you for your order {order.order_number}. "
+                        f"Status: {order.status}. "
+                        f"Total: {order.total} {order.currency}"
+                    )
+                    recipient = order.guest_email or (
+                        order.user.email if order.user else None
+                    )
                     if recipient:
-                        send_mail(subject, body, getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com'), [recipient])
+                        send_mail(
+                            subject,
+                            body,
+                            getattr(
+                                settings,
+                                'DEFAULT_FROM_EMAIL',
+                                'noreply@example.com'
+                            ),
+                            [recipient]
+                        )
                 except Exception:
-                    # email sending failure should not prevent webhook processing
+                    # email sending failure should not prevent webhook
+                    # processing
                     pass
             except Order.DoesNotExist:
                 pass
 
     # handle refund
-    if event_type == "charge.refunded" or event_type == "charge.refund.updated":
+    if (
+        event_type == "charge.refunded"
+        or event_type == "charge.refund.updated"
+    ):
         # TODO: mark refund on payment record and order
         pass
 

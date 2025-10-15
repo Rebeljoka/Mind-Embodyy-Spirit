@@ -1,324 +1,179 @@
-# orders — developer README
+# Mind-Embodyy-Spirit
 
-This file documents the `orders` Django app. It combines the app-level reference and developer notes into a single, readable guide for maintainers and contributors.
+A Django-based e-commerce platform with integrated order management, payment processing, and inventory handling.
 
-Contents
-- Overview
-- Features implemented
-- Models & key fields
-- API endpoints (contract)
-- Payments, idempotency & webhooks
-- Inventory integration (gallery)
-- Middleware
-- Admin & refunds
-- Local development & testing
-- Tests
-- Unfinished components / next steps (actionable)
-- Appendix: shell snippets and examples
+## Features
 
----
+### Orders App
 
-## Overview
+The orders app provides comprehensive order management functionality with the following features:
 
-The `orders` app provides a compact order management system that supports:
+#### Core Models
+- **Order**: Main order entity with status tracking (paid, processing, shipped, cancelled, refunded)
+- **OrderItem**: Individual items within orders with snapshot data for audit trails
+- **Address**: Shipping and billing addresses associated with orders
+- **PaymentRecord**: Payment tracking with provider integration and idempotency
+- **Reservation**: Item reservations during checkout to prevent overselling
+- **ProcessedEvent**: Webhook event deduplication for idempotent processing
 
-- Creating orders (guest & authenticated)
-- Line-item snapshotting so orders don't break if product records change
-- Starting payments (Stripe example) and storing provider client secrets
-- Provider webhook processing with deduplication and idempotent handling
-- Basic admin tools for shipping/refunds and audit-friendly payment records
+#### API Endpoints
+- `POST /orders/create/` - Create orders (authenticated or guest)
+- `POST /orders/start-payment/<order_id>/` - Initiate payment processing
+- `POST /orders/webhook/` - Handle Stripe webhook events
+- `POST /orders/refund/<payment_id>/` - Issue refunds (staff only)
+- `GET /orders/schema/` - API schema documentation
 
-The implementation focuses on clarity, idempotency, and safe inventory handling for an MVP.
+#### Payment Integration
+- **Stripe Integration**: Full payment intent creation and webhook handling
+- **Idempotent Operations**: Prevents duplicate payments and refunds
+- **Multi-currency Support**: Configurable currency per order
+- **Payment Status Tracking**: Pending, succeeded, failed, refunded states
 
-## Features implemented (MVP)
+#### Stock Management
+- **Atomic Stock Decrements**: Prevents overselling with database transactions
+- **Reservation System**: Locks items during checkout (4-hour default expiry)
+- **Stock Shortage Detection**: Flags orders when inventory is insufficient
+- **Unique Item Handling**: Special logic for one-of-a-kind items
 
-- Order creation with server-side total calculation and transactional saves.
-- `start-payment` flow that creates a `PaymentRecord` and supports an `Idempotency-Key` to deduplicate client calls.
-- Webhook endpoint that verifies provider events (helper), deduplicates by provider event id (`ProcessedEvent`) and updates `Order`/`PaymentRecord`.
-- Inventory integration with `gallery.StockItem`:
-  - Multi-qty SKUs use the `stock` integer and are decremented on successful payment.
-  - One-of-a-kind items are marked with `is_unique=True` and use `status` transitions (`available -> reserved -> sold`).
-- Snapshotting: `OrderItem.product_status` records the product's availability status at the time of ordering.
-- Admin actions: `mark_shipped` and `mark_refunded`; `PaymentRecord.issue_refund()` helper with idempotency.
-- Confirmation email sent on payment success (MVP: synchronous; consider moving to background worker).
-- Tests covering the core behaviors (orders, payments, webhook dedupe, stock handling, admin actions).
+#### Admin Interface
+- **Order Management**: View, filter, and search orders
+- **Bulk Actions**: Mark orders as shipped or refunded
+- **Payment Management**: View payment records and issue refunds
+- **Reservation Oversight**: Monitor active reservations
+- **Address Management**: Handle shipping/billing addresses
 
-## Models & key fields (summary)
+#### Webhook Processing
+- **Event Deduplication**: Prevents processing duplicate webhook events
+- **Payment Success Handling**: Updates order status and decrements stock
+- **Email Notifications**: Automatic order confirmation emails
+- **Error Resilience**: Continues processing even if email sending fails
 
-See `orders/models.py` for full details. Key models/fields at a glance:
+#### Security & Middleware
+- **JSON-Only Enforcement**: Requires JSON content-type for order creation
+- **Staff-Only Refunds**: Administrative controls for refund operations
+- **CSRF Protection**: Standard Django security measures
+- **Input Validation**: Comprehensive serializer validation
 
-- Order: `order_number`, `user`, `guest_email`, `status`, `total`, `currency`, `stock_shortage`.
-- OrderItem: `product_title`, `product_sku`, `unit_price`, `quantity`, `product_status` (snapshot).
-- Address: shipping/billing address linked to `Order`.
-- PaymentRecord: `provider`, `provider_payment_id`, `provider_client_secret`, `idempotency_key`, `amount`, `status`, `raw_response`, `provider_refund_id`, `refunded_at`.
-- Reservation: optional user-bound reservation rows (used for authenticated checkout flows).
-- ProcessedEvent: provider + event_id for webhook deduplication.
+#### Email Integration
+- **Order Confirmations**: Automatic emails on successful payment
+- **Configurable Senders**: Uses Django's DEFAULT_FROM_EMAIL setting
+- **Error Handling**: Email failures don't block order processing
 
-Inventory piece (in `gallery` app): `StockItem` with `sku`, `stock` (int), `status` (available/reserved/sold/archived) and `is_unique` boolean.
+## Technology Stack
 
-Where the code lives
+- **Backend**: Django 5.2 with Django REST Framework
+- **Database**: PostgreSQL (configurable via DATABASE_URL)
+- **Payments**: Stripe API integration
+- **Media Storage**: Cloudinary (optional, falls back to local storage)
+- **Authentication**: Django Allauth with social login support
+- **Frontend**: Django templates with Tailwind CSS
+- **Testing**: Comprehensive unit tests with mocking
 
-- Serializers: `orders/serializers.py` (OrderCreateSerializer) — calculates totals, reserves unique items and snapshots `product_status`.
-- Views / API: `orders/views.py` — Order creation, start-payment and refund endpoints.
-- Webhook verification and handler: `orders/webhooks.py` (`stripe_webhook`) and `orders/payments.py` (helpers such as `verify_stripe_event`).
-- Models: `orders/models.py` and inventory in `gallery/models.py`.
+## Configuration
 
-If you're stepping through the flow, start with `orders/serializers.py` -> `orders/views.py` -> `orders/webhooks.py`.
+### Environment Variables
+- `SECRET_KEY`: Django secret key (required)
+- `DEBUG`: Enable/disable debug mode
+- `DATABASE_URL`: Database connection string
+- `STRIPE_SECRET_KEY`: Stripe API key for payments
+- `CLOUDINARY_URL`: Cloudinary storage configuration
+- `ORDERS_JSON_ONLY_VIEWS`: Comma-separated list of views requiring JSON
 
-## API endpoints (contract)
+### Settings
+- `ORDERS_JSON_ONLY_VIEWS`: Views that require JSON content-type
+- `DEFAULT_FROM_EMAIL`: Email sender address for notifications
 
-1) POST /orders/create/
-- Create an order (guest or authenticated). Request body must be JSON.
-- Required: `items` array (each item: product_title, product_sku, unit_price, quantity).
-- Responses: 201 created with serialized order; 400 validation errors; 415 non-JSON content (friendly JSON from middleware).
+## Installation & Setup
 
-2) POST /orders/start-payment/<order_id>/
-- Creates a `PaymentRecord` and (optionally) a provider-side payment intent.
-- Supports `Idempotency-Key` header; returns `client_secret` when applicable.
+1. Clone the repository
+2. Create virtual environment: `python -m venv .venv`
+3. Activate environment: `.venv\Scripts\activate` (Windows)
+4. Install dependencies: `pip install -r requirements.txt`
+5. Set environment variables
+6. Run migrations: `python manage.py migrate`
+7. Create superuser: `python manage.py createsuperuser`
+8. Run tests: `python manage.py test`
+9. Start server: `python manage.py runserver`
 
-Example request (client-side call):
+## Testing
 
-```http
-POST /orders/start-payment/42/ HTTP/1.1
-Host: localhost:8000
-Idempotency-Key: startpay-42
+Run the full test suite:
+```bash
+python manage.py test
+```
+
+Run orders app tests specifically:
+```bash
+python manage.py test orders
+```
+
+## API Usage Examples
+
+### Create Order (Guest)
+```json
+POST /orders/create/
 Content-Type: application/json
 
-{}
-```
-
-Example response (successful, Stripe-style mocked response):
-
-```json
 {
-	"payment_id": 7,
-	"client_secret": "pi_abc_secret_123",
-	"provider": "stripe"
+  "guest_email": "customer@example.com",
+  "items": [
+    {
+      "product_title": "Art Print",
+      "product_sku": "ART-001",
+      "unit_price": "25.00",
+      "quantity": 1
+    }
+  ]
 }
 ```
 
-3) POST /orders/webhook/
-- Provider webhook endpoint (Stripe example). Verifies event, dedupes, updates PaymentRecord and Order.
-
-Example minimal webhook payload (Stripe-like) for local testing or unit tests:
-
+### Start Payment
 ```json
-{
-	"id": "evt_1Example",
-	"type": "payment_intent.succeeded",
-	"data": {
-		"object": {
-			"id": "pi_1Example",
-			"metadata": { "order_id": "42" }
-		}
-	}
-}
+POST /orders/start-payment/123/
 ```
 
-4) POST /orders/refund/<payment_id>/
-- Staff-only endpoint to trigger idempotent refunds via `PaymentRecord.issue_refund()`.
+Response includes `client_secret` for Stripe Elements integration.
 
-5) (Optional) GET /orders/schema/ — small DRF/OpenAPI schema endpoint used in dev.
+### Webhook Handling
+Stripe webhooks are automatically processed at `/orders/webhook/` with signature verification.
 
-## Payments, idempotency & webhooks
+## Tasks to Complete
 
-- Start-payment idempotency: when the client provides `Idempotency-Key`, the start-payment view returns the existing `PaymentRecord` for the same order + key to avoid duplicate provider intents.
-- Webhook dedupe: `ProcessedEvent` records provider event ids to skip duplicate deliveries.
-- Refund idempotency: `PaymentRecord.issue_refund()` records `provider_refund_id` and returns stored results if a refund already exists.
+### High Priority
+1. **Complete Refund Webhook Handling**: Implement `charge.refunded` and `charge.refund.updated` event processing in `webhooks.py`
+2. **Email Template System**: Replace hardcoded email bodies with Django templates
+3. **Error Monitoring**: Add proper logging and error tracking for payment failures
+4. **Rate Limiting**: Implement rate limiting for API endpoints
 
-Operational notes:
-- Keep `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` in env vars or a secrets manager. Do not commit them.
-- In production, ensure the webhook verification helper uses `STRIPE_WEBHOOK_SECRET` to validate signatures.
+### Medium Priority
+1. **Order Status Webhooks**: Send webhooks to external systems on order status changes
+2. **Partial Refunds**: Support partial refund amounts in the refund API
+3. **Order History**: Add order status change tracking and history
+4. **Invoice Generation**: Generate PDF invoices for completed orders
+5. **Multi-provider Payments**: Add support for PayPal, Klarna, etc.
 
-## Inventory integration (gallery)
+### Low Priority
+1. **Order Comments**: Allow customers to add notes to orders
+2. **Gift Messages**: Support gift orders with custom messages
+3. **Order Cancellation**: Allow customers to cancel pending orders
+4. **Return Management**: Handle return requests and processing
+5. **Analytics Dashboard**: Order metrics and reporting
 
-Design summary:
+### Technical Debt
+1. **Code Coverage**: Increase test coverage for edge cases
+2. **Performance Optimization**: Add database indexes for common queries
+3. **API Documentation**: Complete OpenAPI schema documentation
+4. **Type Hints**: Add comprehensive type annotations
+5. **Error Messages**: Improve error messages for better UX
 
-- Multi-quantity SKUs: use integer `stock` on `gallery.StockItem`. On payment success the webhook decrements stock by ordered quantity.
-- One-of-a-kind items: set `is_unique=True`. Reservation occurs at order-create (if quantity==1) by flipping `status` from `available` to `reserved`; the webhook finalizes by setting `status` to `sold`.
-- `OrderItem.product_status` snapshots the product status at the time the order was created so staff can see what the customer purchased.
-- MVP policy (Option A): if payment succeeds but stock is insufficient, the order is allowed to complete and `order.stock_shortage` is flagged for staff follow-up.
+## Contributing
 
-## Middleware
+1. Follow PEP 8 style guidelines
+2. Write comprehensive tests for new features
+3. Update documentation for API changes
+4. Use atomic transactions for data consistency
+5. Implement idempotent operations where appropriate
 
-The repository includes `orders.middleware.RequireJSONForOrdersCreate` which returns a helpful 415 JSON error when non-JSON content is POSTed to the orders create endpoint. Consider changing the middleware to match by route name (`request.resolver_match.view_name`) for more robust deployments.
+## License
 
-## Admin & refunds
-
-- Admin actions:
-  - `mark_shipped` — set selected orders to shipped.
-  - `mark_refunded` — trigger `PaymentRecord.issue_refund()` across related payments and set order status to refunded.
-- Staff-only refund endpoint: `POST /orders/refund/<payment_id>/`.
-
-Manual refund guidance:
-
-1. Prefer issuing the refund in the provider dashboard (Stripe) and recording the refund via the admin or shell.
-2. Alternatively use the staff API which calls `PaymentRecord.issue_refund()`; this helper is idempotent and records provider response.
-
-## Local development & testing
-
-1) Prepare environment (PowerShell):
-
-```powershell
-python -m venv .venv
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-. .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-2) Apply migrations and run server:
-
-```powershell
-python manage.py migrate
-python manage.py createsuperuser  # optional
-python manage.py runserver
-```
-
-3) Webhook dev: use Stripe CLI to forward webhook events:
-
-```powershell
-stripe listen --forward-to localhost:8000/orders/webhook/
-```
-
-4) Run only the orders tests during development:
-
-```powershell
-python manage.py test orders -v 2
-```
-
-## Tests
-
-The `orders` app contains tests in `orders/tests.py` covering:
-
-- Model behaviors (order_number, totals, reservation expiry)
-- Payments helper fallback and refund idempotency
-- API behavior (create/start-payment/refund endpoints)
-- Webhook idempotency and stock handling
-- Concurrency/oversell protection tests
-
-Note: tests mock Stripe where appropriate; real Stripe keys are not required to run the orders tests locally.
-
-## Unfinished components / actionable next steps
-
-These tasks are not blockers for an MVP demo but are recommended to improve robustness, maintainability and production-readiness.
-
-High priority
-
-- Run the full project test suite and fix any regressions outside the `orders` app.
-- Enable webhook signature verification using `STRIPE_WEBHOOK_SECRET` in production and ensure `orders.payments.verify_stripe_event` uses it.
-- Move confirmation email sending out of the webhook into a background job (Celery/RQ) to avoid blocking webhook responses.
-
-Medium priority
-
-- Add CI (GitHub Actions or similar) to run tests on push/PR.
-- Add a small data migration or management command to convert legacy `StockItem` rows to `is_unique=True` where appropriate (if you have legacy items with stock==1 that are actually unique).
-- Harden refund/reconciliation flows: a management command to reconcile provider refunds vs `PaymentRecord` rows.
-
-Low priority / Nice-to-have
-
-- Reservation expiry worker to release `reserved` items after timeout.
-- Add interactive OpenAPI docs (drf-spectacular) and wire a small `/orders/docs/` page for developers.
-- Provider adapters (PayPal, Klarna) and more comprehensive payment integration tests.
-
-## Appendix: useful shell snippets
-
-- Mark an item as unique and set its status:
-
-```powershell
-python manage.py shell
-from gallery.models import StockItem
-p = StockItem.objects.get(sku='ONE-1')
-p.is_unique = True
-p.status = 'available'
-p.save()
-```
-
-- Bulk-mark stock==1 items as unique (one-liner):
-
-```powershell
-python manage.py shell -c "from gallery.models import StockItem; StockItem.objects.filter(stock=1).update(is_unique=True)"
-```
-
-- Manual refund via shell:
-
-```py
-from django.utils import timezone
-from orders.models import PaymentRecord
-p = PaymentRecord.objects.get(pk=1)
-p.provider_refund_id = 're_...'
-p.raw_response = {'note': 'Refunded manually in Stripe dashboard'}
-p.status = PaymentRecord.STATUS_REFUNDED
-p.refunded_at = timezone.now()
-p.save()
-```
-
----
-
-If you'd like, I can now:
-
-- Run the full project test suite and fix regressions.
-- Add middleware tests and convert middleware to route-name matching.
-- Create a small management command/data migration to bulk-convert `StockItem` rows to `is_unique` per a rule you specify.
-
-Tell me which follow-up you'd like and I'll implement it (with tests and README updates).
-
-````
-- Webhook idempotency: a new `ProcessedEvent` model records provider webhook event ids so duplicate deliveries are skipped. The webhook handler will record an event id on first delivery and return a quick success with `{"skipped": true}` on duplicates.
-
-
-# MIND//EMBODY//SPIRIT
-
-## Orders API
-
-The `orders` app exposes a minimal REST API for creating orders and starting payments.
-
-- Endpoint: `POST /orders/create/`
-	- Content-Type: `application/json` only. Requests must send valid JSON. The API enforces strict JSON parsing.
-	- Body (example):
-
-```json
-{
-	"guest_email": "guest@example.com",
-	"currency": "EUR",
-	"items": [
-		{"product_title": "Blue T-shirt", "product_sku": "TSHIRT-BLUE", "unit_price": 19.99, "quantity": 2}
-	],
-	"shipping_address": {"line1": "123 Street", "city": "Town", "postal_code": "12345", "country": "IE"}
-}
-```
-
-- Endpoint: `POST /orders/start-payment/<order_id>/` — starts a payment and returns a `client_secret` (Stripe) and `payment_id`.
-- Schema: `GET /orders/schema/` — minimal DRF schema for the orders endpoints.
-
-Notes:
-- Authenticated users may omit `guest_email` if the frontend provides an authenticated session/cookie; otherwise `guest_email` is required for anonymous checkout.
-- The API intentionally rejects non-JSON bodies; if you need to support form-encoded clients, add a client-side JSON wrapper or update the server to accept additional parser types.
- 
-Middleware and helpful errors
-----------------------------
-
-The project includes a small middleware `orders.middleware.RequireJSONForOrdersCreate` which returns a friendly JSON 415 response when a non-JSON request is sent to `POST /orders/create/`. This avoids HTML error pages and provides a helpful hint for client developers.
-
-Manual testing examples (PowerShell)
-----------------------------------
-
-# Successful JSON request (replace host and payload as needed)
-```powershell
-curl -Method POST -Uri http://localhost:8000/orders/create/ -Headers @{ 'Content-Type' = 'application/json' } -Body ('{ "guest_email": "x@x.com", "currency": "EUR", "items": [] }')
-```
-
-# Non-JSON request (will be rejected with a 415 JSON response)
-```powershell
-curl -Method POST -Uri http://localhost:8000/orders/create/ -Body @{ guest_email = 'x@x.com' }
-```
-
-Testing notes
--------------
-
-- The orders test suite covers the API and middleware behavior; run it with:
-
-```powershell
-python manage.py test orders -v 2
-```
-
-If you want the middleware to apply to additional endpoints or to match by route name instead of path, I can update it to use `request.resolver_match`.
+[Add your license information here]
