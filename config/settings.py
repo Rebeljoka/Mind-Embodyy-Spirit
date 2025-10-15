@@ -205,6 +205,19 @@ USE_TZ = True
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 
+if DEBUG:
+    # Development settings
+    STATICFILES_DIRS = [BASE_DIR / 'static']
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+    TAILWIND_APP_NAME = 'theme'
+else:
+    # Production settings
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+    STATICFILES_DIRS = [
+        BASE_DIR / 'theme' / 'static',
+        BASE_DIR / 'static',
+    ]
+
 TAILWIND_APP_NAME = 'theme'
 
 STORAGES = {
