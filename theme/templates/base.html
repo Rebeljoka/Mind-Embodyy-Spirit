@@ -49,8 +49,8 @@
 		<!-- Navbar -->
 		<nav class="navbar justify-between bg-base-300">
 			<!-- Logo -->
-			<a class="btn btn-ghost text-lg">
-				<img alt="Logo" src="images/logo.webp" class="w-4" />
+			<a href="{% url 'index' %}" class="btn btn-ghost text-lg">
+				<img alt="Logo" src="{% static 'images/logo.webp' %}" class="w-4" />
 				Const Collection
 			</a>
 
@@ -79,21 +79,46 @@
 						</a>
 					</div>
 
-					<li><a>About</a></li>
-					<li><a>Pricing</a></li>
-					<li><a>Blog</a></li>
-					<li><a>Contact</a></li>
-					<a class="btn btn-sm btn-primary">Log in</a>
+					<li><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
+					<li><a href="{% url 'gallery:collection' %}">{% trans "Gallery" %}</a></li>
+					<li><a>{% trans "About" %}</a></li>
+					<li><a>{% trans "Contact" %}</a></li>
+					
+					{% if user.is_authenticated %}
+						<div class="divider"></div>
+						<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+						<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
+						<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+					{% else %}
+						<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
+						<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
+					{% endif %}
 				</ul>
 			</div>
 
 			<!-- Menu for desktop -->
 			<ul class="sm:menu-horizontal sm:flex gap-2">
-				<li><a>About</a></li>
-				<li><a>Pricing</a></li>
-				<li><a>Blog</a></li>
-				<li><a>Contact</a></li>
-				<a class="btn btn-sm btn-primary">Log in</a>
+				<li><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
+				<li><a href="{% url 'gallery:collection' %}">{% trans "Gallery" %}</a></li>
+				<li><a>{% trans "About" %}</a></li>
+				<li><a>{% trans "Contact" %}</a></li>
+				
+				{% if user.is_authenticated %}
+					<div class="dropdown dropdown-end">
+						<label tabindex="0" class="btn btn-sm btn-ghost">
+							<i class="ph ph-user-circle text-xl"></i>
+							{{ user.username }}
+						</label>
+						<ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+							<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+							<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
+							<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+						</ul>
+					</div>
+				{% else %}
+					<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
+					<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
+				{% endif %}
 			</ul>
 
 			<div class="hidden sm:flex gap-2">
@@ -115,35 +140,23 @@
 			</div>
 		</nav>
 
-		{# Account/allauth pages expect messages/menu available; render them before content so child templates that override `content` still show messages and menu. #} {% if messages %}
-		<div>
-			<strong>{% trans "Messages:" %}</strong>
-			<ul>
-				{% for message in messages %}
-				<li>{{ message }}</li>
-				{% endfor %}
-			</ul>
+		{# Messages notification #}
+		{% if messages %}
+		<div class="container mx-auto px-4 py-2">
+			{% for message in messages %}
+			<div class="alert alert-{{ message.tags|default:'info' }} shadow-lg mb-2">
+				<div>
+					<span>{{ message }}</span>
+				</div>
+			</div>
+			{% endfor %}
 		</div>
 		{% endif %}
 
-		<nav aria-label="Account">
-			<strong>{% trans "Account:" %}</strong>
-			<ul>
-				{% if user.is_authenticated %} {% url 'account_email' as email_url_ %} {% if email_url_ %}
-				<li><a href="{{ email_url_ }}">{% trans "Change Email" %}</a></li>
-				{% endif %} {% url 'account_change_password' as change_password_url_ %} {% if change_password_url_ %}
-				<li><a href="{{ change_password_url_ }}">{% trans "Change Password" %}</a></li>
-				{% endif %} {% url 'account_logout' as logout_url_ %} {% if logout_url_ %}
-				<li><a href="{{ logout_url_ }}">{% trans "Sign Out" %}</a></li>
-				{% endif %} {% else %} {% url 'account_login' as login_url_ %} {% if login_url_ %}
-				<li><a href="{{ login_url_ }}">{% trans "Sign In" %}</a></li>
-				{% endif %} {% url 'account_signup' as signup_url_ %} {% if signup_url_ %}
-				<li><a href="{{ signup_url_ }}">{% trans "Sign Up" %}</a></li>
-				{% endif %} {% endif %}
-			</ul>
-		</nav>
-
-		<main class="w-full">{% block content %} {% endblock content %}</main>
+		<main class="w-full">
+			{% block content %}
+			{% endblock content %}
+		</main>
 
 		{% block extra_body %}{% endblock extra_body %}
 	</body>

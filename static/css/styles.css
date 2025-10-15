@@ -11,3 +11,19 @@
     --Body-Text: #647687; /* Body text, secondary UI text */
     --Buttons: #D6A944; /* Buttons, hover states, key highlights */
 }
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--Headers);
+    color: var(--Headings);
+}
+
+button, .btn {
+    background-color: var(--Buttons);
+    color: var(--Background);
+    font-family: var(--UI);
+}
+
+p, span, li, a, body {
+    font-family: var(--Body);
+    color: var(--Body-Text);
+}

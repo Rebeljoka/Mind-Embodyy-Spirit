@@ -11,18 +11,17 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
 import os
 import shutil
+import dj_database_url
 import cloudinary
-from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-if os.path.exists("env.py"):
+# Load environment variables from env.py if it exists
+if os.path.exists(BASE_DIR / "env.py"):
     import env  # noqa: F401
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -40,7 +39,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '*.herokuapp.com',
-    'https://mind-embodyy-spirit-92af4b6525c8.herokuapp.com/',
+    'mind-embodyy-spirit-92af4b6525c8.herokuapp.com',
 ]
 
 # Application definition
@@ -58,6 +57,7 @@ INSTALLED_APPS = [
     'theme',
     'cloudinary',
     'cloudinary_storage',
+    'rest_framework',
     # Local apps
     'accounts',
     'gallery',
@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'orders.middleware.RequireJSONForOrdersCreate',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -143,7 +144,8 @@ CLOUDINARY_DEFAULT_TRANSFORMATIONS = {
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'))
+        default=os.environ.get("DATABASE_URL")
+    )
 }
 
 
@@ -205,7 +207,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_URL = '/media/'
 
 if DEBUG:
@@ -234,15 +235,21 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Only run npm check in local development (when DEBUG is True)
-if settings.DEBUG:
+# Only run npm check and error in local development (when DEBUG is True)
+if DEBUG:
     _npm_path = shutil.which('npm') or shutil.which('npm.cmd')
     NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
-
     if not NPM_BIN_PATH:
         raise RuntimeError(
             "NPM executable not found on PATH (checked 'npm' and 'npm.cmd')"
-            "and "
-            "NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
+            " and NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
             "NPM_BIN_PATH to the path of the npm executable."
         )
+
+
+# Views (route names) that the orders JSON-only middleware should enforce.
+# By default we enforce JSON on the `orders-create` route. This can be
+# overridden in test or deployment settings.
+ORDERS_JSON_ONLY_VIEWS = [
+    "orders-create",
+]

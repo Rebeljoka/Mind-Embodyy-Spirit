@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head_title %}{{ painting.title }} - Const Collection{% endblock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <section class="container mx-auto px-4 py-8">
+        <!-- Breadcrumb -->
+        <div class="text-sm breadcrumbs mb-6">
+            <ul>
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'gallery:collection' %}">Gallery</a></li>
+                <li>{{ painting.title }}</li>
+            </ul>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Image Gallery -->
+            <div class="space-y-4">
+                <!-- Main Image -->
+                <div class="aspect-square overflow-hidden rounded-lg shadow-xl bg-base-200">
+                    {% if painting.cover_image %}
+                        <img 
+                            id="mainImage"
+                            src="{{ painting.cover_image.url }}" 
+                            alt="{{ painting.title }}"
+                            class="w-full h-full object-contain"
+                        >
+                    {% elif painting.images.first %}
+                        <img 
+                            id="mainImage"
+                            src="{{ painting.images.first.image.url }}" 
+                            alt="{{ painting.images.first.alt_text }}"
+                            class="w-full h-full object-contain"
+                        >
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center">
+                            <span class="text-base-content/50 text-xl">No Image Available</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Thumbnail Gallery -->
+                {% if painting.images.all %}
+                <div class="grid grid-cols-4 gap-2">
+                    {% if painting.cover_image %}
+                    <div class="aspect-square overflow-hidden rounded-lg cursor-pointer border-2 border-primary" 
+                         onclick="changeImage('{{ painting.cover_image.url }}')">
+                        <img src="{{ painting.cover_image.url }}" alt="{{ painting.title }}" class="w-full h-full object-cover">
+                    </div>
+                    {% endif %}
+                    
+                    {% for image in painting.images.all %}
+                    <div class="aspect-square overflow-hidden rounded-lg cursor-pointer border-2 border-transparent hover:border-primary transition-colors" 
+                         onclick="changeImage('{{ image.image.url }}')">
+                        <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="w-full h-full object-cover">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Painting Details -->
+            <div class="space-y-6">
+                <div>
+                    <h1 class="text-4xl font-bold mb-2">{{ painting.title }}</h1>
+                    {% if painting.artist %}
+                    <p class="text-xl text-base-content/70 mb-4">by {{ painting.artist.name }}</p>
+                    {% endif %}
+                    
+                    <!-- Status Badge -->
+                    <div class="mb-4">
+                        {% if painting.status == 'available' %}
+                        <span class="badge badge-success badge-lg">Available for Purchase</span>
+                        {% elif painting.status == 'sold' %}
+                        <span class="badge badge-error badge-lg">Sold</span>
+                        {% elif painting.status == 'reserved' %}
+                        <span class="badge badge-warning badge-lg">Reserved</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Price -->
+                    <div class="text-4xl font-bold text-primary mb-6">
+                        £{{ painting.price }}
+                    </div>
+                </div>
+
+                <!-- Description -->
+                {% if painting.description %}
+                <div class="prose max-w-none">
+                    <h3 class="text-xl font-semibold mb-2">Description</h3>
+                    <p>{{ painting.description }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Artwork Details -->
+                <div class="card bg-base-200 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title">Artwork Details</h3>
+                        <div class="space-y-2">
+                            {% if painting.year %}
+                            <div class="flex justify-between">
+                                <span class="font-semibold">Year:</span>
+                                <span>{{ painting.year }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if painting.medium %}
+                            <div class="flex justify-between">
+                                <span class="font-semibold">Medium:</span>
+                                <span>{{ painting.medium }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if painting.materials %}
+                            <div class="flex justify-between">
+                                <span class="font-semibold">Materials:</span>
+                                <span>{{ painting.materials }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if painting.dimensions %}
+                            <div class="flex justify-between">
+                                <span class="font-semibold">Dimensions:</span>
+                                <span>{{ painting.dimensions }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                {% if painting.categories.all %}
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Categories</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for category in painting.categories.all %}
+                        <a href="{% url 'gallery:collection' %}?category={{ category.slug }}" 
+                           class="badge badge-lg badge-outline">
+                            {{ category.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="flex gap-4">
+                    {% if painting.status == 'available' %}
+                    <button class="btn btn-primary btn-lg flex-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Add to Cart
+                    </button>
+                    <button class="btn btn-outline btn-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Back to Gallery -->
+                <div>
+                    <a href="{% url 'gallery:collection' %}" class="btn btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Back to Gallery
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information Tabs -->
+        {% if painting.provenance or painting.exhibition_history %}
+        <div class="mt-12">
+            <div role="tablist" class="tabs tabs-lifted">
+                {% if painting.provenance %}
+                <input type="radio" name="info_tabs" role="tab" class="tab" aria-label="Provenance" checked />
+                <div role="tabpanel" class="tab-content bg-base-200 border-base-300 rounded-box p-6">
+                    <h3 class="text-xl font-semibold mb-4">Provenance</h3>
+                    <p class="whitespace-pre-line">{{ painting.provenance }}</p>
+                </div>
+                {% endif %}
+
+                {% if painting.exhibition_history %}
+                <input type="radio" name="info_tabs" role="tab" class="tab" aria-label="Exhibition History" />
+                <div role="tabpanel" class="tab-content bg-base-200 border-base-300 rounded-box p-6">
+                    <h3 class="text-xl font-semibold mb-4">Exhibition History</h3>
+                    <p class="whitespace-pre-line">{{ painting.exhibition_history }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+{% endblock %}
+
+{% block extra_body %}
+    <script>
+        function changeImage(imageUrl) {
+            document.getElementById('mainImage').src = imageUrl;
+            
+            // Update active thumbnail border
+            const thumbnails = document.querySelectorAll('[onclick^="changeImage"]');
+            thumbnails.forEach(thumb => {
+                if (thumb.getAttribute('onclick').includes(imageUrl)) {
+                    thumb.classList.add('border-primary');
+                    thumb.classList.remove('border-transparent');
+                } else {
+                    thumb.classList.remove('border-primary');
+                    thumb.classList.add('border-transparent');
+                }
+            });
+        }
+    </script>
+{% endblock %}
