@@ -41,8 +41,13 @@ def painting_detail(request, slug):
             slug=slug,
         )
 
+        # Get the content type ID for Painting model
+        from django.contrib.contenttypes.models import ContentType
+        painting_content_type = ContentType.objects.get_for_model(Painting)
+
         context = {
             'painting': painting,
+            'painting_content_type_id': painting_content_type.id,
         }
 
         return render(request, 'gallery/painting_detail.html', context)

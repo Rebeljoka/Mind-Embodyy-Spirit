@@ -321,3 +321,87 @@ class ProcessedEvent(models.Model):
 
     def __str__(self):
         return f"{self.provider}:{self.event_id}"
+
+
+class Cart(models.Model):
+    """Shopping cart for users to collect items before checkout."""
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="cart"
+    )
+    session_key = models.CharField(
+        max_length=40,
+        null=True,
+        blank=True,
+        help_text="For anonymous users"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(user__isnull=False) |
+                    models.Q(session_key__isnull=False)
+                ),
+                name="cart_user_or_session"
+            )
+        ]
+
+    def __str__(self):
+        if self.user:
+            return f"Cart for {self.user.username}"
+        return f"Cart for session {self.session_key}"
+
+    @property
+    def total_items(self):
+        """Get total number of items in cart."""
+        return sum(item.quantity for item in self.items.all())  # type: ignore
+
+    @property
+    def total_price(self):
+        """Get total price of all items in cart."""
+        return sum(
+            item.total_price for item in self.items.all()  # type: ignore
+        )
+
+
+class CartItem(models.Model):
+    """Individual items within a shopping cart."""
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.CASCADE,
+        related_name="items"
+    )
+
+    # Link to gallery items (paintings)
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE
+    )
+    object_id = models.PositiveIntegerField()
+    product_object = GenericForeignKey("content_type", "object_id")
+
+    # Snapshot fields to prevent breakage if product changes
+    product_title = models.CharField(max_length=255)
+    product_sku = models.CharField(max_length=64, blank=True)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['cart', 'content_type', 'object_id']
+
+    def __str__(self):
+        return f"{self.product_title} x{self.quantity} in {self.cart}"
+
+    @property
+    def total_price(self):
+        """Calculate the total price for this cart item."""
+        return self.unit_price * self.quantity

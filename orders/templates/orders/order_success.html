@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <div class="text-sm breadcrumbs mb-6">
+        <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'orders:cart_page' %}">Cart</a></li>
+            <li><a href="{% url 'orders:checkout' %}">Checkout</a></li>
+            <li>Order Success</li>
+        </ul>
+    </div>
+
+    <div class="max-w-2xl mx-auto text-center">
+        <!-- Success Icon -->
+        <div class="mb-6">
+            <svg class="w-24 h-24 mx-auto text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+
+        <h1 class="text-4xl font-bold mb-4">Order Confirmed!</h1>
+        <p class="text-lg text-base-content/70 mb-8">
+            Thank you for your purchase. Your order has been successfully placed and paid for.
+        </p>
+
+        <!-- Order Details -->
+        <div class="card bg-base-200 shadow-xl mb-8">
+            <div class="card-body">
+                <h3 class="card-title justify-center">Order #{{ order.order_number }}</h3>
+
+                <div class="divider"></div>
+
+                <!-- Order Items -->
+                <div class="space-y-3 mb-4">
+                    {% for item in order.items.all %}
+                    <div class="flex justify-between items-center">
+                        <div class="text-left">
+                            <p class="font-medium">{{ item.product_title }}</p>
+                            {% if item.product_sku %}
+                            <p class="text-sm text-base-content/70">SKU: {{ item.product_sku }}</p>
+                            {% endif %}
+                            <p class="text-sm">Qty: {{ item.quantity }}</p>
+                        </div>
+                        <p class="font-semibold">£{{ item.total_price }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Order Total -->
+                <div class="flex justify-between text-lg font-bold">
+                    <span>Total Paid</span>
+                    <span>£{{ order.total }}</span>
+                </div>
+
+                <!-- Order Date -->
+                <div class="mt-4 text-sm text-base-content/70">
+                    <p>Order Date: {{ order.created_at|date:"F j, Y \a\t g:i A" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping Information -->
+        {% if order.shipping_address %}
+        <div class="card bg-base-200 shadow-xl mb-8">
+            <div class="card-body">
+                <h3 class="card-title justify-center">Shipping Address</h3>
+                <div class="text-left">
+                    <p class="font-medium">{{ order.shipping_address.full_name }}</p>
+                    <p>{{ order.shipping_address.line1 }}</p>
+                    {% if order.shipping_address.line2 %}
+                    <p>{{ order.shipping_address.line2 }}</p>
+                    {% endif %}
+                    <p>{{ order.shipping_address.city }}, {{ order.shipping_address.region }} {{ order.shipping_address.postal_code }}</p>
+                    <p>{{ order.shipping_address.get_country_display }}</p>
+                    {% if order.shipping_address.phone %}
+                    <p>Phone: {{ order.shipping_address.phone }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'index' %}" class="btn btn-primary">
+                Continue Shopping
+            </a>
+            <a href="{% url 'orders:cart_page' %}" class="btn btn-outline">
+                View Cart
+            </a>
+        </div>
+
+        <!-- Email Confirmation Note -->
+        <div class="alert alert-info mt-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <p>A confirmation email has been sent to your email address with order details.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
