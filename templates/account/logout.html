@@ -1,25 +1,51 @@
-{% extends "account/base_manage.html" %}
-{% load allauth i18n %}
-{% block head_title %}
-    {% trans "Sign Out" %}
-{% endblock head_title %}
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign Out" %}{% endblock head_title %}
+
 {% block content %}
-    {% element h1 %}
-        {% trans "Sign Out" %}
-    {% endelement %}
-    {% element p %}
-        {% trans 'Are you sure you want to sign out?' %}
-    {% endelement %}
-    {% url 'account_logout' as action_url %}
-    {% element form method="post" action=action_url no_visible_fields=True %}
-        {% slot body %}
-            {% csrf_token %}
-            {{ redirect_field }}
-        {% endslot %}
-        {% slot actions %}
-            {% element button type="submit" %}
-                {% trans 'Sign Out' %}
-            {% endelement %}
-        {% endslot %}
-    {% endelement %}
+<div class="min-h-screen flex items-center justify-center bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <!-- Header -->
+                <h2 class="card-title text-3xl font-bold text-center justify-center mb-4">
+                    {% trans "Sign Out" %}
+                </h2>
+
+                <!-- Message -->
+                <p class="text-center text-base-content/70 mb-6">
+                    {% trans 'Are you sure you want to sign out?' %}
+                </p>
+
+                <!-- Logout Form -->
+                <form method="post" action="{% url 'account_logout' %}">
+                    {% csrf_token %}
+                    
+                    <!-- Hidden redirect field if it exists -->
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-3 mt-6">
+                        <button type="submit" class="btn btn-error btn-block sm:btn-wide">
+                            {% trans 'Sign Out' %}
+                        </button>
+                        <a href="{% url 'index' %}" class="btn btn-outline btn-block sm:btn-wide">
+                            {% trans 'Cancel' %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Back to Home Link -->
+        <div class="text-center">
+            <a href="{% url 'index' %}" class="link link-hover text-sm">
+                {% trans "Back to Home" %}
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock content %}

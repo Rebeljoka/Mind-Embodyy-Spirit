@@ -253,3 +253,7 @@ if DEBUG:
 ORDERS_JSON_ONLY_VIEWS = [
     "orders-create",
 ]
+
+# Redirect users to the previous page after login if possible,
+# otherwise to home
+LOGIN_REDIRECT_URL = '/'

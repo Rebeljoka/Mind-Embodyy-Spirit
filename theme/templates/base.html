@@ -1,13 +1,11 @@
 {% load static tailwind_tags i18n %}
 <!DOCTYPE html>
-<html lang="en" data-theme="caramellatte">
-    <head>
-
+<html lang="en" data-theme="pastel">
+	<head>
 		<title>{% block head_title %}Const Collection | Art By Cecilia K.{% endblock head_title %}</title>
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-		<title></title>
 		<meta name="description" content="Discover original art by Cecilia Kristoffersson. Explore unique acrylic paintings, vibrant canvases, and creative work from a Swedish-Zimbabwean artist." />
 		<meta name="keywords" content="art, artist, Cecilia K, paintings, Sweden, Zimbabwe, acrylic, canvases, contemporary art, original artwork, art collection" />
 		<meta name="author" content="Cecilia Kristoffersson" />
@@ -30,22 +28,21 @@
 		<!-- Tailwind CSS + Custom CSS -->
 		{% block extra_head %}{% endblock extra_head %} {% tailwind_css %} {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
 		<link rel="preload" as="style" href="{% static 'css/dist/styles.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 
 		<!-- Phosphor Icons -->
 		<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
-        <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+		<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
 
 		<!-- Favicon -->
 		<link rel="icon" type="image/x-icon" href="{% static 'favicon/favicon.ico'  %}" />
-        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}" />
-        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/icon-shortcut.ico' %}" />
-
+		<link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}" />
+		<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/icon-shortcut.ico' %}" />
 	</head>
 
-	<body class="bg-gray-50 text-black font-serif leading-normal tracking-normal h-16">
+	<body class="font-serif leading-normal tracking-normal h-16">
 		<!-- Navbar -->
 		<nav class="navbar justify-between bg-base-300">
 			<!-- Logo -->
@@ -55,93 +52,108 @@
 			</a>
 
 			<!-- Menu for mobile -->
-			<div class="dropdown dropdown-end sm:hidden">
+			<div class="dropdown dropdown-end lg:hidden">
 				<button class="btn btn-ghost">
 					<i class="fa-solid fa-bars text-lg"></i>
 				</button>
 
 				<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
 					<div class="flex justify-center gap-2">
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black;">
+						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black">
 							<i class="ph ph-envelope text-white"></i>
 						</a>
 
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue;">
+						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue">
 							<i class="ph ph-facebook-logo text-white"></i>
 						</a>
 
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none;">
+						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none">
 							<i class="ph ph-instagram-logo text-white"></i>
 						</a>
 
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red;">
+						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red">
 							<i class="ph ph-youtube-logo text-white"></i>
 						</a>
 					</div>
 
-					<li><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
-					<li><a href="{% url 'gallery:collection' %}">{% trans "Gallery" %}</a></li>
-					<li><a>{% trans "About" %}</a></li>
-					<li><a>{% trans "Contact" %}</a></li>
-					
+					<li>
+						<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
+					</li>
+					<li>
+						<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
+					</li>
+					<li>
+						<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
+					</li>
+					<li>
+						<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
+					</li>
+
 					{% if user.is_authenticated %}
-						<div class="divider"></div>
-						<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
-						<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
-						<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+					<div class="divider"></div>
+					<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+					<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
+					<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
 					{% else %}
-						<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
-						<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
+					<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
+					<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
 					{% endif %}
 				</ul>
 			</div>
 
 			<!-- Menu for desktop -->
-			<ul class="sm:menu-horizontal sm:flex gap-2">
-				<li><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
-				<li><a href="{% url 'gallery:collection' %}">{% trans "Gallery" %}</a></li>
-				<li><a>{% trans "About" %}</a></li>
-				<li><a>{% trans "Contact" %}</a></li>
-				
+			<ul class="hidden lg:flex menu-horizontal gap-2">
+				<li>
+					<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
+				</li>
+				<li>
+					<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
+				</li>
+				<li>
+					<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
+				</li>
+				<li>
+					<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
+				</li>
+
 				{% if user.is_authenticated %}
-					<div class="dropdown dropdown-end">
-						<label tabindex="0" class="btn btn-sm btn-ghost">
-							<i class="ph ph-user-circle text-xl"></i>
-							{{ user.username }}
-						</label>
-						<ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-52">
-							<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
-							<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
-							<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
-						</ul>
-					</div>
+				<div class="dropdown dropdown-end">
+					<label tabindex="0" class="btn btn-sm btn-ghost">
+						<i class="ph ph-user-circle text-xl"></i>
+						{{ user.username }}
+					</label>
+					<ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+						<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+						<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
+						<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+					</ul>
+				</div>
 				{% else %}
-					<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
-					<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
+				<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
+				<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
 				{% endif %}
 			</ul>
 
-			<div class="hidden sm:flex gap-2">
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black;">
+			<div class="hidden lg:flex gap-2">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black">
 					<i class="ph ph-envelope text-white"></i>
 				</a>
 
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue;">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue">
 					<i class="ph ph-facebook-logo text-white"></i>
 				</a>
 
-                <a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none;">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none">
 					<i class="ph ph-instagram-logo text-white"></i>
 				</a>
 
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red;">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red">
 					<i class="ph ph-youtube-logo text-white"></i>
 				</a>
 			</div>
 		</nav>
 
-		{# Messages notification #}
-		{% if messages %}
+		{# Messages notification #} {% if messages %}
 		<div class="container mx-auto px-4 py-2">
 			{% for message in messages %}
 			<div class="alert alert-{{ message.tags|default:'info' }} shadow-lg mb-2">
@@ -153,10 +165,7 @@
 		</div>
 		{% endif %}
 
-		<main class="w-full">
-			{% block content %}
-			{% endblock content %}
-		</main>
+		<main class="w-full">{% block content %} {% endblock content %}</main>
 
 		{% block extra_body %}{% endblock extra_body %}
 	</body>

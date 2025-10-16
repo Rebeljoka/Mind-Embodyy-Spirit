@@ -1,29 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
-    --Headers: 'Poppins', sans-serif;
-    --UI: 'Raleway', monospace;
-    --Body: 'Playfair Display SC', serif;
-
-    --Background: #F5EFE6; /* Body background for a warm, gentle base */
-    --Section-Bg: #BFA9D4; /* Section backgrounds, subtle UI elements */
-    --Headings: #A6493F; /* Headings, highlights, call-to-action */
-    --Body-Text: #647687; /* Body text, secondary UI text */
-    --Buttons: #D6A944; /* Buttons, hover states, key highlights */
+    --Headers: 'Playfair Display SC', serif;
+    --UI: 'Poppins', sans-serif;
+    --Body: 'Raleway', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--Headers);
-    color: var(--Headings);
 }
 
 button, .btn {
-    background-color: var(--Buttons);
-    color: var(--Background);
     font-family: var(--UI);
 }
 
 p, span, li, a, body {
     font-family: var(--Body);
-    color: var(--Body-Text);
 }
