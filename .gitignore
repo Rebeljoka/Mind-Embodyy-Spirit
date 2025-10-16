@@ -4,6 +4,11 @@ __pycache__/
 *$py.class
 *.pyc
 
+# Environment files
+env.py
+.env
+.env.local
+.env.*.local
 
 # C extensions
 *.so
