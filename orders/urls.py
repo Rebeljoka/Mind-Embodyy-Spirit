@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
 
 from . import api
@@ -17,6 +18,11 @@ urlpatterns = [
         "refund/<int:payment_id>/",
         RefundPaymentView.as_view(),
         name="orders-refund",
+    ),
+    path(
+        "payment-example/",
+        TemplateView.as_view(template_name="orders/payment_example.html"),
+        name="orders-payment-example"
     ),
     path(
         "schema/",

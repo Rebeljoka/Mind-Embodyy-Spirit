@@ -15,6 +15,7 @@ import os
 import shutil
 import dj_database_url
 import cloudinary
+import stripe  # noqa: F401
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -59,7 +60,6 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'rest_framework',
     # Local apps
-    'accounts',
     'gallery',
     'newsletter',
     'orders',
@@ -102,6 +102,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.debug',
+                'orders.context_processors.stripe_keys',
             ],
         },
     },
@@ -189,6 +190,12 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+# Stripe settings
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
+# Optional: STRIPE_WEBHOOK_SECRET for webhook verification
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
 
 # Internationalization

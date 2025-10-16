@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Order & Payment" %}{% endblock head_title %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">{% trans "Place Order & Pay" %}</h1>
+
+        <!-- Order Form -->
+        <div class="card bg-base-100 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title">{% trans "Order Details" %}</h2>
+                <form id="orderForm" class="space-y-4">
+                    {% csrf_token %}
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{% trans "Item" %}</span>
+                        </label>
+                        <input type="text" id="itemTitle" value="Sample Painting"
+                               class="input input-bordered" required>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{% trans "Price" %}</span>
+                        </label>
+                        <input type="number" id="itemPrice" value="100.00" step="0.01"
+                               class="input input-bordered" required>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{% trans "Quantity" %}</span>
+                        </label>
+                        <input type="number" id="quantity" value="1" min="1"
+                               class="input input-bordered" required>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{% trans "Email" %}</span>
+                        </label>
+                        <input type="email" id="guestEmail" value="test@example.com"
+                               class="input input-bordered" required>
+                    </div>
+
+                    <div class="form-control mt-6">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            {% trans "Create Order" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment Section (shown after order creation) -->
+        <div id="paymentSection" class="card bg-base-100 shadow-xl" style="display: none;">
+            <div class="card-body">
+                <h2 class="card-title">{% trans "Payment" %}</h2>
+                <div id="card-element" class="border border-base-300 rounded-lg p-4 mb-4">
+                    <!-- Stripe Elements will be inserted here -->
+                </div>
+                <button id="payButton" class="btn btn-success btn-block">
+                    {% trans "Pay Now" %}
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="statusMessage" class="alert mt-4" style="display: none;"></div>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Initialize Stripe with your publishable key
+    const stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
+    let orderId = null;
+    let clientSecret = null;
+    let cardElement = null;
+
+    // Form submission - Create Order
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '{% trans "Creating Order..." %}';
+
+        const orderData = {
+            items: [{
+                product_title: document.getElementById('itemTitle').value,
+                unit_price: parseFloat(document.getElementById('itemPrice').value),
+                quantity: parseInt(document.getElementById('quantity').value)
+            }],
+            guest_email: document.getElementById('guestEmail').value,
+            // Add shipping/billing addresses if needed
+        };
+
+        try {
+            const response = await fetch('/orders/create/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify(orderData)
+            });
+
+            if (response.ok) {
+                const order = await response.json();
+                orderId = order.id;
+                showStatus('{% trans "Order created successfully!" %}', 'alert-success');
+
+                // Now start payment
+                await startPayment(orderId);
+            } else {
+                const error = await response.json();
+                showStatus('{% trans "Order creation failed:" %} ' + JSON.stringify(error), 'alert-error');
+            }
+        } catch (error) {
+            showStatus('{% trans "Error:" %} ' + error.message, 'alert-error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '{% trans "Create Order" %}';
+        }
+    });
+
+    // Start Payment - Get client_secret
+    async function startPayment(orderId) {
+        try {
+            const response = await fetch(`/orders/start-payment/${orderId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                }
+            });
+
+            if (response.ok) {
+                const paymentData = await response.json();
+                clientSecret = paymentData.client_secret;
+
+                // Show payment form
+                setupPaymentForm();
+            } else {
+                showStatus('{% trans "Payment initialization failed" %}', 'alert-error');
+            }
+        } catch (error) {
+            showStatus('{% trans "Error:" %} ' + error.message, 'alert-error');
+        }
+    }
+
+    // Setup Stripe Elements
+    function setupPaymentForm() {
+        document.getElementById('paymentSection').style.display = 'block';
+
+        const elements = stripe.elements();
+        cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#32325d',
+                }
+            }
+        });
+        cardElement.mount('#card-element');
+    }
+
+    // Handle payment
+    document.getElementById('payButton').addEventListener('click', async () => {
+        if (!clientSecret) return;
+
+        const payBtn = document.getElementById('payButton');
+        payBtn.disabled = true;
+        payBtn.textContent = '{% trans "Processing..." %}';
+
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardElement,
+            }
+        });
+
+        if (error) {
+            showStatus('{% trans "Payment failed:" %} ' + error.message, 'alert-error');
+            payBtn.disabled = false;
+            payBtn.textContent = '{% trans "Pay Now" %}';
+        } else if (paymentIntent.status === 'succeeded') {
+            showStatus('{% trans "Payment successful!" %}', 'alert-success');
+            // Redirect to success page or update UI
+            setTimeout(() => {
+                window.location.href = '{% url "index" %}';
+            }, 2000);
+        }
+    });
+
+    // Helper function to get CSRF token
+    function getCsrfToken() {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        return csrfToken ? csrfToken.value : '';
+    }
+
+    // Helper function to show status messages
+    function showStatus(message, alertClass) {
+        const statusDiv = document.getElementById('statusMessage');
+        statusDiv.textContent = message;
+        statusDiv.className = `alert ${alertClass} mt-4`;
+        statusDiv.style.display = 'block';
+    }
+</script>
+{% endblock content %}
