@@ -35,6 +35,48 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
+# Security settings
+if not DEBUG:
+    # Production security settings
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+else:
+    # Development settings (less secure, but convenient for development)
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+
+# Content Security Policy settings for Stripe
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': ("'self'", "https:"),
+        'script-src': (
+            "'self'",
+            "'unsafe-inline'",
+            "https://js.stripe.com",
+            "https://m.stripe.network",
+        ),
+        'style-src': (
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdn.jsdelivr.net",
+            "https://fonts.googleapis.com",
+        ),
+        'img-src': ("'self'", "data:", "https://res.cloudinary.com", "*"),
+        'connect-src': ("'self'", "https://api.stripe.com"),
+        'frame-src': ("'self'", "https://js.stripe.com",
+                      "https://m.stripe.network"),
+        'font-src': ("'self'", "https://fonts.gstatic.com",
+                     "https://cdn.jsdelivr.net"),
+    }
+}
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -52,6 +94,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'csp',
     'allauth',
     'allauth.account',
     'tailwind',
@@ -72,6 +115,7 @@ if DEBUG:
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'csp.middleware.CSPMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -115,24 +159,38 @@ CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
 # Configure Cloudinary-backed storage when a CLOUDINARY_URL is provided.
 if CLOUDINARY_URL:
-    # Use django-cloudinary-storage's storage backend for media files
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': None,  # parsed from CLOUDINARY_URL by the cloudinary lib
-        'API_KEY': None,
-        'API_SECRET': None,
-    }
-else:
-    # Fail fast in production if Cloudinary is required. In DEBUG/dev we allow
-    # missing CLOUDINARY_URL so local media can be used.
-    if not DEBUG:
-        raise RuntimeError(
-            "CLOUDINARY_URL is not set; required in production."
-        )
+    # Parse the CLOUDINARY_URL to extract components
+    import re
+    match = re.match(r'cloudinary://(\d+):([^@]+)@([^/]+)', CLOUDINARY_URL)
+    if match:
+        api_key, api_secret, cloud_name = match.groups()
+        CLOUDINARY_STORAGE = {
+            'CLOUD_NAME': cloud_name,
+            'API_KEY': api_key,
+            'API_SECRET': api_secret,
+        }
+        # Use django-cloudinary-storage's storage backend
+        storage_class = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+        DEFAULT_FILE_STORAGE = storage_class
 
-cloudinary.config(
-    secure=True  # 👈 Forces HTTPS for all Cloudinary URLs
-)
+        # Configure the cloudinary library
+        cloudinary.config(
+            cloud_name=cloud_name,
+            api_key=api_key,
+            api_secret=api_secret,
+            secure=True  # Forces HTTPS for all Cloudinary URLs
+        )
+    else:
+        # Fallback if URL parsing fails
+        CLOUDINARY_STORAGE = {
+            'CLOUD_NAME': None,
+            'API_KEY': None,
+            'API_SECRET': None,
+        }
+        if not DEBUG:
+            raise RuntimeError(
+                "CLOUDINARY_URL is malformed; required in production."
+            )
 
 CLOUDINARY_DEFAULT_TRANSFORMATIONS = {
     'fetch_format': 'auto',

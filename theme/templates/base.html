@@ -83,6 +83,12 @@
 						<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
 					</li>
 					<li>
+						<a href="{% url 'orders:cart_page' %}" class="{% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}">
+							<i class="ph ph-shopping-cart text-lg"></i>
+							{% trans "Cart" %}
+						</a>
+					</li>
+					<li>
 						<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
 					</li>
 					<li>
@@ -108,6 +114,12 @@
 				</li>
 				<li>
 					<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
+				</li>
+				<li>
+					<a href="{% url 'orders:cart_page' %}" class="{% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}">
+						<i class="ph ph-shopping-cart text-lg"></i>
+						{% trans "Cart" %}
+					</a>
 				</li>
 				<li>
 					<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django.contrib import messages
 from . import models
 
 
@@ -13,13 +13,38 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ("order_number", "guest_email", "user__email")
     actions = ["mark_shipped", "mark_refunded"]
 
+    @admin.action(description="Mark selected orders as shipped")
     def mark_shipped(self, request, queryset):
         updated = queryset.update(status=models.Order.STATUS_SHIPPED)
-        from django.contrib import messages
+
         messages.success(request, f"Marked {updated} orders as shipped")
 
-    mark_shipped.short_description = "Mark selected orders as shipped"
+    def issue_refunds_and_mark_refunded(self, request, queryset):
+        """Issue refunds for payments on selected orders and mark refunded."""
 
+        success = 0
+        errors = []
+        for order in queryset:
+            # related_name on PaymentRecord is 'payments'
+            payments = order.payments.all()
+            order_refunded = True
+            for p in payments:
+                try:
+                    p.issue_refund()
+                except Exception as exc:
+                    order_refunded = False
+                    errors.append(f"Order {order.pk}: {exc}")
+            if order_refunded:
+                order.status = models.Order.STATUS_REFUNDED
+                order.save()
+                success += 1
+
+        if success:
+            messages.success(request, f"Marked {success} orders as refunded")
+        if errors:
+            messages.error(request, "Errors: " + "; ".join(errors))
+
+    @admin.action(description="Issue refunds and mark orders refunded")
     def mark_refunded(self, request, queryset):
         """Issue refunds for payments on selected orders and mark refunded."""
         from django.contrib import messages
@@ -63,6 +88,7 @@ class PaymentRecordAdmin(admin.ModelAdmin):
     list_filter = ("provider", "status")
 
 
+@admin.action(description="Issue refund for selected payments")
 def issue_refund(modeladmin, request, queryset):
     """Admin action to issue refunds for selected payments."""
     from django.contrib import messages
@@ -87,9 +113,6 @@ def issue_refund(modeladmin, request, queryset):
         messages.success(request, f"Issued refunds for {success} payments")
     if errors:
         messages.error(request, "Errors: " + "; ".join(errors))
-
-
-issue_refund.short_description = "Issue refund for selected payments"
 
 
 PaymentRecordAdmin.actions = [issue_refund]

@@ -17,7 +17,7 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = (
-            "address_type", "full_name", "line1", "line2",
+            "full_name", "line1", "line2",
             "city", "region", "postal_code", "country", "phone"
         )
 
@@ -64,8 +64,10 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         else:
             # Consider authenticated if user is present and has a PK or
             # .is_authenticated is True
-            is_auth = (bool(user and getattr(user, "pk", None) is not None) or
-                       bool(getattr(user, "is_authenticated", False)))
+            is_auth = (
+                bool(user and getattr(user, "pk", None) is not None) or
+                bool(getattr(user, "is_authenticated", False))
+            )
 
         if not is_auth and not attrs.get("guest_email"):
             raise serializers.ValidationError(
