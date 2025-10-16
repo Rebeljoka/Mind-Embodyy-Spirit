@@ -47,7 +47,7 @@
 		<nav class="navbar justify-between bg-base-300 relative">
 			<!-- Logo -->
 			<div class="inline-flex">
-				<a href="{% url 'index' %}" class="btn btn-ghost text-lg bg-white">
+				<a href="{% url 'core:index' %}" class="btn btn-ghost text-lg bg-white">
 					<img alt="Logo" src="{% static 'images/logo.webp' %}" class="w-8" />
 					Const Collection
 				</a>
@@ -106,7 +106,7 @@
 						</div>
 
 						<li>
-							<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
+							<a href="{% url 'core:index' %}" class="{% if request.resolver_match.url_name == 'core:index' %}active{% endif %}"> {% trans "Home" %} </a>
 						</li>
 						<li>
 							<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
@@ -134,7 +134,7 @@
 			<!-- Menu for desktop -->
 			<ul class="hidden lg:flex menu-horizontal gap-2 absolute left-1/2 transform -translate-x-1/2">
 				<li>
-					<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
+					<a href="{% url 'core:index' %}" class="{% if request.resolver_match.url_name == 'core:index' %}active{% endif %}"> {% trans "Home" %} </a>
 				</li>
 				<li>
 					<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
