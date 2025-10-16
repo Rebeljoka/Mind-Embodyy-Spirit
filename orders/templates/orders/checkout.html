@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block head_title %}Checkout - Mind-Embodyy-Spirit{% endblock %}
+{% block head_title %}Checkout - Const Collection{% endblock %}
 
 {% block extra_head %}
 <meta name="stripe-publishable-key" content="{{ STRIPE_PUBLISHABLE_KEY }}">
@@ -278,15 +278,15 @@
                         <!-- Cart Items -->
                         <div class="space-y-3 mb-4">
                             {% for item in cart_items %}
-                            <div class="flex justify-between items-center">
+                            <div class="flex justify-between items-center" data-cart-item>
                                 <div class="flex-1">
-                                    <p class="font-medium">{{ item.product_title }}</p>
+                                    <p class="font-medium" data-product-title>{{ item.product_title }}</p>
                                     {% if item.product_sku %}
-                                    <p class="text-sm text-base-content/70">SKU: {{ item.product_sku }}</p>
+                                    <p class="text-sm text-base-content/70" data-product-sku>SKU: {{ item.product_sku }}</p>
                                     {% endif %}
-                                    <p class="text-sm">Qty: {{ item.quantity }}</p>
+                                    <p class="text-sm" data-quantity>Qty: {{ item.quantity }}</p>
                                 </div>
-                                <p class="font-semibold">£{{ item.total_price }}</p>
+                                <p class="font-semibold" data-price data-unit-price="{{ item.unit_price }}">£{{ item.total_price }}</p>
                             </div>
                             {% endfor %}
                         </div>
