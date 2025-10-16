@@ -31,6 +31,31 @@ def gallery_collection(request):
     return render(request, 'gallery/collection.html', context)
 
 
+def gallery_paintings_ajax(request):
+    """AJAX endpoint that returns just the paintings grid HTML."""
+    paintings = (
+        Painting.objects.filter(is_published=True)
+        .prefetch_related('images', 'categories', 'artist')
+        .order_by('-date_created')
+    )
+
+    # Get filter parameters
+    category_slug = request.GET.get('category')
+    status_filter = request.GET.get('status')
+
+    if category_slug:
+        paintings = paintings.filter(categories__slug=category_slug)
+
+    if status_filter:
+        paintings = paintings.filter(status=status_filter)
+
+    context = {
+        'paintings': paintings,
+    }
+
+    return render(request, 'gallery/_paintings_grid.html', context)
+
+
 def painting_detail(request, slug):
     """Display a single painting with all its images."""
     try:

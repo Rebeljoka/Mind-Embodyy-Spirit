@@ -157,40 +157,50 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Cloudinary configuration (read from environment)
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
+# Default file storage - will be overridden if Cloudinary is configured
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
 # Configure Cloudinary-backed storage when a CLOUDINARY_URL is provided.
 if CLOUDINARY_URL:
-    # Parse the CLOUDINARY_URL to extract components
-    import re
-    match = re.match(r'cloudinary://(\d+):([^@]+)@([^/]+)', CLOUDINARY_URL)
-    if match:
-        api_key, api_secret, cloud_name = match.groups()
-        CLOUDINARY_STORAGE = {
-            'CLOUD_NAME': cloud_name,
-            'API_KEY': api_key,
-            'API_SECRET': api_secret,
-        }
-        # Use django-cloudinary-storage's storage backend
-        storage_class = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-        DEFAULT_FILE_STORAGE = storage_class
+    try:
+        # Use cloudinary library to parse the URL
+        from urllib.parse import urlparse
+        parsed = urlparse(CLOUDINARY_URL)
+        if parsed.scheme == 'cloudinary':
+            # Extract components
+            # from cloudinary://api_key:api_secret@cloud_name
+            credentials, cloud_name = parsed.netloc.split('@')
+            api_key, api_secret = credentials.split(':')
 
-        # Configure the cloudinary library
-        cloudinary.config(
-            cloud_name=cloud_name,
-            api_key=api_key,
-            api_secret=api_secret,
-            secure=True  # Forces HTTPS for all Cloudinary URLs
-        )
-    else:
-        # Fallback if URL parsing fails
-        CLOUDINARY_STORAGE = {
-            'CLOUD_NAME': None,
-            'API_KEY': None,
-            'API_SECRET': None,
-        }
-        if not DEBUG:
-            raise RuntimeError(
-                "CLOUDINARY_URL is malformed; required in production."
+            CLOUDINARY_STORAGE = {
+                'CLOUD_NAME': cloud_name,
+                'API_KEY': api_key,
+                'API_SECRET': api_secret,
+            }
+            # Use django-cloudinary-storage's storage backend
+            storage_class = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+            DEFAULT_FILE_STORAGE = storage_class
+
+            # Configure the cloudinary library
+            cloudinary.config(
+                cloud_name=cloud_name,
+                api_key=api_key,
+                api_secret=api_secret,
+                secure=True  # Forces HTTPS for all Cloudinary URLs
             )
+        else:
+            raise ValueError("Invalid CLOUDINARY_URL scheme")
+    except Exception as e:
+        if not DEBUG:
+            raise RuntimeError(f"CLOUDINARY_URL configuration failed: {e}")
+        else:
+            # In development, just log the error and use default storage
+            import logging
+            logging.warning(f"Cloudinary configuration failed: {e}. "
+                            "Using default file storage.")
+else:
+    if not DEBUG:
+        raise RuntimeError("CLOUDINARY_URL is required in production.")
 
 CLOUDINARY_DEFAULT_TRANSFORMATIONS = {
     'fetch_format': 'auto',
@@ -290,6 +300,9 @@ else:
 
 # WhiteNoise configuration
 STORAGES = {
+    'default': {
+        'BACKEND': DEFAULT_FILE_STORAGE,
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },

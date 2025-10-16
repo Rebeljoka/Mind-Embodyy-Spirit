@@ -104,7 +104,7 @@ def payment_complete_view(request):
 
     # Get payment intent from URL parameters
     payment_intent_id = request.GET.get('payment_intent')
-    client_secret = request.GET.get('payment_intent_client_secret')
+    client_secret = request.GET.get('payment_intent_client_secret')  # noqa: F841
 
     if not payment_intent_id:
         messages.error(request, 'Payment information missing.')

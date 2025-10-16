@@ -1,0 +1,77 @@
+{% if paintings %}
+<div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for painting in paintings %}
+    <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+        <figure class="relative aspect-square overflow-hidden">
+            {% if painting.cover_image %}
+                <img
+                    src="{{ painting.cover_image.url }}"
+                    alt="{{ painting.title }}"
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                >
+            {% elif painting.images.first %}
+                <img
+                    src="{{ painting.images.first.image.url }}"
+                    alt="{{ painting.images.first.alt_text }}"
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                >
+            {% else %}
+                <div class="w-full h-full bg-base-300 flex items-center justify-center">
+                    <span class="text-base-content/50">No Image</span>
+                </div>
+            {% endif %}
+
+            <!-- Status Badge -->
+            <div class="absolute top-4 right-4">
+                {% if painting.status == 'available' %}
+                <span class="badge badge-success badge-lg">Available</span>
+                {% elif painting.status == 'sold' %}
+                <span class="badge badge-error badge-lg">Sold</span>
+                {% elif painting.status == 'reserved' %}
+                <span class="badge badge-warning badge-lg">Reserved</span>
+                {% endif %}
+            </div>
+        </figure>
+
+        <div class="card-body">
+            <h2 class="card-title">
+                {{ painting.title }}
+                {% if painting.year %}
+                <span class="text-sm font-normal text-base-content/70">({{ painting.year }})</span>
+                {% endif %}
+            </h2>
+
+            {% if painting.artist %}
+            <p class="text-sm text-base-content/70">by {{ painting.artist.name }}</p>
+            {% endif %}
+
+            {% if painting.description %}
+            <p class="text-sm line-clamp-2">{{ painting.description|truncatewords:20 }}</p>
+            {% endif %}
+
+            <div class="flex flex-wrap gap-2 my-2">
+                {% if painting.medium %}
+                <span class="badge badge-outline">{{ painting.medium }}</span>
+                {% endif %}
+                {% if painting.dimensions %}
+                <span class="badge badge-outline">{{ painting.dimensions }}</span>
+                {% endif %}
+            </div>
+
+            <div class="card-actions justify-between items-center mt-4">
+                <div class="text-2xl font-bold text-primary">
+                    £{{ painting.price }}
+                </div>
+                <a href="{% url 'gallery:painting_detail' painting.slug %}" class="btn btn-primary">
+                    View Details
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div id="gallery-grid" class="text-center py-16">
+    <p class="text-xl text-base-content/70">No paintings found matching your criteria.</p>
+</div>
+{% endif %}

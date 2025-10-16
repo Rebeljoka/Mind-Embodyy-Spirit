@@ -44,71 +44,95 @@
 
 	<body class="font-serif leading-normal tracking-normal h-16">
 		<!-- Navbar -->
-		<nav class="navbar justify-between bg-base-300">
+		<nav class="navbar justify-between bg-base-300 relative">
 			<!-- Logo -->
-			<a href="{% url 'index' %}" class="btn btn-ghost text-lg">
-				<img alt="Logo" src="{% static 'images/logo.webp' %}" class="w-4" />
-				Const Collection
-			</a>
-
-			<!-- Menu for mobile -->
-			<div class="dropdown dropdown-end lg:hidden">
-				<button class="btn btn-ghost">
-					<i class="fa-solid fa-bars text-lg"></i>
-				</button>
-
-				<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
-					<div class="flex justify-center gap-2">
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black">
-							<i class="ph ph-envelope text-white"></i>
-						</a>
-
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue">
-							<i class="ph ph-facebook-logo text-white"></i>
-						</a>
-
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none">
-							<i class="ph ph-instagram-logo text-white"></i>
-						</a>
-
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red">
-							<i class="ph ph-youtube-logo text-white"></i>
-						</a>
-					</div>
-
-					<li>
-						<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
-					</li>
-					<li>
-						<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
-					</li>
-					<li>
-						<a href="{% url 'orders:cart_page' %}" class="{% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}">
-							<i class="ph ph-shopping-cart text-lg"></i>
-							{% trans "Cart" %}
-						</a>
-					</li>
-					<li>
-						<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
-					</li>
-					<li>
-						<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
-					</li>
-
+			<div class="inline-flex">
+				<a href="{% url 'index' %}" class="btn btn-ghost text-lg bg-white">
+					<img alt="Logo" src="{% static 'images/logo.webp' %}" class="w-8" />
+					Const Collection
+				</a>
+				<ul class="hidden lg:flex menu-horizontal">
 					{% if user.is_authenticated %}
-					<div class="divider"></div>
-					<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
-					<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
-					<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
-					{% else %}
-					<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
-					<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
-					{% endif %}
+				<div class="dropdown dropdown-end">
+					<label tabindex="0" class="btn btn-ghost">
+						<i class="ph ph-user-circle text-xl"></i>
+						{{ user.username }}
+					</label>
+					<ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+						<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+						<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
+						<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+					</ul>
+				</div>
+				{% else %}
+				<a href="{% url 'account_login' %}" class="btn btn-primary">{% trans "Log in" %}</a>
+				<a href="{% url 'account_signup' %}" class="btn btn-outline">{% trans "Sign Up" %}</a>
+				{% endif %}
 				</ul>
 			</div>
 
+			<!-- Menu for mobile -->
+			<div class="dropdown dropdown-end lg:hidden">
+				<button class="btn btn-ghost lg:hidden">
+					<a href="{% url 'orders:cart_page' %}" class="{% if request.resolver_match.url_name == 'cart_page' %}active{% endif %} ph ph-shopping-cart text-lg"> </a>
+				</button>
+
+				<div class="inline-flex">
+					<span class="ph ph-line-vertical h-full-auto"></span>
+				</div>
+
+				<div class="dropdown dropdown-end lg:hidden">
+					<button class="btn btn-ghost">
+						{% trans "Menu" %}
+						<i class="ph ph-dots-three-outline-vertical text-lg"></i>
+					</button>
+					<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
+						<div class="flex justify-center gap-2">
+							<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black" href="mailto:cecilia.kristoffersson71@gmail.com" noopener noreferrer target="_blank">
+								<i class="ph ph-envelope text-white"></i>
+							</a>
+
+							<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue" href="https://www.facebook.com/61559467855096/" noopener noreferrer target="_blank">
+								<i class="ph ph-facebook-logo text-white"></i>
+							</a>
+
+							<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none" href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw==" noopener noreferrer target="_blank">
+								<i class="ph ph-instagram-logo text-white"></i>
+							</a>
+
+							<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red" href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv" noopener noreferrer target="_blank">
+								<i class="ph ph-youtube-logo text-white"></i>
+							</a>
+						</div>
+
+						<li>
+							<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
+						</li>
+						<li>
+							<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
+						</li>
+						<li>
+							<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
+						</li>
+						<li>
+							<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
+						</li>
+
+						{% if user.is_authenticated %}
+						<div class="divider"></div>
+						<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+						<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
+						<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+						{% else %}
+						<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
+						<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+
 			<!-- Menu for desktop -->
-			<ul class="hidden lg:flex menu-horizontal gap-2">
+			<ul class="hidden lg:flex menu-horizontal gap-2 absolute left-1/2 transform -translate-x-1/2">
 				<li>
 					<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
 				</li>
@@ -127,39 +151,22 @@
 				<li>
 					<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
 				</li>
-
-				{% if user.is_authenticated %}
-				<div class="dropdown dropdown-end">
-					<label tabindex="0" class="btn btn-sm btn-ghost">
-						<i class="ph ph-user-circle text-xl"></i>
-						{{ user.username }}
-					</label>
-					<ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-52">
-						<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
-						<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
-						<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
-					</ul>
-				</div>
-				{% else %}
-				<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
-				<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
-				{% endif %}
 			</ul>
 
 			<div class="hidden lg:flex gap-2">
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black" href="mailto:cecilia.kristoffersson71@gmail.com" noopener noreferrer target="_blank">
 					<i class="ph ph-envelope text-white"></i>
 				</a>
 
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue" href="https://www.facebook.com/61559467855096/" noopener noreferrer target="_blank">
 					<i class="ph ph-facebook-logo text-white"></i>
 				</a>
 
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none" href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw==" noopener noreferrer target="_blank">
 					<i class="ph ph-instagram-logo text-white"></i>
 				</a>
 
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red" href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv" noopener noreferrer target="_blank">
 					<i class="ph ph-youtube-logo text-white"></i>
 				</a>
 			</div>
