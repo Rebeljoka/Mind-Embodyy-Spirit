@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load static tailwind_tags i18n %}
 <!DOCTYPE html>
 <html lang="en" data-theme="pastel">
 	<head>
@@ -26,7 +26,7 @@
 		<meta name="twitter:card" content="summary_large_image" />
 
 		<!-- Tailwind CSS + Custom CSS -->
-		{% block extra_head %}{% endblock extra_head %} {# {% tailwind_css %} #} {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
+		{% block extra_head %}{% endblock extra_head %} {% tailwind_css %} {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
 		<link rel="preload" as="style" href="{% static 'css/dist/styles.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 
