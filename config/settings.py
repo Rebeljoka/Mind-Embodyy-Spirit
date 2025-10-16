@@ -122,8 +122,6 @@ INSTALLED_APPS = [
     'csp',
     'allauth',
     'allauth.account',
-    'tailwind',
-    'theme',
     'cloudinary',
     'cloudinary_storage',
     'rest_framework',
@@ -132,11 +130,15 @@ INSTALLED_APPS = [
     'newsletter',
     'orders',
     'core',
+    'theme',
 ]
 
 if DEBUG:
-    # Add django_browser_reload only in DEBUG mode
-    INSTALLED_APPS += ['django_browser_reload']
+    # Add development-only apps
+    INSTALLED_APPS += [
+        'tailwind',
+        'django_browser_reload',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -328,6 +330,40 @@ if DEBUG:
 ORDERS_JSON_ONLY_VIEWS = [
     "orders-create",
 ]
+
+# Logging configuration - show errors in production
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
 
 # Redirect users to the previous page after login if possible,
 # otherwise to home
