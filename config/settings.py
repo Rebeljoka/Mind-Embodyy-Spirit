@@ -296,15 +296,18 @@ STORAGES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Only run npm check and error in local development (when DEBUG is True)
+# Only run npm check and error in local development (when DEBUG is True)
 if DEBUG:
     _npm_path = shutil.which('npm') or shutil.which('npm.cmd')
     NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
     if not NPM_BIN_PATH:
-        raise RuntimeError(
-            "NPM executable not found on PATH (checked 'npm' and 'npm.cmd')"
-            " and NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
-            "NPM_BIN_PATH to the path of the npm executable."
-        )
+        print("Warning: NPM executable not found on PATH. Tailwind and static asset building may not work locally.")
+        # Optionally, you can raise an error here if you want to enforce npm locally
+        # raise RuntimeError(
+        #     "NPM executable not found on PATH (checked 'npm' and 'npm.cmd')"
+        #     " and NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
+        #     "NPM_BIN_PATH to the path of the npm executable."
+        # )
 
 
 # Views (route names) that the orders JSON-only middleware should enforce.
