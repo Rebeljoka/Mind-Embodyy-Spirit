@@ -266,29 +266,41 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Static files directories to collect from
 if DEBUG:
     # Development settings
     STATICFILES_DIRS = [BASE_DIR / 'static']
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
     TAILWIND_APP_NAME = 'theme'
     NPM_BIN_PATH = 'npm.cmd'
 else:
-    # Production settings
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
-    STATICFILES_DIRS = [
-        BASE_DIR / 'theme' / 'static',
-        BASE_DIR / 'static',
-    ]
+    # Production settings - only include directories that exist and have files
+    STATICFILES_DIRS = []
+    if (BASE_DIR / 'theme' / 'static').exists():
+        STATICFILES_DIRS.append(BASE_DIR / 'theme' / 'static')
+    if (BASE_DIR / 'static').exists():
+        STATICFILES_DIRS.append(BASE_DIR / 'static')
 
-# WhiteNoise configuration
+# WhiteNoise configuration for serving static files in production
 STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# WhiteNoise settings
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_ALLOW_ALL_ORIGINS = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
