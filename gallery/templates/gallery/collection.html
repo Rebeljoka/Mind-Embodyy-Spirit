@@ -43,7 +43,7 @@
 
         <!-- Gallery Grid -->
         {% if paintings %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for painting in paintings %}
             <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
                 <figure class="relative aspect-square overflow-hidden">
@@ -120,5 +120,38 @@
         </div>
         {% endif %}
     </section>
+
+    <script>
+        function filterGallery(filterType, value) {
+            // Get current URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (value === '') {
+                // Remove the filter if "All" is selected
+                urlParams.delete(filterType);
+            } else {
+                // Set the filter value
+                urlParams.set(filterType, value);
+            }
+            
+            // Build the AJAX URL
+            const ajaxUrl = '{% url "gallery:paintings_ajax" %}' + '?' + urlParams.toString();
+            
+            // Make AJAX request
+            fetch(ajaxUrl)
+                .then(response => response.text())
+                .then(html => {
+                    // Replace the gallery grid with new content
+                    document.getElementById('gallery-grid').outerHTML = html;
+                    
+                    // Update URL without page refresh
+                    const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+                    window.history.pushState({}, '', newUrl);
+                })
+                .catch(error => {
+                    console.error('Error loading gallery:', error);
+                });
+        }
+    </script>
 
 {% endblock %}
