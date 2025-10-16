@@ -8,6 +8,10 @@ User = get_user_model()
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    product_sku = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
+
     class Meta:
         model = OrderItem
         fields = ("product_title", "product_sku", "unit_price", "quantity")
@@ -24,12 +28,13 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
-    shipping_address = AddressSerializer(write_only=True, required=False)
+    shipping_address = AddressSerializer(write_only=True, required=True)
+    billing_address = AddressSerializer(write_only=True, required=False)
 
     class Meta:
         model = Order
         fields = ("id", "order_number", "guest_email", "status",
-                  "total", "items", "shipping_address")
+                  "total", "items", "shipping_address", "billing_address")
         read_only_fields = ("id", "order_number", "total")
 
     def validate_items(self, value):
@@ -78,6 +83,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         items_data = validated_data.pop("items", [])
         shipping = validated_data.pop("shipping_address", None)
+        billing = validated_data.pop("billing_address", None)
 
         # Calculate total from items (avoid trusting client total)
         total = Decimal("0.00")
@@ -114,6 +120,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             if shipping:
                 Address.objects.create(
                     order=order, address_type=Address.SHIPPING, **shipping)
+            if billing:
+                Address.objects.create(
+                    order=order, address_type=Address.BILLING, **billing)
 
             for it in items_data:
                 sku = it.get("product_sku")

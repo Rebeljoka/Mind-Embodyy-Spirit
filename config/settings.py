@@ -53,30 +53,55 @@ else:
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
 
-# Content Security Policy settings for Stripe
-CONTENT_SECURITY_POLICY = {
+# Enable report-only mode in development so
+# CSP violations are logged but don't break the page
+CONTENT_SECURITY_POLICY_REPORT_ONLY = {
     'DIRECTIVES': {
-        'default-src': ("'self'", "https:"),
-        'script-src': (
+        'default-src': ["'self'", "https:"],
+        'script-src': [
             "'self'",
             "'unsafe-inline'",
+            "'unsafe-eval'",
             "https://js.stripe.com",
             "https://m.stripe.network",
-        ),
-        'style-src': (
+            "https://m.stripe.com",
+            "https://cdn.jsdelivr.net",
+            "https://*.stripe.com",
+            "https://*.stripe.network",
+        ],
+        'style-src': [
             "'self'",
             "'unsafe-inline'",
+            "'unsafe-hashes'",
             "https://cdn.jsdelivr.net",
             "https://fonts.googleapis.com",
-        ),
-        'img-src': ("'self'", "data:", "https://res.cloudinary.com", "*"),
-        'connect-src': ("'self'", "https://api.stripe.com"),
-        'frame-src': ("'self'", "https://js.stripe.com",
-                      "https://m.stripe.network"),
-        'font-src': ("'self'", "https://fonts.gstatic.com",
-                     "https://cdn.jsdelivr.net"),
+            "https://*.stripe.com",
+            "https://*.stripe.network",
+        ],
+        'img-src': ["'self'", "data:", "https://res.cloudinary.com", "*"],
+        'connect-src': [
+            "'self'",
+            "https://api.stripe.com",
+            "https://m.stripe.network",
+            "https://*.stripe.com",
+            "https://*.stripe.network",
+        ],
+        'frame-src': [
+            "'self'",
+            "https://js.stripe.com",
+            "https://m.stripe.network",
+            "https://m.stripe.com",
+            "https://*.stripe.com",
+            "https://*.stripe.network",
+        ],
+        'font-src': [
+            "'self'",
+            "https://fonts.gstatic.com",
+            "https://cdn.jsdelivr.net",
+        ],
+        'object-src': ["'none'"],
     }
-}
+} if DEBUG else None
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -157,50 +182,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Cloudinary configuration (read from environment)
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
 
-# Default file storage - will be overridden if Cloudinary is configured
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+cloudinary.config(
+    secure=True  # Forces HTTPS for all Cloudinary URLs
+)
 
-# Configure Cloudinary-backed storage when a CLOUDINARY_URL is provided.
-if CLOUDINARY_URL:
-    try:
-        # Use cloudinary library to parse the URL
-        from urllib.parse import urlparse
-        parsed = urlparse(CLOUDINARY_URL)
-        if parsed.scheme == 'cloudinary':
-            # Extract components
-            # from cloudinary://api_key:api_secret@cloud_name
-            credentials, cloud_name = parsed.netloc.split('@')
-            api_key, api_secret = credentials.split(':')
-
-            CLOUDINARY_STORAGE = {
-                'CLOUD_NAME': cloud_name,
-                'API_KEY': api_key,
-                'API_SECRET': api_secret,
-            }
-            # Use django-cloudinary-storage's storage backend
-            storage_class = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-            DEFAULT_FILE_STORAGE = storage_class
-
-            # Configure the cloudinary library
-            cloudinary.config(
-                cloud_name=cloud_name,
-                api_key=api_key,
-                api_secret=api_secret,
-                secure=True  # Forces HTTPS for all Cloudinary URLs
-            )
-        else:
-            raise ValueError("Invalid CLOUDINARY_URL scheme")
-    except Exception as e:
-        if not DEBUG:
-            raise RuntimeError(f"CLOUDINARY_URL configuration failed: {e}")
-        else:
-            # In development, just log the error and use default storage
-            import logging
-            logging.warning(f"Cloudinary configuration failed: {e}. "
-                            "Using default file storage.")
-else:
-    if not DEBUG:
-        raise RuntimeError("CLOUDINARY_URL is required in production.")
 
 CLOUDINARY_DEFAULT_TRANSFORMATIONS = {
     'fetch_format': 'auto',
@@ -300,9 +285,6 @@ else:
 
 # WhiteNoise configuration
 STORAGES = {
-    'default': {
-        'BACKEND': DEFAULT_FILE_STORAGE,
-    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
