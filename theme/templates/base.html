@@ -46,7 +46,8 @@
     <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Tailwind CSS + Custom CSS -->
-    {% tailwind_css %} {% block extra_head %}{% endblock extra_head %} {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
+    {% tailwind_css %} {% block extra_head %}{% endblock extra_head %} 
+	{#Project-level custom stylesheet (allows small overrides or non-Tailwind CSS)#}
     <link rel="preload" as="style" href="{% static 'css/dist/styles.css' %}" />
     <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 
@@ -253,6 +254,15 @@
               </a>
             </li>
 
+            <li>
+              <a
+                href="{% url 'events:events' %}"
+                class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"
+              >
+                {% trans "Events" %}
+              </a>
+            </li>
+
             {% if user.is_authenticated %}
             <li><div class="divider"></div></li>
             <li>
@@ -318,6 +328,14 @@
             class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"
           >
             {% trans "About" %}
+          </a>
+        </li>
+        <li>
+          <a
+            href="{% url 'events:events' %}"
+            class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"
+          >
+            {% trans "Events" %}
           </a>
         </li>
         <li>
