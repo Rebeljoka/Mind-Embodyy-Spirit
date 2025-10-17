@@ -131,6 +131,7 @@ INSTALLED_APPS = [
     'orders',
     'core',
     'theme',
+    'events',
 ]
 
 if DEBUG:
