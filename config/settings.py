@@ -308,19 +308,20 @@ WHITENOISE_ALLOW_ALL_ORIGINS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Only run npm check and error in local development (when DEBUG is True)
-# Only run npm check and error in local development (when DEBUG is True)
-if DEBUG:
-    _npm_path = shutil.which('npm') or shutil.which('npm.cmd')
-    NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
-    if not NPM_BIN_PATH:
-        print("Warning: NPM executable not found on PATH. Tailwind and static asset building may not work locally.")
-        # Optionally, you can raise an error here if you want to enforce npm locally
-        # raise RuntimeError(
-        #     "NPM executable not found on PATH (checked 'npm' and 'npm.cmd')"
-        #     " and NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
-        #     "NPM_BIN_PATH to the path of the npm executable."
-        # )
+# Detect npm binary path cross-platform. On Windows, npm may be available as
+# 'npm.cmd' while on macOS/Linux it's 'npm'. Use shutil.which to pick the
+# available executable; fallback to 'npm' for environments where it's on PATH.
+_npm_path = shutil.which('npm') or shutil.which('npm.cmd')
+# Allow override via NPM_BIN_PATH env var; otherwise use discovered path.
+NPM_BIN_PATH = os.environ.get('NPM_BIN_PATH') or _npm_path
+
+# Only fail if npm is required but not available (in DEBUG mode or development)
+if DEBUG and not NPM_BIN_PATH:
+    raise RuntimeError(
+        "NPM executable not found on PATH (checked 'npm' and 'npm.cmd') and "
+        "NPM_BIN_PATH env var is not set. Install Node.js/npm or set "
+        "NPM_BIN_PATH to the path of the npm executable."
+    )
 
 
 # Views (route names) that the orders JSON-only middleware should enforce.
