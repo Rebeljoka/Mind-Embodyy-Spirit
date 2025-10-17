@@ -101,7 +101,7 @@ CONTENT_SECURITY_POLICY_REPORT_ONLY = {
         ],
         'object-src': ["'none'"],
     }
-} if DEBUG else None
+}
 
 ALLOWED_HOSTS = [
     'localhost',
