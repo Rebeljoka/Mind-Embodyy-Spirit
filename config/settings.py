@@ -63,7 +63,6 @@ INSTALLED_APPS = [
     'gallery',
     'newsletter',
     'orders',
-    'core',
     'theme',
     'events',
 ]
