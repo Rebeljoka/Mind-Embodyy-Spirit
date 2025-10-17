@@ -131,7 +131,7 @@ INSTALLED_APPS = [
     'orders',
     'core',
     'theme',
-    # 'events',  # Temporarily disabled to test if causing 500 error
+    'events',
 ]
 
 if DEBUG:
