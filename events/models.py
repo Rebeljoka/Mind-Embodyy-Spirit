@@ -39,4 +39,4 @@ class Events(models.Model):
     )
     
     def __str__(self):
-        return f"{self.name} on {self.event_date}"
+        return f"{self.event_name} on {self.event_date}"
