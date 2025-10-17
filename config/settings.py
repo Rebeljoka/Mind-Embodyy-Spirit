@@ -35,67 +35,6 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-# Security settings
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'
-
-# Enable report-only mode in development so
-# CSP violations are logged but don't break the page
-CONTENT_SECURITY_POLICY_REPORT_ONLY = {
-    'DIRECTIVES': {
-        'default-src': ["'self'", "https:"],
-        'script-src': [
-            "'self'",
-            "'unsafe-inline'",
-            "'unsafe-eval'",
-            "https://js.stripe.com",
-            "https://m.stripe.network",
-            "https://m.stripe.com",
-            "https://cdn.jsdelivr.net",
-            "https://*.stripe.com",
-            "https://*.stripe.network",
-        ],
-        'style-src': [
-            "'self'",
-            "'unsafe-inline'",
-            "'unsafe-hashes'",
-            "https://cdn.jsdelivr.net",
-            "https://fonts.googleapis.com",
-            "https://*.stripe.com",
-            "https://*.stripe.network",
-        ],
-        'img-src': ["'self'", "data:", "https://res.cloudinary.com", "*"],
-        'connect-src': [
-            "'self'",
-            "https://api.stripe.com",
-            "https://m.stripe.network",
-            "https://*.stripe.com",
-            "https://*.stripe.network",
-        ],
-        'frame-src': [
-            "'self'",
-            "https://js.stripe.com",
-            "https://m.stripe.network",
-            "https://m.stripe.com",
-            "https://*.stripe.com",
-            "https://*.stripe.network",
-        ],
-        'font-src': [
-            "'self'",
-            "https://fonts.gstatic.com",
-            "https://cdn.jsdelivr.net",
-        ],
-        'object-src': ["'none'"],
-    }
-}
-
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -328,3 +267,81 @@ ORDERS_JSON_ONLY_VIEWS = [
 # Redirect users to the previous page after login if possible,
 # otherwise to home
 LOGIN_REDIRECT_URL = '/'
+
+# Security settings
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# Enable report-only mode in development so
+# CSP violations are logged but don't break the page
+CONTENT_SECURITY_POLICY_REPORT_ONLY = {
+    'DIRECTIVES': {
+        'default-src': ["'self'", "https:"],
+        'script-src': [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            "https://js.stripe.com",
+            "https://m.stripe.network",
+            "https://m.stripe.com",
+            "https://cdn.jsdelivr.net",
+            "https://*.stripe.com",
+            "https://*.stripe.network",
+        ],
+        'style-src': [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-hashes'",
+            "https://cdn.jsdelivr.net",
+            "https://fonts.googleapis.com",
+            "https://*.stripe.com",
+            "https://*.stripe.network",
+        ],
+        'img-src': ["'self'", "data:", "https://res.cloudinary.com", "*"],
+        'connect-src': [
+            "'self'",
+            "https://api.stripe.com",
+            "https://m.stripe.network",
+            "https://*.stripe.com",
+            "https://*.stripe.network",
+        ],
+        'frame-src': [
+            "'self'",
+            "https://js.stripe.com",
+            "https://m.stripe.network",
+            "https://m.stripe.com",
+            "https://*.stripe.com",
+            "https://*.stripe.network",
+        ],
+        'font-src': [
+            "'self'",
+            "https://fonts.gstatic.com",
+            "https://cdn.jsdelivr.net",
+        ],
+        'object-src': ["'none'"],
+    }
+}
+
+import sys
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
