@@ -17,22 +17,14 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
-from django.http import HttpResponse
-
-
-def test_heroku(request):
-    return HttpResponse("Heroku test successful!")
 
 
 urlpatterns = [
-    path("heroku-test/", test_heroku),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('orders/', include('orders.urls')),
     path('gallery/', include('gallery.urls')),
     path('events/', include('events.urls')),
-    # Root landing page
-    path('', include('core.urls')),
 ]
 
 if settings.DEBUG:
