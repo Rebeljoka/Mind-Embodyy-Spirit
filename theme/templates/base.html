@@ -124,13 +124,10 @@
 							<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
 						</li>
 						<li>
-							<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
+							<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"> {% trans "Events" %} </a>
 						</li>
 						<li>
 							<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
-						</li>
-						<li>
-							<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"> {% trans "Events" %} </a>
 						</li>
 
 						{% if user.is_authenticated %}
@@ -171,7 +168,7 @@
 					</a>
 				</li>
 				<li>
-					<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
+					<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"> {% trans "Events" %} </a>
 				</li>
 				<li>
 					<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
