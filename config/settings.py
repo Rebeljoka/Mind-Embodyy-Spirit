@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     'events',
 ]
 
-if DEBUG:
+if DEBUG == 'True' or DEBUG is True:
     # Add development-only apps
     INSTALLED_APPS += [
         'django_browser_reload',
