@@ -42,6 +42,10 @@
 		<link rel="icon" type="image/x-icon" href="{% static 'favicon/favicon.ico'  %}" />
 		<link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}" />
 		<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/icon-shortcut.ico' %}" />
+
+		<!-- FontAwesome -->
+		<script defer src="https://kit.fontawesome.com/bebd4357a9.js" crossorigin="anonymous"></script>
+
 	</head>
 
 	<body class="font-serif leading-normal tracking-normal h-16">
@@ -189,5 +193,34 @@
 		<main class="w-full">{% block content %} {% endblock content %}</main>
 
 		{% block extra_body %}{% endblock extra_body %}
+		
+		
+		<footer class="mt-12 border-t border-gray-200 flex items-center ">
+			<div class=" mx-auto justify-center">
+			<h1>Contact</h1>
+			<p>To contact me for gallery bookings, artist talks, purachases or art viewings please email me or my curator.</p>
+			<p>Email: cecilia.kristoffersson71@gmail.com</p>
+			</div>
+			<div class="mx-auto max-w-7xl px-4 py-8 flex items-center justify-center gap-4 sm:gap-6">
+			<aside>
+				<div>
+					<a href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTFoN240ZG96cGRiYw==" class="p-2 rounded-full hover:bg-gray-100" aria-label="Instagram">
+      				<i class="fa-brands fa-instagram text-2xl md:text-3xl leading-none align-middle"></i>
+      				<span class="sr-only">Instagram</span>
+    				</a>
+    				<a href="https://www.facebook.com/share/1D56hpGKPS/" class="p-2 rounded-full hover:bg-gray-100" aria-label="Facebook">
+      				<i class="fa-brands fa-facebook text-2xl md:text-3xl leading-none align-middle"></i>
+      				<span class="sr-only">Facebook</span>
+    				</a>
+    				<a href="https://youtube.com/@constcollectionartbycecilia.k?si=2_aA2PlPn4oTACxv" class="p-2 rounded-full hover:bg-gray-100" aria-label="X">
+      				<i class="fa-brands fa-x-twitter text-2xl md:text-3xl leading-none align-middle"></i>
+      				<span class="sr-only">X</span>
+				</div>
+				</aside>
+			</div>
+		</footer>
 	</body>
 </html>
+
+
+
