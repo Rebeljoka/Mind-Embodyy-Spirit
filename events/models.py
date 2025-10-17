@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.urls import reverse
 
 
-class Events(models.Model):
+class Event(models.Model):
     
     """Simple events model to allow superusers the ability to add upcoming events.
 
@@ -39,4 +39,4 @@ class Events(models.Model):
     )
     
     def __str__(self):
-        return f"{self.name} on {self.event_date}"
+        return f"{self.event_name} on {self.event_date}"

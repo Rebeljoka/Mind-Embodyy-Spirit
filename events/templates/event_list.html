@@ -1,5 +1,38 @@
 {% extends "base.html" %}
+{% load cloudinary %}
 {% load static %}
 {% block head_title %}Events - Const Collection{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+
+<section class="container mx-auto px-4 py-8">
+        <!-- Page Title -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Events</h1>
+            <p class="text-lg text-base-content/70">See our upcoming events</p>
+        </div>
+
+  {% if events %}
+    <div id="event-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for event in events %}
+        <article class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
+          {% if event.poster %}
+          <figure class="max-h-56 overflow-hidden">
+            <img src="{{ event.poster.url }}" alt="Poster for {{ event.event_name }}" class="w-full h-56 object-cover" />
+          </figure>
+          {% endif %}
+          <div class="card-body">
+            <h2 class="card-title">{{ event.event_name }}</h2>
+            <p class="text-base-content/70"><strong>Date:</strong> {{ event.event_date|date:"F d, Y" }}</p>
+            <p class="text-base-content/70"><strong>Location:</strong> {{ event.location }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+  <section class="w-full py-12 flex justify-center">
+    <p class="text-center">There are no events to display.</p>
+  </section>
+  {% endif %}
+
+{% endblock %}
