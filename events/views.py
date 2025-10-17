@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 
 from .models import Event
@@ -35,6 +35,8 @@ def event_list_view(request):
     return render(request, 'event_list.html', context)
 
 
+"""Edit Events"""
+
 def event_edit_view(request, pk: int):
     """Handle event edits via modal form; superuser only.
 
@@ -61,6 +63,7 @@ def event_edit_view(request, pk: int):
     # Default: we don't render a separate page for GET; return to list
     return redirect('events:events')
 
+"""Delete Events"""
 
 def event_delete(request, pk: int):
     if not request.user.is_superuser:
@@ -74,4 +77,28 @@ def event_delete(request, pk: int):
     event = get_object_or_404(Event, pk=pk)
     event.delete()
     messages.success(request, 'Event deleted!')
+    return redirect('events:events')
+
+
+"""New Event"""
+def newEvent(request):
+    """Create a new event; superuser only.
+
+    This view expects a POST with fields handled by EventForm.
+    On success or failure, it redirects back to the events list and shows a flash message.
+    """
+    if not request.user.is_superuser:
+        messages.error(request, "You do not have permission to add events.")
+        return redirect('events:events')
+
+    if request.method == 'POST':
+        form = EventForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your event has been successfully added.')
+        else:
+            first_error = next(iter(form.errors.values()))[0] if form.errors else 'Please correct the errors.'
+            messages.error(request, f'Error adding event: {first_error}')
+        return redirect('events:events')
+
     return redirect('events:events')
