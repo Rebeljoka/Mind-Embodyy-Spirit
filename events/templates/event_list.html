@@ -17,9 +17,9 @@
       {% for event in events %}
         <article class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
           {% if event.poster %}
-          <figure class="max-h-56 overflow-hidden">
-            <img src="{{ event.poster.url }}" alt="Poster for {{ event.event_name }}" class="w-full h-56 object-cover" />
-          </figure>
+            <figure class="relative w-full overflow-hidden rounded-t-2xl" style="padding-top: 134.833%;">
+              <img src="{{ event.poster.url }}" alt="Poster for {{ event.event_name }}" class="absolute inset-0 w-full h-full object-cover" />
+            </figure>
           {% endif %}
           <div class="card-body">
             <h2 class="card-title">{{ event.event_name }}</h2>
@@ -29,6 +29,32 @@
         </article>
       {% endfor %}
     </div>
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="mt-10 flex items-center justify-center gap-2" aria-label="Pagination">
+      {# Previous #}
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm">« Prev</a>
+      {% else %}
+        <button class="btn btn-sm btn-disabled" disabled>« Prev</button>
+      {% endif %}
+
+      {# Page numbers #}
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+          <button class="btn btn-sm btn-primary" aria-current="page">{{ num }}</button>
+        {% else %}
+          <a href="?page={{ num }}" class="btn btn-sm">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {# Next #}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm">Next »</a>
+      {% else %}
+        <button class="btn btn-sm btn-disabled" disabled>Next »</button>
+      {% endif %}
+    </nav>
+    {% endif %}
   {% else %}
   <section class="w-full py-12 flex justify-center">
     <p class="text-center">There are no events to display.</p>
