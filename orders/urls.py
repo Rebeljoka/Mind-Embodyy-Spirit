@@ -13,6 +13,7 @@ app_name = 'orders'
 urlpatterns = [
     path("", views.index, name="orders-index"),
     path("cart/", views.cart_view, name="cart_page"),
+    path("cart/count/", views.get_cart_count, name="cart_count"),
     path("checkout/", views.checkout_view, name="checkout"),
     path("payment/complete/", views.payment_complete_view,
          name="payment-complete"),

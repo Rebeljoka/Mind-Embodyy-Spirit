@@ -237,6 +237,9 @@
 				button.classList.remove("btn-primary");
 				button.classList.add("btn-success");
 
+				// Trigger cart update event for FAB notification
+				window.dispatchEvent(new Event('cartUpdated'));
+
 				// Reset after 2 seconds
 				setTimeout(() => {
 					button.innerHTML = originalText;
