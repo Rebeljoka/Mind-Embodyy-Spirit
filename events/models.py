@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.urls import reverse
 
 
-class Events(models.Model):
+class Event(models.Model):
     
     """Simple events model to allow superusers the ability to add upcoming events.
 
