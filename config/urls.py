@@ -23,7 +23,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('orders/', include('orders.urls')),
     path('gallery/', include('gallery.urls')),
-    path('events/', include('events.urls')),
+    # path('events/', include('events.urls')),  # Temporarily disabled
     # Root landing page
     path('', include('core.urls')),
 ]
