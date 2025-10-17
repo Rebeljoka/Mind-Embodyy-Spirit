@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Unsubscribe{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-md px-4 py-12">
+    <h1 class="text-2xl font-semibold mb-3">Unsubscribe from newsletter</h1>
+
+    <form id="unsub-form" class="flex gap-3" onsubmit="return false;">
+        {% csrf_token %}
+        <input id="unsub-email" type="email" required placeholder="Your email"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            aria-label="Email">
+        <button id="unsub-submit" type="button"
+            class="inline-flex items-center justify-center rounded-md bg-black px-4 py-2 text-white hover:bg-gray-900">
+            Unsubscribe
+        </button>
+    </form>
+
+    <p id="unsub-msg" class="mt-4 text-sm"></p>
+</section>
+<script>
+    function getCookie(name) {
+        const v = `; ${document.cookie}`; const p = v.split(`; ${name}=`);
+        if (p.length === 2) return p.pop().split(";").shift();
+    }
+    const csrftoken = getCookie('csrftoken');
+    const emailEl = document.getElementById('unsub-email');
+    const msgEl = document.getElementById('unsub-msg');
+    const btn = document.getElementById('unsub-submit');
+
+    btn.onclick = async () => {
+        const email = emailEl.value.trim();
+        if (!email) {
+            msgEl.textContent = 'Please enter a valid email.';
+            msgEl.className = 'mt-4 text-sm text-red-600';
+            return;
+        }
+        btn.disabled = true; btn.classList.add('opacity-60', 'cursor-not-allowed');
+        try {
+            const res = await fetch("{% url 'newsletter:unsubscribe' %}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                credentials: 'same-origin',
+                body: JSON.stringify({ email })
+            });
+            if (res.ok) {
+                window.location.href = "{% url 'newsletter:unsubscribe_done' %}";
+            } else {
+                msgEl.textContent = 'There was a problem—please try again.';
+                msgEl.className = 'mt-4 text-sm text-red-600';
+            }
+        } catch (e) {
+            msgEl.textContent = 'Network error—please try again.';
+            msgEl.className = 'mt-4 text-sm text-red-600';
+        } finally {
+            btn.disabled = false; btn.classList.remove('opacity-60', 'cursor-not-allowed');
+        }
+    };
+</script>
+{% endblock %}

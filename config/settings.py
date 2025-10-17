@@ -263,6 +263,33 @@ ORDERS_JSON_ONLY_VIEWS = [
     "orders-create",
 ]
 
+# ========================
+# Email configuration - Newsletter app uses this
+# ========================
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+if DEBUG:
+    # Development: print emails to console
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    # Production: use SendGrid via Anymail
+    if not os.environ.get("SENDGRID_API_KEY"):
+        raise RuntimeError("SENDGRID_API_KEY must be set in production!")
+    EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+
+# Common settings (apply in all environments)
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@default.com")
+SITE_URL = os.environ.get("SITE_URL", "http://localhost:8000")
+
+# 👇 This part tells Anymail how to connect to SendGrid
+ANYMAIL = {
+    "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY", ""),  # can be empty in DEBUG
+}
+
+
+# ========================
+
 # Redirect users to the previous page after login if possible,
 # otherwise to home
 LOGIN_REDIRECT_URL = '/'

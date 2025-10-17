@@ -43,11 +43,7 @@
 
         <!-- Gallery Grid -->
         {% if paintings %}
-<<<<<<< HEAD
         <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-=======
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
->>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
             {% for painting in paintings %}
             <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
                 <figure class="relative aspect-square overflow-hidden">
@@ -125,7 +121,6 @@
         {% endif %}
     </section>
 
-<<<<<<< HEAD
     <script>
         function filterGallery(filterType, value) {
             // Get current URL parameters
@@ -159,6 +154,4 @@
         }
     </script>
 
-=======
->>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 {% endblock %}
