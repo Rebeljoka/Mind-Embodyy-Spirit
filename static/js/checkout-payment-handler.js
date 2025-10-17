@@ -1,11 +1,9 @@
 // Checkout JavaScript for Stripe payment integration
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Checkout JavaScript loaded');
 
     // Get Stripe key from meta tag
     const stripeKey = document.querySelector('meta[name="stripe-publishable-key"]')?.content;
     if (!stripeKey) {
-        console.error('Stripe publishable key not found');
         return;
     }
 
@@ -15,10 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Check if we're in payment completion mode
     const isPaymentMode = document.querySelector('section[data-payment-mode="true"]') !== null;
-    console.log('Payment mode:', isPaymentMode);
 
     if (isPaymentMode) {
-        console.log('Entering payment completion mode');
         // Payment completion mode
         const paymentElement = document.getElementById('payment-element');
         const completePaymentBtn = document.getElementById('complete-payment-btn');
@@ -27,10 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get client secret from URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             const clientSecret = urlParams.get('payment_intent_client_secret');
-            console.log('Client secret from URL:', clientSecret ? 'present' : 'missing');
 
             if (clientSecret) {
-                console.log('Creating Stripe Elements for payment completion');
                 // Create payment element
                 elements = stripe.elements();
                 cardElement = elements.create('payment');
@@ -48,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
 
                         if (error) {
-                            console.error('Payment failed:', error);
                             alert('Payment failed: ' + error.message);
                             completePaymentBtn.disabled = false;
                             completePaymentBtn.textContent = 'Complete Payment';
@@ -59,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             window.location.href = `/orders/order/${orderId}/success/`;
                         }
                     } catch (err) {
-                        console.error('Payment error:', err);
                         alert('An error occurred during payment. Please try again.');
                         completePaymentBtn.disabled = false;
                         completePaymentBtn.textContent = 'Complete Payment';
@@ -68,22 +60,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     } else {
-        console.log('Entering checkout mode');
         // Checkout mode - handle form submission and payment setup
         const checkoutForm = document.getElementById('checkout-form');
         const submitBtn = document.getElementById('submit-btn');
         const paymentElement = document.getElementById('payment-element');
 
-        console.log('Form elements found:', {
-            checkoutForm: !!checkoutForm,
-            submitBtn: !!submitBtn,
-            paymentElement: !!paymentElement
-        });
-
         if (checkoutForm && submitBtn && paymentElement) {
-            console.log('Adding form submit listener');
             checkoutForm.addEventListener('submit', async function(e) {
-                console.log('Form submitted');
                 e.preventDefault(); // Prevent default form submission
 
                 submitBtn.disabled = true;
@@ -155,8 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
 
-                    console.log('Order data being sent:', orderData);
-
                     // Create order via API
                     const orderResponse = await fetch('/orders/create/', {
                         method: 'POST',
@@ -169,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if (!orderResponse.ok) {
                         const errorData = await orderResponse.json();
-                        console.error('Order creation failed:', errorData);
                         throw new Error(`Failed to create order: ${JSON.stringify(errorData)}`);
                     }
 
@@ -216,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Submit elements first as required by Stripe
                             const { error: submitError } = await elements.submit();
                             if (submitError) {
-                                console.error('Payment submission failed:', submitError);
                                 alert('Payment failed: ' + submitError.message);
                                 submitBtn.disabled = false;
                                 submitBtn.textContent = 'Complete Payment';
@@ -232,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             });
 
                             if (error) {
-                                console.error('Payment failed:', error);
                                 alert('Payment failed: ' + error.message);
                                 submitBtn.disabled = false;
                                 submitBtn.textContent = 'Complete Payment';
@@ -241,7 +219,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 window.location.href = `/orders/order/${orderId}/success/`;
                             }
                         } catch (err) {
-                            console.error('Payment error:', err);
                             alert('An error occurred during payment. Please try again.');
                             submitBtn.disabled = false;
                             submitBtn.textContent = 'Complete Payment';
@@ -249,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                 } catch (error) {
-                    console.error('Checkout error:', error);
                     alert('An error occurred: ' + error.message);
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Complete Order';
