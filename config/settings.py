@@ -287,6 +287,7 @@ else:
         STATICFILES_DIRS.append(BASE_DIR / 'theme' / 'static')
     if (BASE_DIR / 'static').exists():
         STATICFILES_DIRS.append(BASE_DIR / 'static')
+    TAILWIND_APP_NAME = 'theme'
 
 # WhiteNoise configuration for serving static files in production
 STORAGES = {
