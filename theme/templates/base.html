@@ -1,455 +1,239 @@
 {% load static tailwind_tags i18n %}
 <!DOCTYPE html>
 <html lang="en" data-theme="pastel">
-  <head>
-    <title>
-      {% block head_title %}Const Collection | Art By Cecilia K.{% endblock head_title %}
-    </title>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<head>
+		<title>{% block head_title %}Const Collection | Art By Cecilia K.{% endblock head_title %}</title>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <meta
-      name="description"
-      content="Discover original art by Cecilia Kristoffersson. Explore unique acrylic paintings, vibrant canvases, and creative work from a Swedish-Zimbabwean artist."
-    />
-    <meta
-      name="keywords"
-      content="art, artist, Cecilia K, paintings, Sweden, Zimbabwe, acrylic, canvases, contemporary art, original artwork, art collection"
-    />
-    <meta name="author" content="Cecilia Kristoffersson" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="index, follow" />
+		<meta name="description" content="Discover original art by Cecilia Kristoffersson. Explore unique acrylic paintings, vibrant canvases, and creative work from a Swedish-Zimbabwean artist." />
+		<meta name="keywords" content="art, artist, Cecilia K, paintings, Sweden, Zimbabwe, acrylic, canvases, contemporary art, original artwork, art collection" />
+		<meta name="author" content="Cecilia Kristoffersson" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="index, follow" />
 
-    <!-- Open Graph for Facebook, LinkedIn, WhatsApp -->
-    <meta property="og:title" content="Const Collection | Art By Cecilia K." />
-    <meta
-      property="og:description"
-      content="Browse & collect original acrylic art by Cecilia Kristoffersson, inspired by Swedish and Zimbabwean creativity."
-    />
-    <meta
-      property="og:image"
-      content="https://constcollection.com/path-to-social-share-image.jpg"
-    />
-    <meta property="og:url" content="https://constcollection.com/" />
-    <meta property="og:type" content="website" />
+		<!-- Open Graph for Facebook, LinkedIn, WhatsApp -->
+		<meta property="og:title" content="Const Collection | Art By Cecilia K." />
+		<meta property="og:description" content="Browse & collect original acrylic art by Cecilia Kristoffersson, inspired by Swedish and Zimbabwean creativity." />
+		<meta property="og:image" content="https://constcollection.com/path-to-social-share-image.jpg" />
+		<meta property="og:url" content="https://constcollection.com/" />
+		<meta property="og:type" content="website" />
 
-    <!-- Twitter Cards -->
-    <meta name="twitter:title" content="Const Collection | Art By Cecilia K." />
-    <meta
-      name="twitter:description"
-      content="Discover unique acrylic paintings and art by Cecilia Kristoffersson."
-    />
-    <meta
-      name="twitter:image"
-      content="https://constcollection.com/path-to-social-share-image.jpg"
-    />
-    <meta name="twitter:card" content="summary_large_image" />
+		<!-- Twitter Cards -->
+		<meta name="twitter:title" content="Const Collection | Art By Cecilia K." />
+		<meta name="twitter:description" content="Discover unique acrylic paintings and art by Cecilia Kristoffersson." />
+		<meta name="twitter:image" content="https://constcollection.com/path-to-social-share-image.jpg" />
+		<meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Tailwind CSS + Custom CSS -->
-    {% tailwind_css %} {% block extra_head %}{% endblock extra_head %} {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
-    <link rel="preload" as="style" href="{% static 'css/dist/styles.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
+		<!-- Tailwind CSS + Custom CSS -->
+		{% tailwind_css %} {% block extra_head %}{% endblock extra_head %} {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
+		<link rel="preload" as="style" href="{% static 'css/dist/styles.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 
-    <!-- Phosphor Icons -->
-    <link
-      rel="preload"
-      as="style"
-      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
-    />
-    <link
-      rel="preload"
-      as="style"
-      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
-    />
+		<!-- Phosphor Icons -->
+		<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+		<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
 
-    <!-- Favicon -->
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{% static 'favicon/favicon.ico'  %}"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="{% static 'favicon/apple-touch-icon.png' %}"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="{% static 'favicon/icon-shortcut.ico' %}"
-    />
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="{% static 'favicon/favicon.ico'  %}" />
+		<link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}" />
+		<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/icon-shortcut.ico' %}" />
 
-    <!-- FontAwesome -->
-    <script
-      defer
-      src="https://kit.fontawesome.com/bebd4357a9.js"
-      crossorigin="anonymous"
-    ></script>
-  </head>
+		<!-- FontAwesome -->
+		<script defer src="https://kit.fontawesome.com/bebd4357a9.js" crossorigin="anonymous"></script>
+	</head>
 
-  <body class="font-serif leading-normal tracking-normal h-16">
-    <!-- Navbar -->
-    <nav class="navbar justify-between bg-base-300 relative">
-      <!-- Logo -->
-      <div class="inline-flex">
-        <a href="{% url 'core:index' %}" class="btn btn-ghost text-lg bg-white">
-          {# <img alt="Logo" src="{% static 'images/Logo.webp' %}" class="w-8" /> #}
-          Const Collection
-        </a>
-        <ul class="hidden lg:flex menu-horizontal">
-          {% if user.is_authenticated %}
-          <li class="dropdown dropdown-end">
-            <label tabindex="0" class="btn btn-ghost">
-              <i class="ph ph-user-circle text-xl"></i>
-              {{ user.username }}
-            </label>
-            <ul
-              tabindex="0"
-              class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-52"
-            >
-              <li>
-                <a href="{% url 'account_email' %}"
-                  >{% trans "Change Email" %}</a
-                >
-              </li>
-              <li>
-                <a href="{% url 'account_change_password' %}"
-                  >{% trans "Change Password" %}</a
-                >
-              </li>
-              <li>
-                <a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
-              </li>
-            </ul>
-          </li>
-          {% else %}
-          <li>
-            <a href="{% url 'account_login' %}" class="btn btn-primary"
-              >{% trans "Log in" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'account_signup' %}" class="btn btn-outline"
-              >{% trans "Sign Up" %}</a
-            >
-          </li>
-          {% endif %}
-        </ul>
-      </div>
+	<body class="font-serif leading-normal tracking-normal h-16">
+		<!-- Navbar -->
+		<nav class="navbar justify-between bg-base-300 relative">
+			<!-- Logo -->
+			<div class="inline-flex">
+				<a href="{% url 'core:index' %}" class="btn btn-ghost text-lg bg-white">
+					<img alt="Logo" src="{% static 'images/Logo.webp' %}" class="w-8" />
+					Const Collection
+				</a>
+				<ul class="hidden lg:flex menu-horizontal">
+					{% if user.is_authenticated %}
+					<li class="dropdown dropdown-end">
+						<label tabindex="0" class="btn btn-ghost">
+							<i class="ph ph-user-circle text-xl"></i>
+							{{ user.username }}
+						</label>
+						<ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+							<li>
+								<a href="{% url 'account_email' %}">{% trans "Change Email" %}</a>
+							</li>
+							<li>
+								<a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a>
+							</li>
+							<li>
+								<a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+							</li>
+						</ul>
+					</li>
+					{% else %}
+					<li>
+						<a href="{% url 'account_login' %}" class="btn btn-primary">{% trans "Log in" %}</a>
+					</li>
+					<li>
+						<a href="{% url 'account_signup' %}" class="btn btn-outline">{% trans "Sign Up" %}</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
 
-      <!-- Menu for mobile -->
-      <div class="dropdown dropdown-end lg:hidden">
-        <a
-          href="{% url 'orders:cart_page' %}"
-          class="btn btn-ghost lg:hidden {% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}"
-        >
-          <i class="ph ph-shopping-cart text-lg"></i>
-        </a>
+			<!-- Menu for mobile -->
+			<div class="dropdown dropdown-end lg:hidden">
+				<a href="{% url 'orders:cart_page' %}" class="btn btn-ghost lg:hidden {% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}">
+					<i class="ph ph-shopping-cart text-lg"></i>
+				</a>
 
-        <div class="inline-flex">
-          <span class="ph ph-line-vertical h-full-auto"></span>
-        </div>
+				<div class="inline-flex">
+					<span class="ph ph-line-vertical h-full-auto"></span>
+				</div>
 
-        <div class="dropdown dropdown-end lg:hidden">
-          <button class="btn btn-ghost">
-            {% trans "Menu" %}
-            <i class="ph ph-dots-three-outline-vertical text-lg"></i>
-          </button>
-          <ul
-            tabindex="0"
-            class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2"
-          >
-            <li>
-              <div class="flex justify-center gap-2">
-                <a
-                  class="btn btn-circle btn-ghost btn-sm text-xl"
-                  style="background: black"
-                  href="mailto:cecilia.kristoffersson71@gmail.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Email"
-                >
-                  <i class="ph ph-envelope text-white"></i>
-                </a>
-                <a
-                  class="btn btn-circle btn-ghost btn-sm text-xl"
-                  style="background: blue"
-                  href="https://www.facebook.com/61559467855096/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                >
-                  <i class="ph ph-facebook-logo text-white"></i>
-                </a>
-                <a
-                  class="btn btn-circle btn-ghost btn-sm text-xl"
-                  style="
-                    background: linear-gradient(
-                      135deg,
-                      #f9ce34 0%,
-                      #ee2a7b 50%,
-                      #6228d7 100%
-                    );
-                    color: white;
-                    border: none;
-                  "
-                  href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw=="
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                >
-                  <i class="ph ph-instagram-logo text-white"></i>
-                </a>
-                <a
-                  class="btn btn-circle btn-ghost btn-sm text-xl"
-                  style="background: red"
-                  href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="YouTube"
-                >
-                  <i class="ph ph-youtube-logo text-white"></i>
-                </a>
-              </div>
-            </li>
+				<div class="dropdown dropdown-end lg:hidden">
+					<button class="btn btn-ghost">
+						{% trans "Menu" %}
+						<i class="ph ph-dots-three-outline-vertical text-lg"></i>
+					</button>
+					<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
+						<li>
+							<div class="flex justify-center gap-2">
+								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black" href="mailto:cecilia.kristoffersson71@gmail.com" target="_blank" rel="noopener noreferrer" aria-label="Email">
+									<i class="ph ph-envelope text-white"></i>
+								</a>
+								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue" href="https://www.facebook.com/61559467855096/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+									<i class="ph ph-facebook-logo text-white"></i>
+								</a>
+								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none" href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+									<i class="ph ph-instagram-logo text-white"></i>
+								</a>
+								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red" href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+									<i class="ph ph-youtube-logo text-white"></i>
+								</a>
+							</div>
+						</li>
 
-            <li>
-              <a
-                href="{% url 'core:index' %}"
-                class="{% if request.resolver_match.url_name == 'core:index' %}active{% endif %}"
-              >
-                {% trans "Home" %}
-              </a>
-            </li>
-            <li>
-              <a
-                href="{% url 'gallery:collection' %}"
-                class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"
-              >
-                {% trans "Gallery" %}
-              </a>
-            </li>
-            <li>
-              <a
-                class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"
-              >
-                {% trans "About" %}
-              </a>
-            </li>
-            <li>
-              <a
-                class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
-              >
-                {% trans "Contact" %}
-              </a>
-            </li>
+						<li>
+							<a href="{% url 'core:index' %}" class="{% if request.resolver_match.url_name == 'core:index' %}active{% endif %}"> {% trans "Home" %} </a>
+						</li>
+						<li>
+							<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
+						</li>
+						<li>
+							<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
+						</li>
+						<li>
+							<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
+						</li>
 
-            {% if user.is_authenticated %}
-            <li><div class="divider"></div></li>
-            <li>
-              <a href="{% url 'account_email' %}">{% trans "Change Email" %}</a>
-            </li>
-            <li>
-              <a href="{% url 'account_change_password' %}"
-                >{% trans "Change Password" %}</a
-              >
-            </li>
-            <li>
-              <a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
-            </li>
-            {% else %}
-            <li>
-              <a href="{% url 'account_login' %}" class="btn btn-sm btn-primary"
-                >{% trans "Log in" %}</a
-              >
-            </li>
-            <li>
-              <a
-                href="{% url 'account_signup' %}"
-                class="btn btn-sm btn-outline"
-                >{% trans "Sign Up" %}</a
-              >
-            </li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
+						{% if user.is_authenticated %}
+						<li><div class="divider"></div></li>
+						<li>
+							<a href="{% url 'account_email' %}">{% trans "Change Email" %}</a>
+						</li>
+						<li>
+							<a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a>
+						</li>
+						<li>
+							<a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+						</li>
+						{% else %}
+						<li>
+							<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
+						</li>
+						<li>
+							<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
+						</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
 
-      <!-- Menu for desktop -->
-      <ul
-        class="hidden lg:flex menu-horizontal gap-2 absolute left-1/2 transform -translate-x-1/2"
-      >
-        <li>
-          <a
-            href="{% url 'core:index' %}"
-            class="{% if request.resolver_match.url_name == 'core:index' %}active{% endif %}"
-          >
-            {% trans "Home" %}
-          </a>
-        </li>
-        <li>
-          <a
-            href="{% url 'gallery:collection' %}"
-            class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"
-          >
-            {% trans "Gallery" %}
-          </a>
-        </li>
-        <li>
-          <a
-            href="{% url 'orders:cart_page' %}"
-            class="{% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}"
-          >
-            <i class="ph ph-shopping-cart text-lg"></i>
-            {% trans "Cart" %}
-          </a>
-        </li>
-        <li>
-          <a
-            class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"
-          >
-            {% trans "About" %}
-          </a>
-        </li>
-        <li>
-          <a
-            class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
-          >
-            {% trans "Contact" %}
-          </a>
-        </li>
-      </ul>
+			<!-- Menu for desktop -->
+			<ul class="hidden lg:flex menu-horizontal gap-2 absolute left-1/2 transform -translate-x-1/2">
+				<li>
+					<a href="{% url 'core:index' %}" class="{% if request.resolver_match.url_name == 'core:index' %}active{% endif %}"> {% trans "Home" %} </a>
+				</li>
+				<li>
+					<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
+				</li>
+				<li>
+					<a href="{% url 'orders:cart_page' %}" class="{% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}">
+						<i class="ph ph-shopping-cart text-lg"></i>
+						{% trans "Cart" %}
+					</a>
+				</li>
+				<li>
+					<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans "About" %} </a>
+				</li>
+				<li>
+					<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
+				</li>
+			</ul>
 
-      <div class="hidden lg:flex gap-2">
-        <a
-          class="btn btn-circle btn-ghost btn-sm text-xl"
-          style="background: black"
-          href="mailto:cecilia.kristoffersson71@gmail.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i class="ph ph-envelope text-white"></i>
-        </a>
+			<div class="hidden lg:flex gap-2">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black" href="mailto:cecilia.kristoffersson71@gmail.com" target="_blank" rel="noopener noreferrer">
+					<i class="ph ph-envelope text-white"></i>
+				</a>
 
-        <a
-          class="btn btn-circle btn-ghost btn-sm text-xl"
-          style="background: blue"
-          href="https://www.facebook.com/61559467855096/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i class="ph ph-facebook-logo text-white"></i>
-        </a>
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue" href="https://www.facebook.com/61559467855096/" target="_blank" rel="noopener noreferrer">
+					<i class="ph ph-facebook-logo text-white"></i>
+				</a>
 
-        <a
-          class="btn btn-circle btn-ghost btn-sm text-xl"
-          style="
-            background: linear-gradient(
-              135deg,
-              #f9ce34 0%,
-              #ee2a7b 50%,
-              #6228d7 100%
-            );
-            color: white;
-            border: none;
-          "
-          href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw=="
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i class="ph ph-instagram-logo text-white"></i>
-        </a>
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none" href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw==" target="_blank" rel="noopener noreferrer">
+					<i class="ph ph-instagram-logo text-white"></i>
+				</a>
 
-        <a
-          class="btn btn-circle btn-ghost btn-sm text-xl"
-          style="background: red"
-          href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i class="ph ph-youtube-logo text-white"></i>
-        </a>
-      </div>
-    </nav>
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red" href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv" target="_blank" rel="noopener noreferrer">
+					<i class="ph ph-youtube-logo text-white"></i>
+				</a>
+			</div>
+		</nav>
 
-    {# Messages notification #} {% if messages %}
-    <div class="container mx-auto px-4 py-2">
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags|default:'info' }} shadow-lg mb-2">
-        <div>
-          <span>{{ message }}</span>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
+		{# Messages notification #} {% if messages %}
+		<div class="container mx-auto px-4 py-2">
+			{% for message in messages %}
+			<div class="alert alert-{{ message.tags|default:'info' }} shadow-lg mb-2">
+				<div>
+					<span>{{ message }}</span>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% endif %}
 
-    <main class="w-full">{% block content %} {% endblock content %}</main>
+		<main class="w-full">{% block content %} {% endblock content %}</main>
 
-    {% block extra_body %}{% endblock extra_body %}
+		{% block extra_body %}{% endblock extra_body %}
 
-    <footer class="mt-12 border-t border-gray-200 flex items-center">
-      <div class="mx-auto justify-center">
-        <h1>Contact</h1>
-        <p>
-          To contact me for gallery bookings, artist talks, purachases or art
-          viewings please email me or my curator.
-        </p>
-        <p>Email: cecilia.kristoffersson71@gmail.com</p>
-      </div>
-      <div
-        class="mx-auto max-w-7xl px-4 py-8 flex items-center justify-center gap-4 sm:gap-6"
-      >
-        <aside>
-          <div>
-            <a
-              href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTFoN240ZG96cGRiYw=="
-              class="p-2 rounded-full hover:bg-gray-100"
-              aria-label="Instagram"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i
-                class="fa-brands fa-instagram text-2xl md:text-3xl leading-none align-middle"
-              ></i>
-              <span class="sr-only">Instagram</span>
-            </a>
-            <a
-              href="https://www.facebook.com/share/1D56hpGKPS/"
-              class="p-2 rounded-full hover:bg-gray-100"
-              aria-label="Facebook"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i
-                class="fa-brands fa-facebook text-2xl md:text-3xl leading-none align-middle"
-              ></i>
-              <span class="sr-only">Facebook</span>
-            </a>
-            <a
-              href="https://youtube.com/@constcollectionartbycecilia.k?si=2_aA2PlPn4oTACxv"
-              class="p-2 rounded-full hover:bg-gray-100"
-              aria-label="YouTube"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i
-                class="fa-brands fa-youtube text-2xl md:text-3xl leading-none align-middle"
-              ></i>
-              <span class="sr-only">YouTube</span>
-            </a>
-          </div>
-        </aside>
-      </div>
-    </footer>
-  </body>
+		<footer class="mt-12 border-t border-gray-200 flex items-center">
+			<div class="mx-auto justify-center">
+				<h1>Contact</h1>
+				<p>To contact me for gallery bookings, artist talks, purachases or art viewings please email me or my curator.</p>
+				<p>Email: cecilia.kristoffersson71@gmail.com</p>
+			</div>
+			<div class="mx-auto max-w-7xl px-4 py-8 flex items-center justify-center gap-4 sm:gap-6">
+				<aside>
+					<div>
+						<a href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTFoN240ZG96cGRiYw==" class="p-2 rounded-full hover:bg-gray-100" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+							<i class="fa-brands fa-instagram text-2xl md:text-3xl leading-none align-middle"></i>
+							<span class="sr-only">Instagram</span>
+						</a>
+						<a href="https://www.facebook.com/share/1D56hpGKPS/" class="p-2 rounded-full hover:bg-gray-100" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+							<i class="fa-brands fa-facebook text-2xl md:text-3xl leading-none align-middle"></i>
+							<span class="sr-only">Facebook</span>
+						</a>
+						<a href="https://youtube.com/@constcollectionartbycecilia.k?si=2_aA2PlPn4oTACxv" class="p-2 rounded-full hover:bg-gray-100" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+							<i class="fa-brands fa-youtube text-2xl md:text-3xl leading-none align-middle"></i>
+							<span class="sr-only">YouTube</span>
+						</a>
+					</div>
+				</aside>
+			</div>
+		</footer>
+	</body>
 </html>
