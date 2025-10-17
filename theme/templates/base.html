@@ -45,12 +45,12 @@
 		<script defer src="https://kit.fontawesome.com/bebd4357a9.js" crossorigin="anonymous"></script>
 	</head>
 
-	<body class="font-serif leading-normal tracking-normal h-16">
+	<body class="font-serif leading-normal tracking-normal flex flex-col min-h-screen">
 		<!-- Navbar -->
-		<nav class="navbar justify-between bg-base-300 relative">
+		<nav class="navbar justify-between bg-base-300 relative sticky top-0 backdrop-blur-md shadow z-50">
 			<!-- Logo -->
 			<div class="inline-flex">
-				<a href="{% url 'index' %}" class="btn btn-ghost text-lg bg-white">
+				<a href="{% url 'index' %}" class="btn btn-ghost text-lg bg-white text-black">
 					<img alt="Logo" src="{% static 'images/Logo.webp' %}" class="w-8" />
 					Const Collection
 				</a>
@@ -206,10 +206,43 @@
 		</div>
 		{% endif %}
 
-		<main class="w-full">{% block content %} {% endblock content %}</main>
+		<!-- Main Content -->
+		<main class="w-full flex flex-col flex-grow">
+
+			{% block content %} {% endblock content %}
+
+		</main>
+
+		<!-- Speed Dial Menu -->
+		<div class="fixed right-10 bottom-32 group z-50 flex speeddial-button">
+				<div id="speed-dial-menu-default" class="speed-dial-menu flex items-center hidden mr-4 space-x-2">
+					<!-- Shopping Cart Button with Counter -->
+					<a href="{% url 'orders:cart_page' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Shopping Cart">
+						<span id="cart-counter-badge" class="hidden absolute -top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-2xl font-bold shadow-lg z-10">0</span>
+						<i class="ph ph-shopping-cart text-2xl"></i>
+					</a>
+					<!-- Theme Switcher Button -->
+					<button type="button" id="theme-toggle" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Toggle Theme">
+						<i class="ph ph-sun text-2xl"></i>
+					</button>
+					<!-- Calendar/Events Button -->
+					<a href="{% url 'events:events' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Events">
+						<svg class="w-6 h-6" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M2.16699 9.74967H23.8337M17.2199 15.708H17.2297M17.2198 18.958H17.2295M13.2123 15.708H13.222M13.2123 18.958H13.222M9.20271 15.708H9.21244M9.20271 18.958H9.21244M7.58366 5.41634V1.08301M18.417 5.41634V1.08301M10.8337 24.9163H15.167C19.2525 24.9163 21.2953 24.9163 22.5645 23.6471C23.8337 22.3779 23.8337 20.3352 23.8337 16.2497V11.9163C23.8337 7.83083 23.8337 5.78808 22.5645 4.51888C21.2953 3.24967 19.2525 3.24967 15.167 3.24967H10.8337C6.74815 3.24967 4.7054 3.24967 3.4362 4.51888C2.16699 5.78808 2.16699 7.83084 2.16699 11.9163V16.2497C2.16699 20.3352 2.16699 22.3779 3.4362 23.6471C4.7054 24.9163 6.74815 24.9163 10.8337 24.9163Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</a>
+				</div>
+				<button type="button" aria-expanded="false" class="flex items-center justify-center rounded-full w-16 h-16 focus:ring-4 focus:outline-none relative">
+					<svg class="w-5 h-5 transition-transform group-hover:rotate-45" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+					</svg>
+					<!-- Notification Dot -->
+					<span id="fab-notification-dot" class="hidden absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+					<span class="sr-only">Open actions menu</span>
+				</button>
+		</div>
 
 		{% block extra_body %}{% endblock extra_body %}
-
 		<footer class="mt-12 border-t border-gray-200 flex items-center">
 			<div class="mx-auto justify-center">
 				<h1>Contact</h1>
@@ -235,5 +268,129 @@
 				</aside>
 			</div>
 		</footer>
+
+				<!-- Speed Dial & Theme Switcher Script -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				// Speed Dial Menu Toggle
+				const speedDialButton = document.querySelector('.speeddial-button button[aria-expanded]');
+				const speedDialMenu = document.getElementById('speed-dial-menu-default');
+				
+				if (speedDialButton && speedDialMenu) {
+					speedDialButton.addEventListener('click', function() {
+						const isExpanded = speedDialButton.getAttribute('aria-expanded') === 'true';
+						
+						if (isExpanded) {
+							speedDialMenu.classList.add('hidden');
+							speedDialButton.setAttribute('aria-expanded', 'false');
+						} else {
+							speedDialMenu.classList.remove('hidden');
+							speedDialButton.setAttribute('aria-expanded', 'true');
+						}
+					});
+					
+					// Close menu when clicking outside
+					document.addEventListener('click', function(event) {
+						if (!event.target.closest('.speeddial-button')) {
+							speedDialMenu.classList.add('hidden');
+							speedDialButton.setAttribute('aria-expanded', 'false');
+						}
+					});
+				}
+				
+				// Theme Switcher
+				const themeToggle = document.getElementById('theme-toggle');
+				if (themeToggle) {
+					const html = document.documentElement;
+					const icon = themeToggle.querySelector('i');
+					
+					// Load saved theme or default to 'pastel'
+					const savedTheme = localStorage.getItem('theme') || 'pastel';
+					html.setAttribute('data-theme', savedTheme);
+					updateIcon(savedTheme);
+					
+					themeToggle.addEventListener('click', function() {
+						const currentTheme = html.getAttribute('data-theme');
+						const newTheme = currentTheme === 'pastel' ? 'night' : 'pastel';
+						
+						html.setAttribute('data-theme', newTheme);
+						localStorage.setItem('theme', newTheme);
+						updateIcon(newTheme);
+					});
+					
+					function updateIcon(theme) {
+						if (theme === 'night') {
+							icon.className = 'ph ph-moon text-2xl';
+						} else {
+							icon.className = 'ph ph-sun text-2xl';
+						}
+					}
+				}
+				
+				// Cart Counter & Notification System
+				const cartCounterBadge = document.getElementById('cart-counter-badge');
+				const fabNotificationDot = document.getElementById('fab-notification-dot');
+				
+				// Function to update cart count
+				function updateCartCount() {
+					// Get cart items from your cart system
+					// This depends on your cart implementation - could be localStorage, sessionStorage, or fetch from server
+					fetch('/orders/cart/count/')
+						.then(response => response.json())
+						.then(data => {
+							const count = data.count || 0;
+							
+							if (count > 0) {
+								cartCounterBadge.textContent = count;
+								cartCounterBadge.classList.remove('hidden');
+							} else {
+								cartCounterBadge.classList.add('hidden');
+							}
+						})
+						.catch(error => {
+							// Fallback to localStorage if endpoint doesn't exist yet
+							const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+							const count = cartItems.length;
+							
+							if (count > 0) {
+								cartCounterBadge.textContent = count;
+								cartCounterBadge.classList.remove('hidden');
+							} else {
+								cartCounterBadge.classList.add('hidden');
+							}
+						});
+				}
+				
+				// Function to show notification when item added to cart and FAB is closed
+				function showCartNotification() {
+					const isMenuOpen = speedDialButton.getAttribute('aria-expanded') === 'true';
+					
+					if (!isMenuOpen) {
+						fabNotificationDot.classList.remove('hidden');
+					}
+				}
+				
+				// Hide notification when menu is opened
+				if (speedDialButton) {
+					speedDialButton.addEventListener('click', function() {
+						fabNotificationDot.classList.add('hidden');
+					});
+				}
+				
+				// Listen for cart updates (custom event)
+				window.addEventListener('cartUpdated', function() {
+					updateCartCount();
+					showCartNotification();
+				});
+				
+				// Initial cart count load
+				updateCartCount();
+				
+				// Expose function globally so other scripts can trigger it
+				window.updateCartCount = updateCartCount;
+				window.showCartNotification = showCartNotification;
+			});
+		</script>
+
 	</body>
 </html>

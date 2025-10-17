@@ -4,7 +4,7 @@ Keep this file tidy: group and alphabetize imports, add simple placeholders
 and implement real views as features are developed.
 """
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from .models import Cart, Order
 
@@ -12,6 +12,29 @@ from .models import Cart, Order
 def index(request):
     """Simple placeholder view for the orders app."""
     return HttpResponse("Orders app is running.")
+
+
+def get_cart_count(request):
+    """API endpoint to get cart item count."""
+    # Get cart for user/session
+    if request.user.is_authenticated:
+        try:
+            cart = Cart.objects.get(user=request.user)
+            count = cart.total_items
+        except Cart.DoesNotExist:
+            count = 0
+    else:
+        session_key = request.session.session_key
+        if session_key:
+            try:
+                cart = Cart.objects.get(session_key=session_key)
+                count = cart.total_items
+            except Cart.DoesNotExist:
+                count = 0
+        else:
+            count = 0
+    
+    return JsonResponse({'count': count})
 
 
 def cart_view(request):
