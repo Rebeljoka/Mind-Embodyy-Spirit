@@ -32,7 +32,10 @@
                 onclick="document.getElementById('edit-event-{{ event.id }}').showModal()">
                 Edit
               </button>
-              <a href="#" class="btn btn-outline btn-error btn-disabled" aria-disabled="true">Delete</a>
+              <button type="button" class="btn btn-error"
+                onclick="document.getElementById('delete-event-{{ event.id }}').showModal()">
+                Delete
+              </button>
             </div>
 
             <dialog id="edit-event-{{ event.id }}" class="modal modal-middle" aria-labelledby="edit-title-{{ event.id }}" aria-modal="true">
@@ -73,6 +76,22 @@
               </div>
               <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md">
               </form>
+            </dialog>
+
+            <!-- Delete Confirmation Modal -->
+            <dialog id="delete-event-{{ event.id }}" class="modal modal-middle" aria-labelledby="delete-title-{{ event.id }}" aria-modal="true">
+              <div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-md mx-auto p-6">
+                <h3 id="delete-title-{{ event.id }}" class="font-semibold text-lg mb-2">Delete event?</h3>
+                <p class="text-base-content/70 mb-4">This action cannot be undone. Are you sure you want to delete “<span class="font-medium">{{ event.event_name }}</span>” scheduled on {{ event.event_date|date:"F d, Y" }}?</p>
+                <div class="modal-action">
+                  <form method="post" action="{% url 'events:event_delete' event.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-error">Yes, delete</button>
+                  </form>
+                  <button type="button" class="btn" onclick="document.getElementById('delete-event-{{ event.id }}').close()">Cancel</button>
+                </div>
+              </div>
+              <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md"></form>
             </dialog>
             {% endif %}
 

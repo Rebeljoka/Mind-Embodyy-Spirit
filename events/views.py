@@ -60,4 +60,18 @@ def event_edit_view(request, pk: int):
 
     # Default: we don't render a separate page for GET; return to list
     return redirect('events:events')
-    
+
+
+def event_delete(request, pk: int):
+    if not request.user.is_superuser:
+        messages.error(request, "You do not have permission to delete events.")
+        return redirect('events:events')
+
+    if request.method != "POST":
+        messages.error(request, "Invalid request method for delete.")
+        return redirect('events:events')
+
+    event = get_object_or_404(Event, pk=pk)
+    event.delete()
+    messages.success(request, 'Event deleted!')
+    return redirect('events:events')
