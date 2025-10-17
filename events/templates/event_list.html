@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load cloudinary %}
 {% load static %}
+
 {% block head_title %}Events - Const Collection{% endblock %}
 
 {% block content %}
@@ -25,6 +26,56 @@
             <h2 class="card-title">{{ event.event_name }}</h2>
             <p class="text-base-content/70"><strong>Date:</strong> {{ event.event_date|date:"F d, Y" }}</p>
             <p class="text-base-content/70"><strong>Location:</strong> {{ event.location }}</p>
+            {% if user.is_superuser %}
+            <div class="flex gap-2">
+              <button type="button" class="btn btn-primary"
+                onclick="document.getElementById('edit-event-{{ event.id }}').showModal()">
+                Edit
+              </button>
+              <a href="#" class="btn btn-outline btn-error btn-disabled" aria-disabled="true">Delete</a>
+            </div>
+
+            <dialog id="edit-event-{{ event.id }}" class="modal modal-middle" aria-labelledby="edit-title-{{ event.id }}" aria-modal="true">
+              <div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-2xl mx-auto p-6 md:p-8">
+                <div class="flex items-center justify-between mb-4 border-b border-base-300 pb-3">
+                  <h3 id="edit-title-{{ event.id }}" class="font-semibold text-xl">Edit Event</h3>
+                  <button type="button" class="btn btn-sm btn-circle btn-ghost" aria-label="Close"
+                    onclick="document.getElementById('edit-event-{{ event.id }}').close()">✕</button>
+                </div>
+                <form method="post" action="{% url 'events:event_edit' event.id %}" enctype="multipart/form-data" class="space-y-4">
+                  {% csrf_token %}
+                  <div class="form-control">
+                    <label class="label"><span class="label-text font-medium">Event name</span></label>
+                    <input name="event_name" type="text" required class="input input-bordered w-full"
+                      value="{{ event.event_name }}" />
+                  </div>
+                  <div class="form-control">
+                    <label class="label"><span class="label-text font-medium">Location</span></label>
+                    <input name="location" type="text" required class="input input-bordered w-full"
+                      value="{{ event.location }}" />
+                  </div>
+                  <div class="form-control">
+                    <label class="label"><span class="label-text font-medium">Event date</span></label>
+                    <input name="event_date" type="date" required class="input input-bordered w-full"
+                      value="{{ event.event_date|date:'Y-m-d' }}" min="{% now 'Y-m-d' %}" />
+                  </div>
+                  <div class="form-control">
+                    <label class="label"><span class="label-text font-medium">Poster (optional)</span></label>
+                    <input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/*" class="file-input file-input-bordered w-full" />
+                    <label class="label"><span class="label-text-alt text-base-content/70">Leave empty to keep current poster.</span></label>
+                  </div>
+
+                  <div class="modal-action">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('edit-event-{{ event.id }}').close()">Cancel</button>
+                  </div>
+                </form>
+              </div>
+              <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md">
+              </form>
+            </dialog>
+            {% endif %}
+
           </div>
         </article>
       {% endfor %}
