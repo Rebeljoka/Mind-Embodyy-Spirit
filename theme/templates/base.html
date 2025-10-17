@@ -129,6 +129,9 @@
 						<li>
 							<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
 						</li>
+						<li>
+							<a href="{% url 'events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"> {% trans "Home" %} </a>
+						</li>
 
 						{% if user.is_authenticated %}
 						<li><div class="divider"></div></li>
