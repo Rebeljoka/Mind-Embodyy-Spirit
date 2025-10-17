@@ -16,14 +16,12 @@ import shutil
 import dj_database_url
 import cloudinary
 import stripe  # noqa: F401
-import sys
-import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from env.py if it exists
-if os.path.exists(BASE_DIR / "env.py"):
+if os.path.exists("env.py"):
     import env  # noqa: F401
 
 # Quick-start development settings - unsuitable for production
@@ -35,7 +33,7 @@ if not SECRET_KEY:
     raise ValueError("The SECRET_KEY environment variable is not set.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+DEBUG = os.environ.get("DEBUG", "False")
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -328,38 +326,4 @@ CONTENT_SECURITY_POLICY_REPORT_ONLY = {
         ],
         'object-src': ["'none'"],
     }
-}
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
-            'formatter': 'verbose',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
 }
