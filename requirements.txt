@@ -11,6 +11,7 @@ cookiecutter==2.6.0
 dj-database-url==3.0.1
 Django==5.2
 django-allauth==65.12.0
+django-anymail==13.1
 django-browser-reload==1.21.0
 django-cloudinary-storage==0.3.0
 django-csp==4.0
