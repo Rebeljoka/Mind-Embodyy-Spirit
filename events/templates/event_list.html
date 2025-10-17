@@ -13,6 +13,51 @@
             <p class="text-lg text-base-content/70">See our upcoming events</p>
         </div>
 
+        {% if user.is_superuser %}
+        <div class="mb-8 flex justify-center">
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('new-event').showModal()">
+                Add event
+            </button>
+        </div>
+
+        <dialog id="new-event" class="modal modal-middle" aria-labelledby="new-title" aria-modal="true">
+          <div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-2xl mx-auto p-6 md:p-8">
+            <div class="flex items-center justify-between mb-4 border-b border-base-300 pb-3">
+              <h3 id="new-title" class="font-semibold text-xl">Add Event</h3>
+              <button type="button" class="btn btn-sm btn-circle btn-ghost" aria-label="Close"
+                onclick="document.getElementById('new-event').close()">✕</button>
+            </div>
+
+            <form method="post" action="{% url 'events:event_new' %}" enctype="multipart/form-data" class="space-y-4">
+              {% csrf_token %}
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Event name</span></label>
+                <input name="event_name" type="text" required class="input input-bordered w-full" placeholder="e.g. Art & Craft" />
+              </div>
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Location</span></label>
+                <input name="location" type="text" required class="input input-bordered w-full" placeholder="Venue, City" />
+              </div>
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Event date</span></label>
+                <input name="event_date" type="date" required class="input input-bordered w-full" min="{% now 'Y-m-d' %}" />
+              </div>
+              <div class="form-control">
+                <label class="label"><span class="label-text font-medium">Poster (optional)</span></label>
+                <input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/*" class="file-input file-input-bordered w-full" />
+                <label class="label"><span class="label-text-alt text-base-content/70">JPEG/PNG/WEBP up to 5MB.</span></label>
+              </div>
+
+              <div class="modal-action">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('new-event').close()">Cancel</button>
+              </div>
+            </form>
+          </div>
+          <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md"></form>
+        </dialog>
+        {% endif %}
+
   {% if events %}
     <div id="event-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {% for event in events %}
