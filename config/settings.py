@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
     'rest_framework',
+    'tailwind',
     # Local apps
     'gallery',
     'newsletter',
@@ -70,7 +71,6 @@ INSTALLED_APPS = [
 if DEBUG:
     # Add development-only apps
     INSTALLED_APPS += [
-        'tailwind',
         'django_browser_reload',
     ]
 
