@@ -130,7 +130,7 @@
 							<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
 						</li>
 						<li>
-							<a href="{% url 'events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"> {% trans "Home" %} </a>
+							<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"> {% trans "Events" %} </a>
 						</li>
 
 						{% if user.is_authenticated %}
