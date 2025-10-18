@@ -163,113 +163,6 @@
 				</li>
 				{% endif %}
 			</ul>
-=======
-	<body class="bg-gray-50 text-black font-serif leading-normal tracking-normal h-16">
-		<!-- Navbar -->
-		<nav class="navbar justify-between bg-base-300">
-			<!-- Logo -->
-			<a href="{% url 'index' %}" class="btn btn-ghost text-lg">
-				<img alt="Logo" src="{% static 'images/logo.webp' %}" class="w-4" />
-				Const Collection
-			</a>
-
-			<!-- Menu for mobile -->
-			<div class="dropdown dropdown-end sm:hidden">
-				<button class="btn btn-ghost">
-					<i class="fa-solid fa-bars text-lg"></i>
-				</button>
-
-				<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
-					<div class="flex justify-center gap-2">
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black;">
-							<i class="ph ph-envelope text-white"></i>
-						</a>
-
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue;">
-							<i class="ph ph-facebook-logo text-white"></i>
-						</a>
-
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none;">
-							<i class="ph ph-instagram-logo text-white"></i>
-						</a>
-
-						<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red;">
-							<i class="ph ph-youtube-logo text-white"></i>
-						</a>
-					</div>
-
-					<li><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
-					<li><a href="{% url 'gallery:collection' %}">{% trans "Gallery" %}</a></li>
-					<li><a>{% trans "About" %}</a></li>
-					<li><a>{% trans "Contact" %}</a></li>
-					
-					{% if user.is_authenticated %}
-						<div class="divider"></div>
-						<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
-						<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
-						<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
-					{% else %}
-						<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
-						<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
-					{% endif %}
-				</ul>
-			</div>
-
-			<!-- Menu for desktop -->
-			<ul class="sm:menu-horizontal sm:flex gap-2">
-				<li><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
-				<li><a href="{% url 'gallery:collection' %}">{% trans "Gallery" %}</a></li>
-				<li><a>{% trans "About" %}</a></li>
-				<li><a>{% trans "Contact" %}</a></li>
-				
-				{% if user.is_authenticated %}
-					<div class="dropdown dropdown-end">
-						<label tabindex="0" class="btn btn-sm btn-ghost">
-							<i class="ph ph-user-circle text-xl"></i>
-							{{ user.username }}
-						</label>
-						<ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-52">
-							<li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
-							<li><a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a></li>
-							<li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
-						</ul>
-					</div>
-				{% else %}
-					<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
-					<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
-				{% endif %}
-			</ul>
-
-			<div class="hidden sm:flex gap-2">
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black;">
-					<i class="ph ph-envelope text-white"></i>
-				</a>
-
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue;">
-					<i class="ph ph-facebook-logo text-white"></i>
-				</a>
-
-                <a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none;">
-					<i class="ph ph-instagram-logo text-white"></i>
-				</a>
-
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red;">
-					<i class="ph ph-youtube-logo text-white"></i>
-				</a>
-			</div>
-		</nav>
-
-		{# Messages notification #}
-		{% if messages %}
-		<div class="container mx-auto px-4 py-2">
-			{% for message in messages %}
-			<div class="alert alert-{{ message.tags|default:'info' }} shadow-lg mb-2">
-				<div>
-					<span>{{ message }}</span>
-				</div>
-			</div>
-			{% endfor %}
->>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 		</div>
 
 		<!-- Main Content -->
@@ -315,12 +208,6 @@
 				<p>To contact me for gallery bookings, artist talks, purachases or art viewings please email me or my curator.</p>
 				<p>Email: cecilia.kristoffersson71@gmail.com</p>
 			</div>
-=======
-		<main class="w-full">
-			{% block content %}
-			{% endblock content %}
-		</main>
->>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
 
 			<div class="dropdown dropdown-end lg:hidden">
 				<button class="btn btn-ghost">

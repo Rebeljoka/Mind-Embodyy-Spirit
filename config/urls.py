@@ -28,12 +28,6 @@ urlpatterns = [
     path('gallery/', include('gallery.urls')),
     path('events/', include('events.urls')),
     path('newsletter/', include('newsletter.urls')),
-    # Root landing page
-    path(
-        '',
-        TemplateView.as_view(template_name='core/index.html'),
-        name='index',
-    ),
 ]
 
 if settings.DEBUG:

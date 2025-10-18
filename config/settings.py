@@ -17,12 +17,15 @@ import dj_database_url
 import cloudinary
 import stripe  # noqa: F401
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from env.py if it exists
 if os.path.exists("env.py"):
     import env  # noqa: F401
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -41,6 +44,7 @@ ALLOWED_HOSTS = [
     '*.herokuapp.com',
     'mind-embodyy-spirit-92af4b6525c8.herokuapp.com',
 ]
+
 
 # Application definition
 
@@ -263,11 +267,8 @@ ORDERS_JSON_ONLY_VIEWS = [
     "orders-create",
 ]
 
-# ========================
-# Email configuration - Newsletter app uses this
-# ========================
 
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+# Email configuration - Newsletter app uses this
 
 if DEBUG:
     # Development: print emails to console
@@ -287,8 +288,6 @@ ANYMAIL = {
     "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY", ""),  # can be empty in DEBUG
 }
 
-
-# ========================
 
 # Redirect users to the previous page after login if possible,
 # otherwise to home
