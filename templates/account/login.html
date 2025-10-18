@@ -72,18 +72,17 @@
 						{% endif %}
 					</div>
 
-					<!-- Remember Me Checkbox -->
-					<div class="form-control">
-						<label class="label cursor-pointer justify-start gap-2">
-							<input type="checkbox" name="remember" id="id_remember"
-								class="checkbox checkbox-primary checkbox-sm" {% if form.remember.value %}checked{%
-								endif %} />
-							<span class="label-text">{% trans "Remember me" %}</span>
-						</label>
-					</div>
+				<!-- Remember Me Checkbox -->
+				<div class="form-control">
+					<label class="label cursor-pointer justify-start gap-2">
+						<input type="checkbox" name="remember" id="id_remember"
+							class="checkbox checkbox-primary checkbox-sm" {% if form.remember.value %}checked{% endif %} />
+						<span class="label-text">{% trans "Remember me" %}</span>
+					</label>
+				</div>
 
-					<!-- Submit Button -->
-					<button type="submit" class="btn btn-primary w-full">
+				<!-- Submit Button -->
+				<button type="submit" class="btn btn-primary w-full">
 						{% trans "Sign in" %}
 					</button>
 
