@@ -55,7 +55,7 @@
                             <i class="ph ph-pencil mr-1"></i>
                             Edit
                         </a>
-                        <button onclick="confirmDelete({{ painting.id }}, '{{ painting.title }}')"
+                        <button onclick="confirmDelete('{{ painting.id }}', '{{ painting.title|escapejs }}')"
                                 class="btn btn-sm btn-outline btn-error">
                             <i class="ph ph-trash mr-1"></i>
                             Delete

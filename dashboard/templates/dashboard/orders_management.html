@@ -82,15 +82,15 @@
                                             <i class="ph ph-dots-three"></i>
                                         </button>
                                         <ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-48">
-                                            <li><a href="#" onclick="viewOrderDetails({{ order.id }})">View Details</a></li>
+                                            <li><a href="#" onclick="viewOrderDetails('{{ order.id }}')">View Details</a></li>
                                             {% if order.status == 'pending' %}
-                                            <li><a href="#" onclick="updateOrderStatus({{ order.id }}, 'processing')">Mark Processing</a></li>
-                                            <li><a href="#" onclick="updateOrderStatus({{ order.id }}, 'completed')">Mark Completed</a></li>
+                                            <li><a href="#" onclick="updateOrderStatus('{{ order.id }}', 'processing')">Mark Processing</a></li>
+                                            <li><a href="#" onclick="updateOrderStatus('{{ order.id }}', 'completed')">Mark Completed</a></li>
                                             {% endif %}
                                             {% if order.status == 'processing' %}
-                                            <li><a href="#" onclick="updateOrderStatus({{ order.id }}, 'completed')">Mark Completed</a></li>
+                                            <li><a href="#" onclick="updateOrderStatus('{{ order.id }}', 'completed')">Mark Completed</a></li>
                                             {% endif %}
-                                            <li><a href="#" onclick="updateOrderStatus({{ order.id }}, 'cancelled')" class="text-error">Cancel Order</a></li>
+                                            <li><a href="#" onclick="updateOrderStatus('{{ order.id }}', 'cancelled')" class="text-error">Cancel Order</a></li>
                                         </ul>
                                     </div>
                                 </td>

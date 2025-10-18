@@ -279,12 +279,15 @@ else:
     EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
 
 # Common settings (apply in all environments)
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@default.com")
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DEFAULT_FROM_EMAIL", "noreply@default.com"
+)
 SITE_URL = os.environ.get("SITE_URL", "http://localhost:8000")
 
-# 👇 This part tells Anymail how to connect to SendGrid
+# 👇 This part tells Anymail how to connect to SendGrid.
+# The SENDGRID_API_KEY can be empty in DEBUG.
 ANYMAIL = {
-    "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY", ""),  # can be empty in DEBUG
+    "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY", ""),
 }
 
 

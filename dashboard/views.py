@@ -43,7 +43,8 @@ def generate_unique_slug(title, exclude_id=None):
     return slug
 
 
-def log_activity(request, action, item_type, item_id, item_name, description=""):
+def log_activity(request, action, item_type, item_id, item_name,
+                 description=""):
     """Log an administrative activity."""
     try:
         ActivityLog.objects.create(
@@ -232,7 +233,8 @@ def edit_artwork(request, artwork_id):
                 )
                 log_activity(
                     request, 'status_change', 'painting', painting.id,
-                    painting.title, f'Status changed from {old_status} to {painting.status}'
+                    painting.title,
+                    f'Status changed from {old_status} to {painting.status}'
                 )
             else:
                 messages.success(
@@ -272,7 +274,9 @@ def delete_artwork(request, artwork_id):
 
     try:
         painting.delete()
-        messages.success(request, f'Artwork "{painting.title}" deleted successfully!')
+        messages.success(
+            request, f'Artwork "{painting.title}" deleted successfully!'
+        )
         log_activity(
             request, 'delete', 'painting', painting.id,
             painting.title, 'Artwork permanently deleted'
@@ -363,7 +367,9 @@ def create_event(request):
                 event_date=event_date,
                 poster=poster,
             )
-            messages.success(request, f'Event "{event.event_name}" created successfully!')
+            messages.success(
+                request, f'Event "{event.event_name}" created successfully!'
+            )
             log_activity(
                 request, 'create', 'event', event.id,
                 event.event_name, f'Event created for {event.event_date}'
@@ -391,7 +397,9 @@ def edit_event(request, event_id):
 
         try:
             event.save()
-            messages.success(request, f'Event "{event.event_name}" updated successfully!')
+            messages.success(
+                request, f'Event "{event.event_name}" updated successfully!'
+            )
             log_activity(
                 request, 'update', 'event', event.id,
                 event.event_name, 'Event details updated'
@@ -416,7 +424,9 @@ def delete_event(request, event_id):
 
     try:
         event.delete()
-        messages.success(request, f'Event "{event.event_name}" deleted successfully!')
+        messages.success(
+            request, f'Event "{event.event_name}" deleted successfully!'
+        )
         log_activity(
             request, 'delete', 'event', event.id,
             event.event_name, 'Event permanently deleted'
@@ -515,7 +525,8 @@ def order_details(request, order_id):
         'created_at': order.created_at.strftime('%Y-%m-%d %H:%M:%S'),
         'updated_at': order.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
         'customer': {
-            'name': order.user.get_full_name() if order.user else 'Guest Customer',
+            'name': (order.user.get_full_name() if order.user
+                     else 'Guest Customer'),
             'email': order.user.email if order.user else order.guest_email,
             'username': order.user.username if order.user else None,
         },

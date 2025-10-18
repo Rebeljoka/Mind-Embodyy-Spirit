@@ -22,7 +22,11 @@ urlpatterns = [
     path('events/delete/<int:event_id>/',
          views.delete_event, name='delete_event'),
     path('orders/', views.orders_management, name='orders_management'),
-    path('orders/<int:order_id>/details/', views.order_details, name='order_details'),
+    path(
+        'orders/<int:order_id>/details/',
+        views.order_details,
+        name='order_details'
+    ),
     path('orders/<int:order_id>/update-status/',
          views.update_order_status, name='update_order_status'),
     path('artist-admin/', views.frontend_admin, name='artist_admin'),
