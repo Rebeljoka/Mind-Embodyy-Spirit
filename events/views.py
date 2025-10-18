@@ -13,7 +13,7 @@ from django.core.paginator import Paginator
 
 def event_list_view(request):
     """
-    Displays a list of events with dates that are 
+    Displays a list of events with dates that are
     either in the past or today.
     """
     # Show upcoming events (today and future), ordered soonest first
@@ -64,6 +64,7 @@ def event_edit_view(request, pk: int):
 
     # Default: we don't render a separate page for GET; return to list
     return redirect('events:events')
+
 
 """Delete Events"""
 
