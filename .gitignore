@@ -231,3 +231,7 @@ __marimo__/
 .DS_Store
 .AppleDouble
 .LSOverride
+env.py
+env.py
+pycache/
+*.pyc

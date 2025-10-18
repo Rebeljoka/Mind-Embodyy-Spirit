@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Subscribe{% endblock %}
+{% block content %}
+<section class="mx-auto max-w-2xl px-4 py-12">
+    <h1 class="text-3xl font-semibold tracking-tight mb-3">Subscribe to the artist’s newsletter</h1>
+    <p class="text-gray-600 mb-6">Get updates on new releases, exhibitions, and studio news.</p>
+    <form id="nl-form" class="flex gap-3" onsubmit="return false;">
+        {% csrf_token %}
+        <input id="nl-email" type="email" required placeholder="Your email"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            aria-label="Email">
+        <button id="nl-submit" type="button"
+            class="inline-flex items-center justify-center rounded-md bg-black px-4 py-2 text-white hover:bg-gray-900">
+            Subscribe
+        </button>
+    </form>
+    <p id="nl-msg" class="mt-4 text-sm"></p>
+</section>
+<script>
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    const emailEl = document.getElementById('nl-email');
+    const msgEl = document.getElementById('nl-msg');
+    const btn = document.getElementById('nl-submit');
+
+    btn.onclick = async () => {
+        const email = emailEl.value.trim();
+        if (!email) {
+            msgEl.textContent = 'Please enter a valid email.';
+            msgEl.className = 'mt-4 text-sm text-red-600';
+            return;
+        }
+        btn.disabled = true;
+        btn.classList.add('opacity-60', 'cursor-not-allowed');
+        try {
+            const res = await fetch("{% url 'newsletter:subscribe' %}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                credentials: 'same-origin',
+                body: JSON.stringify({ email })
+            });
+            if (res.ok) {
+                msgEl.textContent = 'Check your email to confirm your subscription.';
+                msgEl.className = 'mt-4 text-sm text-green-700';
+            } else {
+                msgEl.textContent = 'There was a problem—please try again.';
+                msgEl.className = 'mt-4 text-sm text-red-600';
+            }
+        } catch (e) {
+            msgEl.textContent = 'Network error—please try again.';
+            msgEl.className = 'mt-4 text-sm text-red-600';
+        } finally {
+            btn.disabled = false;
+            btn.classList.remove('opacity-60', 'cursor-not-allowed');
+        }
+    };
+</script>
+
+
+
+{% endblock %}
