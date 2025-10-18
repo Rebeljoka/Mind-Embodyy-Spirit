@@ -47,7 +47,7 @@
 
 	<body class="font-serif leading-normal tracking-normal flex flex-col min-h-screen">
 		<!-- Navbar -->
-		<nav class="navbar justify-between bg-base-300 relative sticky top-0 backdrop-blur-md shadow z-50">
+		<nav class="navbar justify-between bg-base-300/70 relative sticky top-0 backdrop-blur-sm shadow z-50">
 			<!-- Logo -->
 			<div class="inline-flex">
 				<a href="{% url 'index' %}" class="btn btn-ghost text-lg bg-white text-black">
@@ -90,16 +90,16 @@
 					<i class="ph ph-shopping-cart text-lg"></i>
 				</a>
 
-				<div class="inline-flex">
-					<span class="ph ph-line-vertical h-full-auto"></span>
-				</div>
+			<div class="inline-flex">
+				<span class="ph ph-line-vertical h-full-auto"></span>
+			</div>
 
-				<div class="dropdown dropdown-end lg:hidden">
-					<button class="btn btn-ghost">
-						{% trans "Menu" %}
-						<i class="ph ph-dots-three-outline-vertical text-lg"></i>
-					</button>
-					<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
+			<div class="dropdown dropdown-end lg:hidden">
+				<button tabindex="0" class="btn btn-ghost">
+					{% trans "Menu" %}
+					<i class="ph ph-dots-three-outline-vertical text-lg"></i>
+				</button>
+				<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
 						<li>
 							<div class="flex justify-center gap-2">
 								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black" href="mailto:cecilia.kristoffersson71@gmail.com" target="_blank" rel="noopener noreferrer" aria-label="Email">
@@ -118,16 +118,16 @@
 						</li>
 
 						<li>
-							<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
+							<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}bg-base-300 font-bold{% endif %}"> {% trans "Home" %} </a>
 						</li>
 						<li>
-							<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
+							<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}bg-base-300 font-bold{% endif %}"> {% trans "Gallery" %} </a>
 						</li>
 						<li>
-							<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"> {% trans "Events" %} </a>
+							<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}bg-base-300 font-bold{% endif %}"> {% trans "Events" %} </a>
 						</li>
 						<li>
-							<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
+							<a class="{% if request.resolver_match.url_name == 'contact' %}bg-base-300 font-bold{% endif %}"> {% trans "Contact" %} </a>
 						</li>
 
 						{% if user.is_authenticated %}
@@ -154,24 +154,18 @@
 			</div>
 
 			<!-- Menu for desktop -->
-			<ul class="hidden lg:flex menu-horizontal gap-2 absolute left-1/2 transform -translate-x-1/2">
+			<ul class="hidden lg:flex menu menu-horizontal gap-2 absolute left-1/2 transform -translate-x-1/2">
 				<li>
-					<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans "Home" %} </a>
+					<a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}bg-base-300 font-bold{% endif %}"> {% trans "Home" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans "Gallery" %} </a>
+					<a href="{% url 'gallery:collection' %}" class="{% if request.resolver_match.url_name == 'collection' %}bg-base-300 font-bold{% endif %}"> {% trans "Gallery" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'orders:cart_page' %}" class="{% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}">
-						<i class="ph ph-shopping-cart text-lg"></i>
-						{% trans "Cart" %}
-					</a>
+					<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}bg-base-300 font-bold{% endif %}"> {% trans "Events" %} </a>
 				</li>
 				<li>
-					<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}"> {% trans "Events" %} </a>
-				</li>
-				<li>
-					<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans "Contact" %} </a>
+					<a class="{% if request.resolver_match.url_name == 'contact' %}bg-base-300 font-bold{% endif %}"> {% trans "Contact" %} </a>
 				</li>
 			</ul>
 

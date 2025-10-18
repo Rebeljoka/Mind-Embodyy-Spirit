@@ -1,23 +1,44 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% load static %} {% block head_title %}Home - Const Collection | Art By Cecilia K.{% endblock head_title %} {% block content %}
 
-{% block head_title %}Home - Const Collection | Art By Cecilia K.{% endblock head_title %}
+<section class="relative min-h-screen bg-base-100">
+	<!-- Background Image -->
+	<div class="absolute inset-0 w-full h-[100dvh] lg:h-full md:h-lvh sm:h-lvh z-0">
+		<img src="{% static 'images/hero.webp' %}" alt="Const Collection Logo" class="w-full h-full object-cover" />
+	</div>
 
-{% block content %}
+	<!-- Content -->
+	<div class="relative z-10 w-full flex flex-col items-center mt-12 md:mt-20">
+		<h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12">Const Collection | Art By Cecilia K.</h1>
+		
+		<!-- Videos -->
+		<div class="mt-16 w-full flex flex-row justify-evenly items-center gap-6 px-6">
+			<!-- Video 1: Always visible -->
+			<div class="image-frame max-w-lg">
+				<video src="{% static 'media/blue.mp4' %}" controls autoplay muted loop class="w-full h-auto"></video>
+			</div>
 
-    <h1 class="text-4xl font-bold text-center mt-10">Const Collection | Art By Cecilia K.</h1>
+			<!-- Video 2: Hidden on mobile, shown from md (tablet) up -->
+			<div class="image-frame max-w-lg">
+				<video src="{% static 'media/jikinya2023.mp4' %}" controls autoplay muted loop class="w-full h-auto"></video>
+			</div>
 
-    <section class="min-h-screen bg-base-100 flex items-center justify-center py-12 px-4">
-        <div class="text-center">
-            <p class="text-lg mb-6">Welcome to Const Collection, the online gallery showcasing the exquisite artwork of Cecilia K. Explore a curated selection of paintings that capture the essence of creativity and emotion.</p>
-            <a href="{% url 'gallery:collection' %}" class="btn btn-primary btn-lg">Explore the Gallery</a>
-        </div>
-    </section>
+			<!-- Video 3: Hidden on mobile/tablet, shown from lg (desktop) up -->
+			<div class="image-frame max-w-lg">
+				<video src="{% static 'media/obsidian2024.mp4' %}" controls autoplay muted loop class="w-full h-auto"></video>
+			</div>
+		</div>
+		
+		<!-- Welcome Text -->
+		<div class="text-center px-4 max-w-4xl mt-20">
+			<h2 class="text-xl md:text-xl mb-6">Welcome to Const Collection, the online gallery showcasing the exquisite artwork of Cecilia K. Explore a curated selection of paintings that capture the essence of creativity and emotion.</h2>
+			<a href="{% url 'gallery:collection' %}" class="btn btn-primary btn-lg">Explore the Gallery</a>
+		</div>
+	</div>
+</section>
 
-    <section class="grid grid-cols-3 gap-4">
-        <div class="col-span-1">
-        </div>
-        <div class="col-span-2">
-        </div>
-    </section>
+<section class="grid grid-cols-3 gap-4">
+	<div class="col-span-1"></div>
+	<div class="col-span-2"></div>
+</section>
 
 {% endblock content %}

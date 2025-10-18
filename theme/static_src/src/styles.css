@@ -8,7 +8,11 @@
    2. TAILWIND + DAISYUI + CUSTOM STYLES
    ========================================================= */
 
-@source "../../../../**/*.{html,py,js}";
+@source "../../../../templates/**/*.html";
+@source "../../../../**/templates/**/*.html";
+@source "../../../../theme/static_src/**/*.{js,ts}";
+@source "../../../../static/js/**/*.{js,ts}";
+
 @import "tailwindcss";
 @plugin "daisyui" {
   themes: all;
@@ -18,6 +22,14 @@
 
 /* your custom site CSS */
 @import "../../../static/css/styles.css";
+
+@theme {
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
 
 /*
   Tailwind v4 changes:
@@ -30,6 +42,25 @@
 */
 
 /* Your custom CSS and utility classes can follow below. */
+
+:root {
+    --Headers: 'Playfair Display SC', serif;
+    --UI: 'Poppins', sans-serif;
+    --Body: 'Raleway', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--Headers);
+}
+
+button, .btn {
+    font-family: var(--UI);
+}
+
+p, span, li, a, body {
+    font-family: var(--Body);
+}
+
 
 @plugin "daisyui/theme" {
   name: "pastel";
@@ -99,4 +130,56 @@
   --border: 1.5px;
   --depth: 1;
   --noise: 1;
+}
+
+
+/* Image Frame Effect */
+.image-frame {
+    display: inline-block;
+    background-color: #ddc;
+    border: solid 1.5rem #eee;
+    border-bottom-color: #fff;
+    border-left-color: #eee;
+    border-radius: 2px;
+    border-right-color: #eee;
+    border-top-color: #ddd;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,.25) inset, 0 5px 10px 5px rgba(0,0,0,.25);
+    box-sizing: border-box;
+    padding: 1rem;
+    position: relative;
+    text-align: center;
+}
+
+.image-frame::before {
+    border-radius: 2px;
+    bottom: -0.5rem;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.25) inset;
+    content: "";
+    left: -0.5rem;
+    position: absolute;
+    right: -0.5rem;
+    top: -0.5rem;
+}
+
+.image-frame::after {
+    border-radius: 2px;
+    bottom: -0.75rem;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.25);
+    content: "";
+    left: -0.75rem;
+    position: absolute;
+    right: -0.75rem;
+    top: -0.75rem;
+}
+
+.image-frame img,
+.image-frame video {
+    border: solid 2px;
+    border-bottom-color: #ffe;
+    border-left-color: #eed;
+    border-right-color: #eed;
+    border-top-color: #ccb;
+    max-height: 100%;
+    max-width: 100%;
+    display: block;
 }

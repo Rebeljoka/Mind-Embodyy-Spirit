@@ -1,179 +1,199 @@
-{% extends "base.html" %}
-{% load cloudinary %}
-{% load static %}
+{% extends "base.html" %} {% load cloudinary %} {% load static %} {% block head_title %}Events - Const Collection{% endblock %} {% block content %}
 
-{% block head_title %}Events - Const Collection{% endblock %}
+<section class="container mx-auto px-4 py-8 min-h-screen">
+	<!-- Page Title -->
+	<div class="text-center mb-12">
+		<h1 class="text-4xl md:text-5xl font-bold mb-4">Events</h1>
+		<p class="text-lg text-base-content/70">See our upcoming events</p>
+	</div>
 
-{% block content %}
+	{% if user.is_superuser %}
+	<div class="mb-8 flex justify-center">
+		<button type="button" class="btn btn-primary" onclick="document.getElementById('new-event').showModal()">Add event</button>
+	</div>
 
-<section class="container mx-auto px-4 py-8">
-        <!-- Page Title -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Events</h1>
-            <p class="text-lg text-base-content/70">See our upcoming events</p>
-        </div>
+	<dialog id="new-event" class="modal modal-middle" aria-labelledby="new-title" aria-modal="true">
+		<div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-2xl mx-auto p-6 md:p-8">
+			<div class="flex items-center justify-between mb-4 border-b border-base-300 pb-3">
+				<h3 id="new-title" class="font-semibold text-xl">Add Event</h3>
+				<button type="button" class="btn btn-sm btn-circle btn-ghost" aria-label="Close" onclick="document.getElementById('new-event').close()">✕</button>
+			</div>
 
-        {% if user.is_superuser %}
-        <div class="mb-8 flex justify-center">
-            <button type="button" class="btn btn-primary" onclick="document.getElementById('new-event').showModal()">
-                Add event
-            </button>
-        </div>
+			<form method="post" action="{% url 'events:event_new' %}" enctype="multipart/form-data" class="space-y-4">
+				{% csrf_token %}
+				<div class="form-control">
+					<label class="label"><span class="label-text font-medium">Event name</span></label>
+					<input name="event_name" type="text" required class="input input-bordered w-full" placeholder="e.g. Art & Craft" />
+				</div>
+				<div class="form-control">
+					<label class="label"><span class="label-text font-medium">Location</span></label>
+					<input name="location" type="text" required class="input input-bordered w-full" placeholder="Venue, City" />
+				</div>
+				<div class="form-control">
+					<label class="label"><span class="label-text font-medium">Event date</span></label>
+					<input name="event_date" type="date" required class="input input-bordered w-full" min="{% now 'Y-m-d' %}" />
+				</div>
+				<div class="form-control">
+					<label class="label"><span class="label-text font-medium">Poster (optional)</span></label>
+					<input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/*" class="file-input file-input-bordered w-full" />
+					<label class="label"><span class="label-text-alt text-base-content/70">JPEG/PNG/WEBP up to 5MB.</span></label>
+				</div>
 
-        <dialog id="new-event" class="modal modal-middle" aria-labelledby="new-title" aria-modal="true">
-          <div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-2xl mx-auto p-6 md:p-8">
-            <div class="flex items-center justify-between mb-4 border-b border-base-300 pb-3">
-              <h3 id="new-title" class="font-semibold text-xl">Add Event</h3>
-              <button type="button" class="btn btn-sm btn-circle btn-ghost" aria-label="Close"
-                onclick="document.getElementById('new-event').close()">✕</button>
-            </div>
+				<div class="modal-action">
+					<button type="submit" class="btn btn-primary">Create</button>
+					<button type="button" class="btn btn-ghost" onclick="document.getElementById('new-event').close()">Cancel</button>
+				</div>
+			</form>
+		</div>
+		<form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md"></form>
+	</dialog>
+	{% endif %} {% if events %}
+	<div id="event-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+		{% for event in events %}
+		<article class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
+			{% if event.poster %}
+			<figure class="relative w-full overflow-hidden rounded-t-2xl" style="padding-top: 134.833%">
+				<img src="{{ event.poster.url }}" alt="Poster for {{ event.event_name }}" class="absolute inset-0 w-full h-full object-cover" />
+			</figure>
+			{% endif %}
+			<div class="card-body">
+				<h2 class="card-title">{{ event.event_name }}</h2>
+				<p class="text-base-content/70"><strong>Date:</strong> {{ event.event_date|date:"F d, Y" }}</p>
+				<p class="text-base-content/70"><strong>Location:</strong> {{ event.location }}</p>
+				{% if user.is_superuser %}
+				<div class="flex gap-2">
+					<button type="button" class="btn btn-primary" onclick="document.getElementById('edit-event-{{ event.id }}').showModal()">Edit</button>
+					<button type="button" class="btn btn-error" onclick="document.getElementById('delete-event-{{ event.id }}').showModal()">Delete</button>
+				</div>
 
-            <form method="post" action="{% url 'events:event_new' %}" enctype="multipart/form-data" class="space-y-4">
-              {% csrf_token %}
-              <div class="form-control">
-                <label class="label"><span class="label-text font-medium">Event name</span></label>
-                <input name="event_name" type="text" required class="input input-bordered w-full" placeholder="e.g. Art & Craft" />
-              </div>
-              <div class="form-control">
-                <label class="label"><span class="label-text font-medium">Location</span></label>
-                <input name="location" type="text" required class="input input-bordered w-full" placeholder="Venue, City" />
-              </div>
-              <div class="form-control">
-                <label class="label"><span class="label-text font-medium">Event date</span></label>
-                <input name="event_date" type="date" required class="input input-bordered w-full" min="{% now 'Y-m-d' %}" />
-              </div>
-              <div class="form-control">
-                <label class="label"><span class="label-text font-medium">Poster (optional)</span></label>
-                <input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/*" class="file-input file-input-bordered w-full" />
-                <label class="label"><span class="label-text-alt text-base-content/70">JPEG/PNG/WEBP up to 5MB.</span></label>
-              </div>
+				<dialog id="edit-event-{{ event.id }}" class="modal modal-middle" aria-labelledby="edit-title-{{ event.id }}" aria-modal="true">
+					<div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-2xl mx-auto p-6 md:p-8">
+						<div class="flex items-center justify-between mb-4 border-b border-base-300 pb-3">
+							<h3 id="edit-title-{{ event.id }}" class="font-semibold text-xl">Edit Event</h3>
+							<button type="button" class="btn btn-sm btn-circle btn-ghost" aria-label="Close" onclick="document.getElementById('edit-event-{{ event.id }}').close()">✕</button>
+						</div>
+						<form method="post" action="{% url 'events:event_edit' event.id %}" enctype="multipart/form-data" class="space-y-4">
+							{% csrf_token %}
+							<div class="form-control">
+								<label class="label"><span class="label-text font-medium">Event name</span></label>
+								<input name="event_name" type="text" required class="input input-bordered w-full" value="{{ event.event_name }}" />
+							</div>
+							<div class="form-control">
+								<label class="label"><span class="label-text font-medium">Location</span></label>
+								<input name="location" type="text" required class="input input-bordered w-full" value="{{ event.location }}" />
+							</div>
+							<div class="form-control">
+								<label class="label"><span class="label-text font-medium">Event date</span></label>
+								<input name="event_date" type="date" required class="input input-bordered w-full" value="{{ event.event_date|date:'Y-m-d' }}" min="{% now 'Y-m-d' %}" />
+							</div>
+							<div class="form-control">
+								<label class="label"><span class="label-text font-medium">Poster (optional)</span></label>
+								<input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/*" class="file-input file-input-bordered w-full" />
+								<label class="label"><span class="label-text-alt text-base-content/70">Leave empty to keep current poster.</span></label>
+							</div>
 
-              <div class="modal-action">
-                <button type="submit" class="btn btn-primary">Create</button>
-                <button type="button" class="btn btn-ghost" onclick="document.getElementById('new-event').close()">Cancel</button>
-              </div>
-            </form>
-          </div>
-          <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md"></form>
-        </dialog>
-        {% endif %}
+							<div class="modal-action">
+								<button type="submit" class="btn btn-primary">Save</button>
+								<button type="button" class="btn btn-ghost" onclick="document.getElementById('edit-event-{{ event.id }}').close()">Cancel</button>
+							</div>
+						</form>
+					</div>
+					<form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md"></form>
+				</dialog>
 
-  {% if events %}
-    <div id="event-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {% for event in events %}
-        <article class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
-          {% if event.poster %}
-            <figure class="relative w-full overflow-hidden rounded-t-2xl" style="padding-top: 134.833%;">
-              <img src="{{ event.poster.url }}" alt="Poster for {{ event.event_name }}" class="absolute inset-0 w-full h-full object-cover" />
-            </figure>
-          {% endif %}
-          <div class="card-body">
-            <h2 class="card-title">{{ event.event_name }}</h2>
-            <p class="text-base-content/70"><strong>Date:</strong> {{ event.event_date|date:"F d, Y" }}</p>
-            <p class="text-base-content/70"><strong>Location:</strong> {{ event.location }}</p>
-            {% if user.is_superuser %}
-            <div class="flex gap-2">
-              <button type="button" class="btn btn-primary"
-                onclick="document.getElementById('edit-event-{{ event.id }}').showModal()">
-                Edit
-              </button>
-              <button type="button" class="btn btn-error"
-                onclick="document.getElementById('delete-event-{{ event.id }}').showModal()">
-                Delete
-              </button>
-            </div>
+				<!-- Delete Confirmation Modal -->
+				<dialog id="delete-event-{{ event.id }}" class="modal modal-middle" aria-labelledby="delete-title-{{ event.id }}" aria-modal="true">
+					<div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-md mx-auto p-6">
+						<h3 id="delete-title-{{ event.id }}" class="font-semibold text-lg mb-2">Delete event?</h3>
+						<p class="text-base-content/70 mb-4">This action cannot be undone. Are you sure you want to delete “<span class="font-medium">{{ event.event_name }}</span>” scheduled on {{ event.event_date|date:"F d, Y" }}?</p>
+						<div class="modal-action">
+							<form method="post" action="{% url 'events:event_delete' event.id %}">
+								{% csrf_token %}
+								<button type="submit" class="btn btn-error">Yes, delete</button>
+							</form>
+							<button type="button" class="btn" onclick="document.getElementById('delete-event-{{ event.id }}').close()">Cancel</button>
+						</div>
+					</div>
+					<form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md"></form>
+				</dialog>
+				{% endif %}
+			</div>
+		</article>
+		{% endfor %}
+	</div>
+	{% if page_obj.paginator.num_pages > 1 %}
+	<nav class="mt-10 flex items-center justify-center gap-2" aria-label="Pagination">
+		{# Previous #} {% if page_obj.has_previous %}
+		<a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm">« Prev</a>
+		{% else %}
+		<button class="btn btn-sm btn-disabled" disabled>« Prev</button>
+		{% endif %} {# Page numbers #} {% for num in page_obj.paginator.page_range %} {% if num == page_obj.number %}
+		<button class="btn btn-sm btn-primary" aria-current="page">{{ num }}</button>
+		{% else %}
+		<a href="?page={{ num }}" class="btn btn-sm">{{ num }}</a>
+		{% endif %} {% endfor %} {# Next #} {% if page_obj.has_next %}
+		<a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm">Next »</a>
+		{% else %}
+		<button class="btn btn-sm btn-disabled" disabled>Next »</button>
+		{% endif %}
+	</nav>
+	{% endif %} {% else %}
+	<section class="w-full py-12 flex justify-center">
+		<p class="text-center">There are no events to display.</p>
+	</section>
+	{% endif %}
+</section>
 
-            <dialog id="edit-event-{{ event.id }}" class="modal modal-middle" aria-labelledby="edit-title-{{ event.id }}" aria-modal="true">
-              <div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-2xl mx-auto p-6 md:p-8">
-                <div class="flex items-center justify-between mb-4 border-b border-base-300 pb-3">
-                  <h3 id="edit-title-{{ event.id }}" class="font-semibold text-xl">Edit Event</h3>
-                  <button type="button" class="btn btn-sm btn-circle btn-ghost" aria-label="Close"
-                    onclick="document.getElementById('edit-event-{{ event.id }}').close()">✕</button>
-                </div>
-                <form method="post" action="{% url 'events:event_edit' event.id %}" enctype="multipart/form-data" class="space-y-4">
-                  {% csrf_token %}
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">Event name</span></label>
-                    <input name="event_name" type="text" required class="input input-bordered w-full"
-                      value="{{ event.event_name }}" />
-                  </div>
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">Location</span></label>
-                    <input name="location" type="text" required class="input input-bordered w-full"
-                      value="{{ event.location }}" />
-                  </div>
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">Event date</span></label>
-                    <input name="event_date" type="date" required class="input input-bordered w-full"
-                      value="{{ event.event_date|date:'Y-m-d' }}" min="{% now 'Y-m-d' %}" />
-                  </div>
-                  <div class="form-control">
-                    <label class="label"><span class="label-text font-medium">Poster (optional)</span></label>
-                    <input name="poster" type="file" accept=".jpg,.jpeg,.png,.webp,image/*" class="file-input file-input-bordered w-full" />
-                    <label class="label"><span class="label-text-alt text-base-content/70">Leave empty to keep current poster.</span></label>
-                  </div>
+<script>
+	// AJAX Pagination
+	document.addEventListener("DOMContentLoaded", function () {
+		const eventSection = document.querySelector("section.container");
 
-                  <div class="modal-action">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('edit-event-{{ event.id }}').close()">Cancel</button>
-                  </div>
-                </form>
-              </div>
-              <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md">
-              </form>
-            </dialog>
+		// Handle pagination clicks
+		document.addEventListener("click", function (e) {
+			const paginationLink = e.target.closest('nav[aria-label="Pagination"] a.btn');
 
-            <!-- Delete Confirmation Modal -->
-            <dialog id="delete-event-{{ event.id }}" class="modal modal-middle" aria-labelledby="delete-title-{{ event.id }}" aria-modal="true">
-              <div class="modal-box bg-base-100 text-base-content shadow-2xl border border-base-300 rounded-2xl w-11/12 max-w-md mx-auto p-6">
-                <h3 id="delete-title-{{ event.id }}" class="font-semibold text-lg mb-2">Delete event?</h3>
-                <p class="text-base-content/70 mb-4">This action cannot be undone. Are you sure you want to delete “<span class="font-medium">{{ event.event_name }}</span>” scheduled on {{ event.event_date|date:"F d, Y" }}?</p>
-                <div class="modal-action">
-                  <form method="post" action="{% url 'events:event_delete' event.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-error">Yes, delete</button>
-                  </form>
-                  <button type="button" class="btn" onclick="document.getElementById('delete-event-{{ event.id }}').close()">Cancel</button>
-                </div>
-              </div>
-              <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-md"></form>
-            </dialog>
-            {% endif %}
+			if (paginationLink) {
+				e.preventDefault();
+				const url = paginationLink.getAttribute("href");
 
-          </div>
-        </article>
-      {% endfor %}
-    </div>
-    {% if page_obj.paginator.num_pages > 1 %}
-    <nav class="mt-10 flex items-center justify-center gap-2" aria-label="Pagination">
-      {# Previous #}
-      {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm">« Prev</a>
-      {% else %}
-        <button class="btn btn-sm btn-disabled" disabled>« Prev</button>
-      {% endif %}
+				// Fetch the new page
+				fetch(url, {
+					headers: {
+						"X-Requested-With": "XMLHttpRequest",
+					},
+				})
+					.then((response) => response.text())
+					.then((html) => {
+						// Parse the HTML
+						const parser = new DOMParser();
+						const doc = parser.parseFromString(html, "text/html");
+						const newSection = doc.querySelector("section.container");
 
-      {# Page numbers #}
-      {% for num in page_obj.paginator.page_range %}
-        {% if num == page_obj.number %}
-          <button class="btn btn-sm btn-primary" aria-current="page">{{ num }}</button>
-        {% else %}
-          <a href="?page={{ num }}" class="btn btn-sm">{{ num }}</a>
-        {% endif %}
-      {% endfor %}
+						if (newSection) {
+							// Replace the section content
+							eventSection.innerHTML = newSection.innerHTML;
 
-      {# Next #}
-      {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm">Next »</a>
-      {% else %}
-        <button class="btn btn-sm btn-disabled" disabled>Next »</button>
-      {% endif %}
-    </nav>
-    {% endif %}
-  {% else %}
-  <section class="w-full py-12 flex justify-center">
-    <p class="text-center">There are no events to display.</p>
-  </section>
-  {% endif %}
+							// Scroll to top of section smoothly
+							eventSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+							// Update URL without page refresh
+							window.history.pushState({}, "", url);
+						}
+					})
+					.catch((error) => {
+						console.error("Error loading page:", error);
+						// Fallback to normal navigation
+						window.location.href = url;
+					});
+			}
+		});
+
+		// Handle browser back/forward buttons
+		window.addEventListener("popstate", function () {
+			location.reload();
+		});
+	});
+</script>
 
 {% endblock %}
