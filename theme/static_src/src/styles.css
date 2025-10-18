@@ -1,19 +1,19 @@
-/* =========================================================
+/* 
    1. TYPOGRAPHIC IMPORTS
-   ========================================================= */
+ */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* =========================================================
+/* 
    2. TAILWIND + DAISYUI + CUSTOM STYLES
-   ========================================================= */
+*/
 
 @source "../../../../templates/**/*.html";
 @source "../../../../**/templates/**/*.html";
 @source "../../../../theme/static_src/**/*.{js,ts}";
 @source "../../../../static/js/**/*.{js,ts}";
 
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "daisyui" {
     themes: all;
 }
@@ -24,12 +24,11 @@
 @import '../../../static/css/styles.css';
 
 @theme {
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
 }
-
 
 /*
   Tailwind v4 changes:
@@ -49,18 +48,27 @@
     --Body: 'Raleway', sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--Headers);
 }
 
-button, .btn {
+button,
+.btn {
     font-family: var(--UI);
 }
 
-p, span, li, a, body {
+p,
+span,
+li,
+a,
+body {
     font-family: var(--Body);
 }
-
 
 @plugin "daisyui/theme" {
     name: 'pastel';
@@ -132,7 +140,6 @@ p, span, li, a, body {
     --noise: 1;
 }
 
-
 /* Image Frame Effect */
 .image-frame {
     display: inline-block;
@@ -143,7 +150,7 @@ p, span, li, a, body {
     border-radius: 2px;
     border-right-color: #eee;
     border-top-color: #ddd;
-    box-shadow: 0 0 5px 0 rgba(0,0,0,.25) inset, 0 5px 10px 5px rgba(0,0,0,.25);
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25) inset, 0 5px 10px 5px rgba(0, 0, 0, 0.25);
     box-sizing: border-box;
     padding: 1rem;
     position: relative;
@@ -153,8 +160,8 @@ p, span, li, a, body {
 .image-frame::before {
     border-radius: 2px;
     bottom: -0.5rem;
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,.25) inset;
-    content: "";
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25) inset;
+    content: '';
     left: -0.5rem;
     position: absolute;
     right: -0.5rem;
@@ -164,8 +171,8 @@ p, span, li, a, body {
 .image-frame::after {
     border-radius: 2px;
     bottom: -0.75rem;
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,.25);
-    content: "";
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25);
+    content: '';
     left: -0.75rem;
     position: absolute;
     right: -0.75rem;
