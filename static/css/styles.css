@@ -2,15 +2,6 @@
     --Headers: 'Playfair Display SC', serif;
     --UI: 'Poppins', sans-serif;
     --Body: 'Raleway', sans-serif;
-}
-
-<<<<<<< HEAD
-h1, h2, h3, h4, h5, h6 {
-    font-family: var(--Headers);
-}
-
-button, .btn {
-=======
     --Background: #F5EFE6; /* Body background for a warm, gentle base */
     --Section-Bg: #BFA9D4; /* Section backgrounds, subtle UI elements */
     --Headings: #A6493F; /* Headings, highlights, call-to-action */
@@ -26,7 +17,6 @@ h1, h2, h3, h4, h5, h6 {
 button, .btn {
     background-color: var(--Buttons);
     color: var(--Background);
->>>>>>> 5a4e1c5 (Add: updated debug in env, updated login function in base, rebuilt css, updated base.html in allauth to extend base, updated sign up and sign in visuals, uploaded images to folder + database to test cloudinary api, updated css overwrite to include our own style, updated and fixed models of bugs, added views to for html, made 2 pages for collection and painting details page, added more placeholder to index, updated urls to so we can navigate to pages)
     font-family: var(--UI);
 }
 
