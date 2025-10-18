@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 
 # Create your views here.
 
+
 def event_list_view(request):
     """
     Displays a list of events with dates that are 
@@ -21,8 +22,8 @@ def event_list_view(request):
         event_date__gte=today
     ).order_by('event_date')
 
-    # Paginate the events list (3 per page)
-    paginator = Paginator(events_qs, 3)
+    # Paginate the events list (6 per page)
+    paginator = Paginator(events_qs, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -31,11 +32,12 @@ def event_list_view(request):
         'events': page_obj,  # iterable of events for this page
         'page_obj': page_obj,
     }
-    
+
     return render(request, 'event_list.html', context)
 
 
 """Edit Events"""
+
 
 def event_edit_view(request, pk: int):
     """Handle event edits via modal form; superuser only.
@@ -65,6 +67,7 @@ def event_edit_view(request, pk: int):
 
 """Delete Events"""
 
+
 def event_delete(request, pk: int):
     if not request.user.is_superuser:
         messages.error(request, "You do not have permission to delete events.")
@@ -81,6 +84,8 @@ def event_delete(request, pk: int):
 
 
 """New Event"""
+
+
 def newEvent(request):
     """Create a new event; superuser only.
 
