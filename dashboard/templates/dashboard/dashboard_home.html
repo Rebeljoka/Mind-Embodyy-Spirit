@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Dashboard - Const Collection{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-center mb-2">Admin Dashboard</h1>
+            <p class="text-center text-base-content/70">Manage your gallery, events, and orders</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <!-- Gallery Stats -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="stat">
+                        <div class="stat-figure text-primary">
+                            <i class="ph ph-palette text-4xl"></i>
+                        </div>
+                        <div class="stat-title">Total Paintings</div>
+                        <div class="stat-value text-primary">{{ total_paintings }}</div>
+                        <div class="stat-desc">{{ available_paintings }} available</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Stats -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="stat">
+                        <div class="stat-figure text-secondary">
+                            <i class="ph ph-calendar text-4xl"></i>
+                        </div>
+                        <div class="stat-title">Total Events</div>
+                        <div class="stat-value text-secondary">{{ total_events }}</div>
+                        <div class="stat-desc">{{ upcoming_events }} upcoming</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Stats -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="stat">
+                        <div class="stat-figure text-accent">
+                            <i class="ph ph-shopping-bag text-4xl"></i>
+                        </div>
+                        <div class="stat-title">Total Orders</div>
+                        <div class="stat-value text-accent">{{ total_orders }}</div>
+                        <div class="stat-desc">{{ pending_orders }} pending</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Stats (placeholder) -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <div class="stat">
+                        <div class="stat-figure text-info">
+                            <i class="ph ph-currency-dollar text-4xl"></i>
+                        </div>
+                        <div class="stat-title">Revenue</div>
+                        <div class="stat-value text-info">$0</div>
+                        <div class="stat-desc">This month</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <!-- Gallery Management -->
+            <div class="card bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">
+                        <i class="ph ph-palette mr-2"></i>
+                        Gallery Management
+                    </h2>
+                    <p class="mb-4">Upload new artworks, edit existing pieces, and manage your collection.</p>
+                    <div class="card-actions justify-end">
+                        <a href="{% url 'dashboard:gallery_management' %}" class="btn btn-primary btn-sm">
+                            Manage Gallery
+                        </a>
+                        <a href="{% url 'dashboard:upload_artwork' %}" class="btn btn-outline btn-primary btn-sm">
+                            Upload Art
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Management -->
+            <div class="card bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20">
+                <div class="card-body">
+                    <h2 class="card-title text-secondary">
+                        <i class="ph ph-calendar mr-2"></i>
+                        Events Management
+                    </h2>
+                    <p class="mb-4">Create and manage upcoming events, exhibitions, and artist talks.</p>
+                    <div class="card-actions justify-end">
+                        <a href="{% url 'dashboard:events_management' %}" class="btn btn-secondary btn-sm">
+                            Manage Events
+                        </a>
+                        <a href="{% url 'dashboard:create_event' %}" class="btn btn-outline btn-secondary btn-sm">
+                            Create Event
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Management -->
+            <div class="card bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20">
+                <div class="card-body">
+                    <h2 class="card-title text-accent">
+                        <i class="ph ph-shopping-bag mr-2"></i>
+                        Orders Management
+                    </h2>
+                    <p class="mb-4">View and manage customer orders, process payments, and handle fulfillment.</p>
+                    <div class="card-actions justify-end">
+                        <a href="{% url 'dashboard:orders_management' %}" class="btn btn-accent btn-sm">
+                            Manage Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <i class="ph ph-clock mr-2"></i>
+                    Recent Activity
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Item</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for activity in recent_activities %}
+                            <tr>
+                                <td class="text-sm">{{ activity.get_action_display }}</td>
+                                <td class="text-sm">{{ activity.item_name }}</td>
+                                <td class="text-sm">{{ activity.timestamp|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    {% if activity.action == 'create' %}
+                                        <div class="badge badge-success">Created</div>
+                                    {% elif activity.action == 'update' %}
+                                        <div class="badge badge-info">Updated</div>
+                                    {% elif activity.action == 'delete' %}
+                                        <div class="badge badge-error">Deleted</div>
+                                    {% elif activity.action == 'status_change' %}
+                                        <div class="badge badge-warning">Status Change</div>
+                                    {% elif activity.action == 'refund' %}
+                                        <div class="badge badge-secondary">Refunded</div>
+                                    {% else %}
+                                        <div class="badge badge-neutral">{{ activity.get_action_display }}</div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="text-sm">Dashboard accessed</td>
+                                <td class="text-sm">Admin Panel</td>
+                                <td class="text-sm">{{ request.user.last_login|date:"M d, Y H:i" }}</td>
+                                <td><div class="badge badge-success">Success</div></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

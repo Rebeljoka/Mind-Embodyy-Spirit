@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Upload Artwork - Dashboard{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <a href="{% url 'dashboard:gallery_management' %}" class="btn btn-ghost">
+                    <i class="ph ph-arrow-left"></i>
+                </a>
+                <h1 class="text-3xl font-bold">Upload New Artwork</h1>
+            </div>
+            <p class="text-base-content/70">Add a new piece to your gallery collection</p>
+        </div>
+
+        <!-- Upload Form -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+
+                    <!-- Title -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Title *</span>
+                        </label>
+                        <input type="text" name="title" placeholder="Enter artwork title"
+                               class="input input-bordered w-full" required />
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Description</span>
+                        </label>
+                        <textarea name="description" placeholder="Describe your artwork"
+                                  class="textarea textarea-bordered w-full h-24"></textarea>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Price *</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="price" step="0.01" min="0"
+                                   placeholder="0.00" class="input input-bordered w-full" required />
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Status</span>
+                        </label>
+                        <select name="status" class="select select-bordered w-full">
+                            <option value="available">Available</option>
+                            <option value="reserved">Reserved</option>
+                            <option value="sold">Sold</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+
+                    <!-- Cover Image -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Cover Image *</span>
+                        </label>
+                        <input type="file" name="cover_image" accept="image/*"
+                               class="file-input file-input-bordered w-full" required />
+                        <div class="label">
+                            <span class="label-text-alt">Upload a high-quality image of your artwork</span>
+                        </div>
+                    </div>
+
+                    <!-- Preview Area -->
+                    <div id="image-preview" class="hidden">
+                        <label class="label">
+                            <span class="label-text font-semibold">Preview</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <img id="preview-img" class="max-w-full h-auto rounded-lg mx-auto" />
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="flex gap-4 pt-6">
+                        <button type="submit" class="btn btn-primary flex-1">
+                            <i class="ph ph-upload mr-2"></i>
+                            Upload Artwork
+                        </button>
+                        <a href="{% url 'dashboard:gallery_management' %}" class="btn btn-ghost">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Image preview functionality
+document.querySelector('input[name="cover_image"]').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.classList.add('hidden');
+    }
+});
+</script>
+{% endblock content %}

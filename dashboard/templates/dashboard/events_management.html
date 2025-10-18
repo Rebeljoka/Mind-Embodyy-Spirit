@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Events Management - Dashboard{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">Events Management</h1>
+                <p class="text-base-content/70">Manage your upcoming events and exhibitions</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="{% url 'dashboard:dashboard_home' %}" class="btn btn-ghost">
+                    <i class="ph ph-arrow-left mr-2"></i>
+                    Back to Dashboard
+                </a>
+                <a href="{% url 'dashboard:create_event' %}" class="btn btn-secondary">
+                    <i class="ph ph-plus mr-2"></i>
+                    Create New Event
+                </a>
+            </div>
+        </div>
+
+        <!-- Events List -->
+        {% if events %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for event in events %}
+            <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
+                {% if event.poster %}
+                <figure class="px-4 pt-4">
+                    <img src="{{ event.poster.url }}" alt="{{ event.event_name }}"
+                         class="rounded-xl w-full h-48 object-cover" />
+                </figure>
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title text-lg">{{ event.event_name }}</h2>
+                    <div class="flex items-center gap-2 text-sm text-base-content/70 mb-2">
+                        <i class="ph ph-map-pin"></i>
+                        <span>{{ event.location }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-base-content/70 mb-4">
+                        <i class="ph ph-calendar"></i>
+                        <span>{{ event.event_date|date:"M d, Y" }}</span>
+                        {% if event.event_date < request.user.last_login|date:"Y-m-d" %}
+                        <div class="badge badge-warning">Past</div>
+                        {% else %}
+                        <div class="badge badge-success">Upcoming</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-actions justify-end">
+                        <a href="{% url 'dashboard:edit_event' event.id %}"
+                           class="btn btn-sm btn-outline btn-secondary">
+                            <i class="ph ph-pencil mr-1"></i>
+                            Edit
+                        </a>
+                        <button onclick="confirmDelete({{ event.id }}, '{{ event.event_name }}')"
+                                class="btn btn-sm btn-outline btn-error">
+                            <i class="ph ph-trash mr-1"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body items-center text-center py-16">
+                <i class="ph ph-calendar text-6xl text-base-content/30 mb-4"></i>
+                <h2 class="card-title text-2xl mb-2">No events yet</h2>
+                <p class="text-base-content/70 mb-6">Start planning your first event or exhibition.</p>
+                <a href="{% url 'dashboard:create_event' %}" class="btn btn-secondary btn-lg">
+                    <i class="ph ph-plus mr-2"></i>
+                    Create Your First Event
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Confirm Deletion</h3>
+        <p class="py-4">
+            Are you sure you want to delete the event "<span id="delete-title"></span>"?
+            This action cannot be undone.
+        </p>
+        <div class="modal-action">
+            <button onclick="closeDeleteModal()" class="btn">Cancel</button>
+            <form id="delete-form" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-error">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(eventId, title) {
+    document.getElementById('delete-title').textContent = title;
+    document.getElementById('delete-form').action = `/dashboard/events/delete/${eventId}/`;
+    document.getElementById('delete-modal').classList.add('modal-open');
+}
+
+function closeDeleteModal() {
+    document.getElementById('delete-modal').classList.remove('modal-open');
+}
+
+// Close modal when clicking outside
+document.getElementById('delete-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+</script>
+{% endblock content %}

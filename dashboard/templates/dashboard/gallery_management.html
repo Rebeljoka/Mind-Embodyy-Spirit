@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Gallery Management - Dashboard{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">Gallery Management</h1>
+                <p class="text-base-content/70">Manage your artwork collection</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="{% url 'dashboard:dashboard_home' %}" class="btn btn-ghost">
+                    <i class="ph ph-arrow-left mr-2"></i>
+                    Back to Dashboard
+                </a>
+                <a href="{% url 'dashboard:upload_artwork' %}" class="btn btn-primary">
+                    <i class="ph ph-plus mr-2"></i>
+                    Upload New Art
+                </a>
+            </div>
+        </div>
+
+        <!-- Gallery Grid -->
+        {% if paintings %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for painting in paintings %}
+            <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow">
+                <figure class="px-4 pt-4">
+                    {% if painting.cover_image %}
+                        <img src="{{ painting.cover_image.url }}"
+                             alt="{{ painting.title }}"
+                             class="rounded-xl w-full h-48 object-cover" />
+                    {% else %}
+                        <div class="w-full h-48 bg-base-300 rounded-xl flex items-center justify-center">
+                            <i class="ph ph-image text-4xl text-base-content/50"></i>
+                        </div>
+                    {% endif %}
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title text-lg">{{ painting.title }}</h2>
+                    <p class="text-sm text-base-content/70 line-clamp-2">{{ painting.description|truncatechars:100 }}</p>
+
+                    <div class="flex justify-between items-center mt-4">
+                        <div class="badge badge-outline">{{ painting.get_status_display }}</div>
+                        <div class="text-lg font-semibold text-primary">${{ painting.price }}</div>
+                    </div>
+
+                    <div class="card-actions justify-end mt-4">
+                        <a href="{% url 'dashboard:edit_artwork' painting.id %}"
+                           class="btn btn-sm btn-outline btn-primary">
+                            <i class="ph ph-pencil mr-1"></i>
+                            Edit
+                        </a>
+                        <button onclick="confirmDelete({{ painting.id }}, '{{ painting.title }}')"
+                                class="btn btn-sm btn-outline btn-error">
+                            <i class="ph ph-trash mr-1"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="flex justify-center mt-12">
+            <div class="join">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="join-item btn">«</a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <button class="join-item btn btn-active">{{ num }}</button>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}" class="join-item btn">{{ num }}</a>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="join-item btn">»</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body items-center text-center py-16">
+                <i class="ph ph-palette text-6xl text-base-content/30 mb-4"></i>
+                <h2 class="card-title text-2xl mb-2">No artworks yet</h2>
+                <p class="text-base-content/70 mb-6">Start building your gallery by uploading your first artwork.</p>
+                <a href="{% url 'dashboard:upload_artwork' %}" class="btn btn-primary btn-lg">
+                    <i class="ph ph-plus mr-2"></i>
+                    Upload Your First Art
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Confirm Deletion</h3>
+        <p class="py-4">
+            Are you sure you want to delete "<span id="delete-title"></span>"?
+            This action cannot be undone.
+        </p>
+        <div class="modal-action">
+            <button onclick="closeDeleteModal()" class="btn">Cancel</button>
+            <form id="delete-form" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-error">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(paintingId, title) {
+    document.getElementById('delete-title').textContent = title;
+    document.getElementById('delete-form').action = `/dashboard/gallery/delete/${paintingId}/`;
+    document.getElementById('delete-modal').classList.add('modal-open');
+}
+
+function closeDeleteModal() {
+    document.getElementById('delete-modal').classList.remove('modal-open');
+}
+
+// Close modal when clicking outside
+document.getElementById('delete-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+</script>
+{% endblock content %}

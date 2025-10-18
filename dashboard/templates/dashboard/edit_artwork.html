@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Edit Artwork - Dashboard{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <a href="{% url 'dashboard:gallery_management' %}" class="btn btn-ghost">
+                    <i class="ph ph-arrow-left"></i>
+                </a>
+                <h1 class="text-3xl font-bold">Edit Artwork</h1>
+            </div>
+            <p class="text-base-content/70">Update details for "{{ painting.title }}"</p>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+                    <input type="hidden" name="old_status" value="{{ painting.status }}">
+
+                    <!-- Title -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Title *</span>
+                        </label>
+                        <input type="text" name="title" value="{{ painting.title }}"
+                               class="input input-bordered w-full" required />
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Description</span>
+                        </label>
+                        <textarea name="description" class="textarea textarea-bordered w-full h-24">{{ painting.description }}</textarea>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Price *</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="price" step="0.01" min="0"
+                                   value="{{ painting.price }}" class="input input-bordered w-full" required />
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Status</span>
+                        </label>
+                        <select name="status" class="select select-bordered w-full">
+                            <option value="available" {% if painting.status == 'available' %}selected{% endif %}>Available</option>
+                            <option value="reserved" {% if painting.status == 'reserved' %}selected{% endif %}>Reserved</option>
+                            <option value="sold" {% if painting.status == 'sold' %}selected{% endif %}>Sold</option>
+                            <option value="archived" {% if painting.status == 'archived' %}selected{% endif %}>Archived</option>
+                        </select>
+                    </div>
+
+                    <!-- Current Image -->
+                    {% if painting.cover_image %}
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Current Image</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <img src="{{ painting.cover_image.url }}"
+                                 alt="{{ painting.title }}"
+                                 class="max-w-full h-auto rounded-lg mx-auto max-h-64" />
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Cover Image -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Update Cover Image</span>
+                        </label>
+                        <input type="file" name="cover_image" accept="image/*"
+                               class="file-input file-input-bordered w-full" />
+                        <div class="label">
+                            <span class="label-text-alt">Leave empty to keep current image</span>
+                        </div>
+                    </div>
+
+                    <!-- Preview Area -->
+                    <div id="image-preview" class="hidden">
+                        <label class="label">
+                            <span class="label-text font-semibold">New Image Preview</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <img id="preview-img" class="max-w-full h-auto rounded-lg mx-auto" />
+                        </div>
+                    </div>
+
+                    <!-- Additional Images Management -->
+                    <div class="divider">Additional Images</div>
+
+                    <!-- Existing Additional Images -->
+                    {% if additional_images %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        {% for image in additional_images %}
+                        <div class="card bg-base-200 border">
+                            <figure class="px-4 pt-4">
+                                <img src="{{ image.image.url }}" alt="{{ image.alt_text }}"
+                                     class="rounded-lg w-full h-32 object-cover" />
+                            </figure>
+                            <div class="card-body p-4">
+                                <p class="text-sm font-semibold">{{ image.alt_text }}</p>
+                                {% if image.caption %}
+                                <p class="text-xs text-base-content/70">{{ image.caption }}</p>
+                                {% endif %}
+                                <div class="card-actions justify-end mt-2">
+                                    <button onclick="confirmDeleteImage({{ image.id }}, '{{ image.alt_text|escapejs }}')"
+                                            class="btn btn-sm btn-outline btn-error">
+                                        <i class="ph ph-trash mr-1"></i>
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Submit Buttons -->
+                    <div class="flex gap-4 pt-6">
+                        <button type="submit" class="btn btn-primary flex-1">
+                            <i class="ph ph-check mr-2"></i>
+                            Update Artwork
+                        </button>
+                        <a href="{% url 'dashboard:gallery_management' %}" class="btn btn-ghost">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Add New Image Form (outside main form) -->
+                <div class="card bg-base-200 mt-6">
+                    <div class="card-body">
+                        <h3 class="card-title text-lg">Add Additional Image</h3>
+                        <form method="post" enctype="multipart/form-data"
+                              action="{% url 'dashboard:add_artwork_image' painting.id %}">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Image File *</span>
+                                    </label>
+                                    <input type="file" name="image" accept="image/*"
+                                           class="file-input file-input-bordered w-full" required />
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text">Alt Text *</span>
+                                    </label>
+                                    <input type="text" name="alt_text" placeholder="Describe the image"
+                                           class="input input-bordered w-full" required />
+                                </div>
+                            </div>
+                            <div class="form-control mt-4">
+                                <label class="label">
+                                    <span class="label-text">Caption (optional)</span>
+                                </label>
+                                <input type="text" name="caption" placeholder="Image caption"
+                                       class="input input-bordered w-full" />
+                            </div>
+                            <div class="form-control mt-4">
+                                <button type="submit" class="btn btn-outline btn-primary">
+                                    <i class="ph ph-plus mr-2"></i>
+                                    Add Image
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Image preview functionality
+document.querySelector('input[name="cover_image"]').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.classList.add('hidden');
+    }
+});
+
+function confirmDeleteImage(imageId, altText) {
+    if (confirm(`Are you sure you want to delete the image "${altText}"?`)) {
+        // Create and submit a form to delete the image
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/dashboard/gallery/image/${imageId}/delete/`;
+
+        // Add CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken.value;
+            form.appendChild(csrfInput);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+{% endblock content %}

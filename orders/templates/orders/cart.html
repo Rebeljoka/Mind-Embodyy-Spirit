@@ -43,7 +43,7 @@
                             {% if item.product_sku %}
                             <p class="text-sm text-base-content/70">SKU: {{ item.product_sku }}</p>
                             {% endif %}
-                            <p class="text-lg font-semibold text-primary">£{{ item.unit_price }}</p>
+                            <p class="text-lg font-semibold text-primary">€{{ item.unit_price }}</p>
                         </div>
 
                         <!-- Quantity and Actions -->
@@ -65,7 +65,7 @@
                             </div>
 
                             <!-- Subtotal -->
-                            <p class="text-sm font-semibold">£{{ item.total_price }}</p>
+                            <p class="text-sm font-semibold">€{{ item.total_price }}</p>
 
                             <!-- Remove Button -->
                             <button class="btn btn-sm btn-ghost text-error remove-item" data-item-id="{{ item.id }}">
@@ -90,7 +90,7 @@
                     <div class="space-y-2">
                         <div class="flex justify-between">
                             <span>Items ({{ total_items }})</span>
-                            <span>£{{ total_price }}</span>
+                            <span>€{{ total_price }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span>Shipping</span>
@@ -99,7 +99,7 @@
                         <div class="divider"></div>
                         <div class="flex justify-between text-lg font-bold">
                             <span>Total</span>
-                            <span>£{{ total_price }}</span>
+                            <span>€{{ total_price }}</span>
                         </div>
                     </div>
 
