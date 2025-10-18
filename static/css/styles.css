@@ -66,3 +66,29 @@ p, span, li, a, body {
     max-width: 100%;
     display: block;
 }
+
+/* Base: show ONLY the first .image-frame */
+.video-row .image-frame {
+  display: none !important;      /* kill layout space */
+  visibility: hidden;            /* belt-and-suspenders */
+}
+.video-row .image-frame:nth-child(1) {
+  display: block !important;
+  visibility: visible;
+}
+
+/* md ≥ 768px: show the first TWO */
+@media (min-width: 768px) {
+  .video-row .image-frame:nth-child(-n+2) {
+    display: block !important;
+    visibility: visible;
+  }
+}
+
+/* lg ≥ 1024px: show the first THREE */
+@media (min-width: 1024px) {
+  .video-row .image-frame:nth-child(-n+3) {
+    display: block !important;
+    visibility: visible;
+  }
+}

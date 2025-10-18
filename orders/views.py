@@ -33,7 +33,7 @@ def get_cart_count(request):
                 count = 0
         else:
             count = 0
-    
+
     return JsonResponse({'count': count})
 
 

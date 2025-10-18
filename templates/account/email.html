@@ -1,77 +1,137 @@
-{% extends "account/base_manage_email.html" %}
+{% extends "base.html" %}
 {% load static allauth i18n %}
 {% block head_title %}
-    {% trans "Email Addresses" %}
+    {% trans "Email Addresses" %} - Const Collection
 {% endblock head_title %}
 {% block content %}
-    {% element h1 %}
-        {% trans "Email Addresses" %}
-    {% endelement %}
-    {% if emailaddresses %}
-        {% element p %}
-            {% trans 'The following email addresses are associated with your account:' %}
-        {% endelement %}
-        {% url 'account_email' as email_url %}
-        {% element form form=form action=email_url method="post" tags="email,list" %}
-            {% slot body %}
-                {% csrf_token %}
-                {% for radio in emailaddress_radios %}
-                    {% with emailaddress=radio.emailaddress %}
-                        {% element field type="radio" checked=radio.checked name="email" value=emailaddress.email id=radio.id %}
-                            {% slot label %}
-                                {{ emailaddress.email }}
-                                {% if emailaddress.verified %}
-                                    {% element badge tags="success,email,verified" %}
-                                        {% translate "Verified" %}
-                                    {% endelement %}
-                                {% else %}
-                                    {% element badge tags="warning,email,unverified" %}
-                                        {% translate "Unverified" %}
-                                    {% endelement %}
-                                {% endif %}
-                                {% if emailaddress.primary %}
-                                    {% element badge tags="email,primary" %}
-                                        {% translate "Primary" %}
-                                    {% endelement %}
-                                {% endif %}
-                            {% endslot %}
-                        {% endelement %}
-                    {% endwith %}
-                {% endfor %}
-            {% endslot %}
-            {% slot actions %}
-                {% element button type="submit" name="action_primary" %}
-                    {% trans 'Make Primary' %}
-                {% endelement %}
-                {% element button tags="secondary" type="submit" name="action_send" %}
-                    {% trans 'Re-send Verification' %}
-                {% endelement %}
-                {% element button tags="danger,delete" type="submit" name="action_remove" %}
-                    {% trans 'Remove' %}
-                {% endelement %}
-            {% endslot %}
-        {% endelement %}
-    {% else %}
-        {% include "account/snippets/warn_no_email.html" %}
-    {% endif %}
-    {% if can_add_email %}
-        {% element h2 %}
-            {% trans "Add Email Address" %}
-        {% endelement %}
-        {% url 'account_email' as action_url %}
-        {% element form form=form method="post" action=action_url tags="email,add" %}
-            {% slot body %}
-                {% csrf_token %}
-                {% element fields form=form %}
-                {% endelement %}
-            {% endslot %}
-            {% slot actions %}
-                {% element button name="action_add" type="submit" %}
-                    {% trans "Add Email" %}
-                {% endelement %}
-            {% endslot %}
-        {% endelement %}
-    {% endif %}
+
+<div class="min-h-screen bg-base-100 py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Page Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">{% trans "Email Addresses" %}</h1>
+            <div class="divider"></div>
+        </div>
+
+        {% if emailaddresses %}
+            <!-- Email List Section -->
+            <div class="card bg-base-200 shadow-xl mb-8">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-4">{% trans 'Your Email Addresses' %}</h2>
+                    <p class="text-base-content/70 mb-6">{% trans 'The following email addresses are associated with your account:' %}</p>
+                    
+                    {% url 'account_email' as email_url %}
+                    <form method="post" action="{{ email_url }}" class="space-y-4">
+                        {% csrf_token %}
+                        
+                        <!-- Email Address List -->
+                        <div class="space-y-3">
+                            {% for radio in emailaddress_radios %}
+                                {% with emailaddress=radio.emailaddress %}
+                                    <div class="form-control">
+                                        <label class="label cursor-pointer justify-start gap-4 bg-base-300 rounded-lg p-4 hover:bg-base-300/80 transition-colors">
+                                            <input type="radio" name="email" value="{{ emailaddress.email }}" id="{{ radio.id }}" class="radio radio-primary" {% if radio.checked %}checked{% endif %}>
+                                            <div class="flex-1 flex flex-wrap items-center gap-2">
+                                                <span class="font-medium">{{ emailaddress.email }}</span>
+                                                {% if emailaddress.verified %}
+                                                    <span class="badge badge-success gap-1">
+                                                        <i class="ph ph-check-circle"></i>
+                                                        {% translate "Verified" %}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge badge-warning gap-1">
+                                                        <i class="ph ph-warning"></i>
+                                                        {% translate "Unverified" %}
+                                                    </span>
+                                                {% endif %}
+                                                {% if emailaddress.primary %}
+                                                    <span class="badge badge-primary gap-1">
+                                                        <i class="ph ph-star"></i>
+                                                        {% translate "Primary" %}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </label>
+                                    </div>
+                                {% endwith %}
+                            {% endfor %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-base-content/10">
+                            <button type="submit" name="action_primary" class="btn btn-primary gap-2">
+                                <i class="ph ph-star text-lg"></i>
+                                {% trans 'Make Primary' %}
+                            </button>
+                            <button type="submit" name="action_send" class="btn btn-secondary gap-2">
+                                <i class="ph ph-envelope text-lg"></i>
+                                {% trans 'Re-send Verification' %}
+                            </button>
+                            <button type="submit" name="action_remove" class="btn btn-error gap-2" onclick="return confirm('{% trans 'Do you really want to remove the selected email address?' %}')">
+                                <i class="ph ph-trash text-lg"></i>
+                                {% trans 'Remove' %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <!-- No Email Warning -->
+            <div class="alert alert-warning shadow-lg mb-8">
+                <i class="ph ph-warning text-2xl"></i>
+                <div>
+                    <h3 class="font-bold">{% trans "Warning" %}</h3>
+                    <div class="text-sm">{% include "account/snippets/warn_no_email.html" %}</div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if can_add_email %}
+            <!-- Add Email Section -->
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-4">
+                        <i class="ph ph-plus-circle text-primary"></i>
+                        {% trans "Add Email Address" %}
+                    </h2>
+                    
+                    {% url 'account_email' as action_url %}
+                    <form method="post" action="{{ action_url }}" class="space-y-4">
+                        {% csrf_token %}
+                        
+                        <!-- Email Input Field -->
+                        <div class="form-control w-full">
+                            <label class="label" for="{{ form.email.id_for_label }}">
+                                <span class="label-text font-medium">{{ form.email.label }}</span>
+                            </label>
+                            <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" 
+                                   placeholder="your.email@example.com" 
+                                   class="input input-bordered w-full {% if form.email.errors %}input-error{% endif %}"
+                                   {% if form.email.value %}value="{{ form.email.value }}"{% endif %}>
+                            {% if form.email.errors %}
+                                <label class="label">
+                                    <span class="label-text-alt text-error">{{ form.email.errors.0 }}</span>
+                                </label>
+                            {% endif %}
+                            {% if form.email.help_text %}
+                                <label class="label">
+                                    <span class="label-text-alt">{{ form.email.help_text }}</span>
+                                </label>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" name="action_add" class="btn btn-primary gap-2">
+                            <i class="ph ph-plus text-lg"></i>
+                            {% trans "Add Email" %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
 {% endblock content %}
 {% block extra_body %}
     <script src="{% static 'account/js/account.js' %}"></script>
