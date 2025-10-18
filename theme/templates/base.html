@@ -160,7 +160,6 @@
 				<li>
 					<a class="{% if request.resolver_match.url_name == 'contact' %}bg-base-300 font-bold{% endif %}"> {% trans "Contact" %} </a>
 				</li>
-				{% endif %}
 			</ul>
 
 			<div class="hidden lg:flex gap-2">
@@ -192,6 +191,7 @@
 			</div>
 			{% endfor %}
 		</div>
+		{% endif %}
 
 		<!-- Main Content -->
 		<main class="w-full flex flex-col flex-grow">
