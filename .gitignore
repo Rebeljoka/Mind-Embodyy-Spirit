@@ -232,9 +232,6 @@ __marimo__/
 .AppleDouble
 .LSOverride
 env.py
-<<<<<<< HEAD
 env.py
 pycache/
 *.pyc
-=======
->>>>>>> 0696108 (Rebase: accept upstream base/template and styles; keep remote version)
