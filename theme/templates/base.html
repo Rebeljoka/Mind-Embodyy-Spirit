@@ -47,7 +47,7 @@
 
 	<body class="font-serif leading-normal tracking-normal flex flex-col min-h-screen">
 		<!-- Navbar -->
-		<nav class="navbar justify-between bg-base-300/70 relative sticky top-0 backdrop-blur-sm shadow z-50">
+		<nav class="navbar justify-between bg-base-100/10 fixed top-0 left-0 right-0 backdrop-blur-md shadow-lg z-50">
 			<!-- Logo -->
 			<div class="inline-flex">
 				<a href="{% url 'index' %}" class="btn btn-ghost text-lg bg-white text-black">
@@ -86,33 +86,24 @@
 
 			<!-- Menu for mobile -->
 			<div class="dropdown dropdown-end lg:hidden">
-				<a href="{% url 'orders:cart_page' %}" class="btn btn-ghost lg:hidden {% if request.resolver_match.url_name == 'cart_page' %}active{% endif %}">
-					<i class="ph ph-shopping-cart text-lg"></i>
-				</a>
-
-			<div class="inline-flex">
-				<span class="ph ph-line-vertical h-full-auto"></span>
-			</div>
-
-			<div class="dropdown dropdown-end lg:hidden">
 				<button tabindex="0" class="btn btn-ghost">
 					{% trans "Menu" %}
 					<i class="ph ph-dots-three-outline-vertical text-lg"></i>
 				</button>
 				<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
 						<li>
-							<div class="flex justify-center gap-2">
-								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black" href="mailto:cecilia.kristoffersson71@gmail.com" target="_blank" rel="noopener noreferrer" aria-label="Email">
-									<i class="ph ph-envelope text-white"></i>
+							<div class="flex justify-center gap-1 flex-wrap">
+								<a class="btn btn-circle btn-ghost btn-xs" style="background: black; width: 2rem; height: 2rem; min-height: 2rem;" href="mailto:cecilia.kristoffersson71@gmail.com" target="_blank" rel="noopener noreferrer" aria-label="Email">
+									<i class="ph ph-envelope text-white text-base"></i>
 								</a>
-								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue" href="https://www.facebook.com/61559467855096/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-									<i class="ph ph-facebook-logo text-white"></i>
+								<a class="btn btn-circle btn-ghost btn-xs" style="background: blue; width: 2rem; height: 2rem; min-height: 2rem;" href="https://www.facebook.com/61559467855096/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+									<i class="ph ph-facebook-logo text-white text-base"></i>
 								</a>
-								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none" href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-									<i class="ph ph-instagram-logo text-white"></i>
+								<a class="btn btn-circle btn-ghost btn-xs" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none; width: 2rem; height: 2rem; min-height: 2rem;" href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+									<i class="ph ph-instagram-logo text-white text-base"></i>
 								</a>
-								<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red" href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-									<i class="ph ph-youtube-logo text-white"></i>
+								<a class="btn btn-circle btn-ghost btn-xs" style="background: red; width: 2rem; height: 2rem; min-height: 2rem;" href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+									<i class="ph ph-youtube-logo text-white text-base"></i>
 								</a>
 							</div>
 						</li>
@@ -143,10 +134,10 @@
 						</li>
 						{% else %}
 						<li>
-							<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
+							<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary w-full">{% trans "Log in" %}</a>
 						</li>
 						<li>
-							<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
+							<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline w-full">{% trans "Sign Up" %}</a>
 						</li>
 						{% endif %}
 					</ul>
@@ -188,13 +179,18 @@
 			</div>
 		</nav>
 
-		{# Messages notification #} {% if messages %}
-		<div class="container mx-auto px-4 py-2">
+		{# Messages notification #} 
+		{% if messages %}
+		<div class="fixed top-20 left-0 right-0 z-40 container mx-auto px-4 py-2" id="messages-container">
 			{% for message in messages %}
-			<div class="alert alert-{{ message.tags|default:'info' }} shadow-lg mb-2">
-				<div>
+			<div class="alert alert-{{ message.tags|default:'info' }} shadow-lg mb-2 flex items-center justify-between message-alert" data-message-timeout="7000">
+				<div class="flex items-center gap-2">
+					<i class="ph ph-info-circle text-xl"></i>
 					<span>{{ message }}</span>
 				</div>
+				<button type="button" class="btn btn-ghost btn-sm btn-circle" onclick="dismissMessage(this)">
+					<i class="ph ph-x text-xl"></i>
+				</button>
 			</div>
 			{% endfor %}
 		</div>
@@ -208,7 +204,7 @@
 		</main>
 
 		<!-- Speed Dial Menu -->
-		<div class="fixed right-10 bottom-32 group z-50 flex speeddial-button">
+		<div class="fixed right-6 bottom-6 group z-50 flex speeddial-button">
 				<div id="speed-dial-menu-default" class="speed-dial-menu flex items-center hidden mr-4 space-x-2">
 					<!-- Shopping Cart Button with Counter -->
 					<a href="{% url 'orders:cart_page' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Shopping Cart">
@@ -226,7 +222,7 @@
 						</svg>
 					</a>
 				</div>
-				<button type="button" aria-expanded="false" class="flex items-center justify-center rounded-full w-16 h-16 focus:ring-4 focus:outline-none relative">
+				<button type="button" aria-expanded="false" class="flex items-center justify-center rounded-full w-16 h-16 border border-base-content/20 shadow-lg focus:ring-4 focus:outline-none relative transition-colors">
 					<svg class="w-5 h-5 transition-transform group-hover:rotate-45" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
 						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
 					</svg>
@@ -265,7 +261,35 @@
 
 				<!-- Speed Dial & Theme Switcher Script -->
 		<script>
+			// Message dismiss functionality
+			function dismissMessage(button) {
+				const alert = button.closest('.message-alert');
+				alert.style.transition = 'opacity 0.3s, transform 0.3s';
+				alert.style.opacity = '0';
+				alert.style.transform = 'translateX(100%)';
+				setTimeout(() => {
+					alert.remove();
+					// Remove container if no messages left
+					const container = document.getElementById('messages-container');
+					if (container && container.querySelectorAll('.message-alert').length === 0) {
+						container.remove();
+					}
+				}, 300);
+			}
+
 			document.addEventListener('DOMContentLoaded', function() {
+				// Auto-dismiss messages after 7 seconds
+				const messageAlerts = document.querySelectorAll('.message-alert');
+				messageAlerts.forEach(function(alert) {
+					const timeout = parseInt(alert.getAttribute('data-message-timeout')) || 7000;
+					setTimeout(function() {
+						const dismissBtn = alert.querySelector('button');
+						if (dismissBtn) {
+							dismissMessage(dismissBtn);
+						}
+					}, timeout);
+				});
+
 				// Speed Dial Menu Toggle
 				const speedDialButton = document.querySelector('.speeddial-button button[aria-expanded]');
 				const speedDialMenu = document.getElementById('speed-dial-menu-default');
