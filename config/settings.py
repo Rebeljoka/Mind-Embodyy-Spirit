@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'orders',
     'theme',
     'events',
+    'about',
 ]
 
 if DEBUG == 'True' or DEBUG is True:

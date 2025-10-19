@@ -28,6 +28,8 @@ urlpatterns = [
     path('gallery/', include('gallery.urls')),
     path('events/', include('events.urls')),
     path('newsletter/', include('newsletter.urls')),
+    # Include About app with namespace for stable reversing
+    path('about/', include(('about.urls', 'about'), namespace='about')),
 ]
 
 if settings.DEBUG:

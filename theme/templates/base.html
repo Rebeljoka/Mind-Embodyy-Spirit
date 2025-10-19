@@ -30,8 +30,7 @@
 	<meta name="twitter:card" content="summary_large_image" />
 
 	<!-- Tailwind CSS + Custom CSS -->
-	{% tailwind_css %} {% block extra_head %}{% endblock extra_head %} {# Project-level custom stylesheet (allows small
-	overrides or non-Tailwind CSS) #}
+	{% tailwind_css %} {% block extra_head %}{% endblock extra_head %} {# Project-level custom stylesheet (allows small overrides or non-Tailwind CSS) #}
 	<link rel="preload" as="style" href="{% static 'css/dist/styles.css' %}" />
 	<link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 
@@ -120,6 +119,9 @@
 							<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}bg-base-300 font-bold{% endif %}"> {% trans "Events" %} </a>
 						</li>
 						<li>
+							<a href="{% url 'about:about' %}" class="{% if request.resolver_match.url_name == 'about' %}bg-base-300 font-bold{% endif %}"> {% trans "About" %} </a>
+						</li>
+						<li>
 							<a class="{% if request.resolver_match.url_name == 'contact' %}bg-base-300 font-bold{% endif %}"> {% trans "Contact" %} </a>
 						</li>
 
@@ -156,6 +158,9 @@
 				</li>
 				<li>
 					<a href="{% url 'events:events' %}" class="{% if request.resolver_match.url_name == 'events' %}bg-base-300 font-bold{% endif %}"> {% trans "Events" %} </a>
+				</li>
+				<li>
+					<a href="{% url 'about:about' %}" class="{% if request.resolver_match.url_name == 'about' %}bg-base-300 font-bold{% endif %}"> {% trans "About" %} </a>
 				</li>
 				<li>
 					<a class="{% if request.resolver_match.url_name == 'contact' %}bg-base-300 font-bold{% endif %}"> {% trans "Contact" %} </a>
@@ -217,7 +222,7 @@
 		</div>
 	</div>
 	{% endif %}		<!-- Main Content -->
-		<main class="w-full flex flex-col flex-grow">
+		<main class="{% block main_classes %}w-full flex flex-col flex-grow pt-24 md:pt-28{% endblock %}">
 
 			{% block content %} {% endblock content %}
 
