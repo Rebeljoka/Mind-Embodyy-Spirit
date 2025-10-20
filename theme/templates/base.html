@@ -34,6 +34,28 @@
 	<link rel="preload" as="style" href="{% static 'css/dist/styles.css' %}" />
 	<link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 
+	<!-- Preload critical images -->
+	<link rel="preload" as="image" href="{% static 'images/hero.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/museum-wall-texture.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/Logo.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/FigurativeArt/noma2022.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/FigurativeArt/the-3-graces2023.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/FigurativeArt/the-birth-of-venus.2023.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/FigurativeArt/Veins2023.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/DualisticArt/shumba2022.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/DualisticArt/sofies-well2023.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/DualisticArt/Still-Like-Air-I-Rise2022.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/DualisticArt/Zenith.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/PerimenopausalArt/Lilith-I2022.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/PerimenopausalArt/alone2023.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/PerimenopausalArt/The-garden-gate2024.webp' %}">
+	<link rel="preload" as="image" href="{% static 'images/PerimenopausalArt/Untold-story2023.webp' %}">
+
+	<!-- Preload critical videos -->
+	<link rel="preload" as="video" href="{% static 'media/blue.mp4' %}">
+	<link rel="preload" as="video" href="{% static 'media/jikinya2023.mp4' %}">
+	<link rel="preload" as="video" href="{% static 'media/obsidian2024.mp4' %}">
+
 	<!-- Phosphor Icons -->
 	<link rel="preload" as="style"
 		href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
@@ -168,19 +190,19 @@
 			</ul>
 
 			<div class="hidden lg:flex gap-2">
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black" href="mailto:cecilia.kristoffersson71@gmail.com" target="_blank" rel="noopener noreferrer">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black" href="mailto:cecilia.kristoffersson71@gmail.com" target="_blank" rel="noopener noreferrer" aria-label="Email Cecilia Kristoffersson">
 					<i class="ph ph-envelope text-white"></i>
 				</a>
 
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue" href="https://www.facebook.com/61559467855096/" target="_blank" rel="noopener noreferrer">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue" href="https://www.facebook.com/61559467855096/" target="_blank" rel="noopener noreferrer" aria-label="Visit our Facebook page">
 					<i class="ph ph-facebook-logo text-white"></i>
 				</a>
 
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none" href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw==" target="_blank" rel="noopener noreferrer">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none" href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw==" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">
 					<i class="ph ph-instagram-logo text-white"></i>
 				</a>
 
-				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red" href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv" target="_blank" rel="noopener noreferrer">
+				<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red" href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to our YouTube channel">
 					<i class="ph ph-youtube-logo text-white"></i>
 				</a>
 			</div>
@@ -262,8 +284,8 @@
             <div class="container mx-auto px-4 text-center">
                 <h1 class="text-3xl font-bold mb-6">Contact</h1>
                 <p class="mb-8 max-w-2xl mx-auto text-lg">To contact me for gallery bookings, artist talks, purchases or art viewings please email me or my curator.</p>
-                <div class="flex flex-col md:flex-row justify-center items-start gap-8 max-w-4xl mx-auto">
-                    <div class="flex-1 text-center">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div class="text-center">
                         <h2 class="text-xl font-semibold mb-4">Cecilia Kristoffersson</h2>
                         <p class="mb-2">
                             <i class="ph ph-envelope mr-2 text-black"></i>
@@ -274,7 +296,7 @@
                             For international inquiries, please email me (Accessible Via Navigation Menu) or my Curator.
                         </p>
                     </div>
-                    <div class="flex-1 text-center">
+                    <div class="text-center">
                         <h2 class="text-xl font-semibold mb-4">Curator: Magnus Florin</h2>
                         <p class="mb-2">
                             <i class="ph ph-envelope mr-2 text-black"></i>

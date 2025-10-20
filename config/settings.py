@@ -80,6 +80,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'csp.middleware.CSPMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.cache.CacheMiddleware',  # Add cache middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'orders.middleware.RequireJSONForOrdersCreate',
@@ -116,6 +117,23 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+# Cache configuration
+CACHE_MIDDLEWARE_SECONDS = 15778463  # Cache pages for 6 months
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
+# For production with Redis (uncomment and install django-redis)
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+#         'LOCATION': os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+#     }
+# }
 
 # Cloudinary configuration (read from environment)
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
