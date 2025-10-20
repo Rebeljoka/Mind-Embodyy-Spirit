@@ -17,6 +17,10 @@ import dj_database_url
 import cloudinary
 import stripe  # noqa: F401
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -66,7 +70,11 @@ INSTALLED_APPS = [
     'orders',
     'theme',
     'events',
+<<<<<<< HEAD
     'dashboard',
+=======
+    'about',
+>>>>>>> origin/main
 ]
 
 if DEBUG == 'True' or DEBUG is True:
@@ -279,15 +287,23 @@ else:
     EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
 
 # Common settings (apply in all environments)
+<<<<<<< HEAD
 DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL", "noreply@default.com"
 )
+=======
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@default.com")   # noqa: E501
+>>>>>>> origin/main
 SITE_URL = os.environ.get("SITE_URL", "http://localhost:8000")
 
 # 👇 This part tells Anymail how to connect to SendGrid.
 # The SENDGRID_API_KEY can be empty in DEBUG.
 ANYMAIL = {
+<<<<<<< HEAD
     "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY", ""),
+=======
+    "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY", ""),  # can be empty in DEBUG  # noqa: E501
+>>>>>>> origin/main
 }
 
 

@@ -1,0 +1,144 @@
+{% extends "base.html" %} {% load cloudinary %} {% load static %}
+{% block head_title %}About Me - Const Collection{% endblock %}
+{% block content %}
+
+<section class="container mx-auto px-4 pb-10 md:pb-14 min-h-screen">
+  <!-- Heading -->
+  <header class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-3">About</h1>
+    <p class="text-lg md:text-xl text-base-content/70 mt-2">A glimpse behind the art and the artist.</p>
+  </header>
+
+  <div class="space-y-24 md:space-y-32">
+  <!-- Profile Card -->
+  <section aria-labelledby="artist-profile">
+    <h2 id="artist-profile" class="sr-only">Artist profile</h2>
+    <div class="card bg-base-200/70 shadow-xl rounded-3xl">
+      <div class="card-body p-8 md:p-10">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10">
+          <div class="avatar shrink-0">
+            <div class="w-56 sm:w-60 md:w-64 lg:w-72 xl:w-80 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
+              {% if profile and profile.profile_image %}
+              <img src="{{ profile.profile_image.url }}" alt="Profile picture" loading="lazy" decoding="async" />
+              {% else %}
+              <div class="w-full h-full bg-base-300 grid place-items-center text-base-content/60 text-2xl">Artist</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="text-center md:text-left max-w-3xl">
+            <h3 class="text-2xl md:text-3xl font-bold mb-3">About the Artist</h3>
+            <div class="prose prose-sm md:prose-base max-w-none">
+              <h4>Bio</h4>
+              <p>
+                I am an artist born and raised in Zimbabwe, now living in Southern Sweden. As a painter but foremost a mother, I dive into a discovery of selfhood, motherhood, daughterhood and matrescence through my large acrylic works. I aim to enrich a dialogue of a new female revolution that anchors itself in our understanding of the spiritual DNA and experiences which bonds grandmothers, mothers and daughters in the pathway of life; past, future and present.
+              </p>
+              <h4>My Approach</h4>
+              <p>
+                My paintings are a sacred act, one of both resistance and restoration. They are a response to the subtle, yet great harm that I witness social media inflicting on the inner lives of my daughters. In a world mediated by curated images and momentary digital impressions, I turn to painting as a means of slowing down time, re‑centering presence and reclaiming the untold stories of our daughters. Through my art I construct symbolic filters—not the digital kind, but spiritual veils that both reveal and protect. These filters offer a deeper seeing, a layered truth shaped by love, ancestral memory, intuition and the unseen forces that guide us. My work is a call for change, a gentle yet unyielding demand for a new way of being. In this world of fragmentation, our daughters are growing up surrounded by false mirrors. It is now a time for truth‑telling and reclamation of the feminine through love.
+              </p>
+            </div>
+            <div class="mt-6">
+              <a href="{% url 'gallery:collection' %}" class="btn btn-primary">View the Gallery</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Edenfield narrative & video -->
+  <section aria-labelledby="edenfield-heading">
+    <div class="flex items-end justify-between gap-4 mb-8">
+      <h2 id="edenfield-heading" class="text-2xl mt-5 md:text-3xl font-bold">Step into my Edenfield...</h2>
+    </div>
+    <div class="card bg-base-200/70 shadow-xl rounded-3xl">
+      <div class="card-body p-8 md:p-10 ">
+  <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-y-10 gap-x-12 md:gap-x-16">
+          <!-- Text column -->
+          <div class="prose prose-sm md:prose-base max-w-none p-4">
+            <p class="p-4">
+              Becoming a mother is not a dead end for an artist, in fact, in my case, it has been the absolute source of my artistry. Motherhood is clearly a multidimensional experience with as many varied perspectives as there are mothers on the planet. Personally, motherhood has been a driving force, pushing towards the creative craft of painting, allowing me space to unpack this theme. Motherhood is about exploring selflessness, empowerment, vulnerability, empathy, failure, choice, it is a source of liberation and power… and it sure doesn't end when your children are grown-up, it changes, and changes you.
+            </p>
+            <hr class="my-8 opacity-30" />
+            <p class="p-4">
+              I call my art collection “Edenfield”. Edenfield refers to a suburb in my hometown, Bulawayo, Zimbabwe, it's where I grew up... a four hectares utopia full of bougainvillea blossoms, birds of paradise flowers, peach trees, banana trees, avocado trees, passion fruit vines and so much more. My art is my Eden, it blossoms with fields of colour and creation. It is a formation by my own hand to gift to my daughters and their daughters to come, my legacy. My “Fields of Eden” or “Edenfield”, is unlike the story from the bible that still echoes in our cultures, it is not a place of female expulsion, my story celebrates women as a constant in Edenfield. A paradise that will remain at its zenith in the future and beyond.
+            </p>
+          </div>
+
+          <!-- Video column -->
+          {% if profile and profile.video %}
+          <div class="self-center">
+            <div class="relative w-full overflow-hidden rounded-2xl ring ring-primary/30 bg-base-200" style="padding-top: 56.25%">
+              <video
+                class="absolute inset-0 w-full h-full object-cover"
+                src="{{ profile.video.url }}"
+                autoplay
+                muted
+                loop
+                playsinline
+                controls
+                preload="metadata"
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Featured Artworks -->
+  <section aria-labelledby="featured-artworks">
+    <div class="flex items-end justify-between gap-4 mb-8 mt-5">
+      <h2 id="featured-artworks" class="text-2xl md:text-3xl font-bold">Featured artworks</h2>
+      <a href="{% url 'gallery:collection' %}" class="btn btn-ghost btn-sm">See all</a>
+    </div>
+
+  {% if images %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+      {% for img in images %}
+      <article class="group relative rounded-xl overflow-hidden bg-base-200 shadow hover:shadow-lg transition-shadow" style="padding-top: 100%">
+        <a href="{{ img.painting.get_absolute_url }}" class="absolute inset-0 block" aria-label="View {{ img.painting.title }}">
+          <img src="{{ img.image.url }}"
+               alt="{{ img.alt_text }}"
+               loading="lazy"
+               decoding="async"
+               class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          {% if img.caption %}
+          <div class="pointer-events-none absolute bottom-0 left-0 right-0 p-2 sm:p-3 text-white text-xs sm:text-sm">
+            <div class="truncate">{{ img.caption }}</div>
+          </div>
+          {% endif %}
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+      {% if paintings %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+        {% for p in paintings %}
+        {% if p.cover_image %}
+        <article class="group relative rounded-xl overflow-hidden bg-base-200 shadow hover:shadow-lg transition-shadow" style="padding-top: 100%">
+          <a href="{{ p.get_absolute_url }}" class="absolute inset-0 block" aria-label="View {{ p.title }}">
+            <img src="{{ p.cover_image.url }}"
+                 alt="Cover image for {{ p.title }}"
+                 loading="lazy"
+                 decoding="async"
+                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+        </article>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-center text-base-content/70">No artworks to display yet.</p>
+      {% endif %}
+    {% endif %}
+  </section>
+  </div>
+</section>
+
+{% endblock %}
