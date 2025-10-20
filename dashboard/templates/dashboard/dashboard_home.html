@@ -72,7 +72,7 @@
         </div>
 
         <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
             <!-- Gallery Management -->
             <div class="card bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
                 <div class="card-body">
@@ -122,6 +122,22 @@
                     <div class="card-actions justify-end">
                         <a href="{% url 'dashboard:orders_management' %}" class="btn btn-accent btn-sm">
                             Manage Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Management -->
+            <div class="card bg-gradient-to-br from-info/10 to-info/5 border border-info/20">
+                <div class="card-body">
+                    <h2 class="card-title text-info">
+                        <i class="ph ph-user-circle mr-2"></i>
+                        About Section
+                    </h2>
+                    <p class="mb-4">Edit biography, mission, artist statement, and featured artworks.</p>
+                    <div class="card-actions justify-end">
+                        <a href="{% url 'dashboard:about_management' %}" class="btn btn-info btn-sm">
+                            Manage About
                         </a>
                     </div>
                 </div>

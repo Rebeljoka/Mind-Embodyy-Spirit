@@ -1,3 +1,58 @@
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.utils import timezone
+from django.db.models import Max
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from gallery.models import Painting, Category, Artist, PaintingImage
+from events.models import Event
+from orders.models import Order
+from .models import ActivityLog
+from about.models import AboutData
+
+# About Section Management
+from about.models import AboutData
+
+
+
+
+def is_staff_or_superuser(user):
+    return user.is_staff or user.is_superuser
+
+
+
+@login_required
+@user_passes_test(is_staff_or_superuser)
+def about_management(request):
+    """Admin dashboard view to manage About section"""
+    about_obj = AboutData.objects.first()
+    if request.method == 'POST':
+        if not about_obj:
+            about_obj = AboutData.objects.create()
+        about_obj.biography = request.POST.get('biography', '')
+        about_obj.mission_statement = request.POST.get('mission_statement', '')
+        about_obj.artist_statement = request.POST.get('artist_statement', '')
+        # Handle profile_image and video uploads
+        if 'profile_image' in request.FILES:
+            about_obj.profile_image = request.FILES['profile_image']
+        if 'video' in request.FILES:
+            about_obj.video = request.FILES['video']
+        about_obj.save()
+        messages.success(request, 'About section updated successfully!')
+        log_activity(
+            request, 'update', 'about', about_obj.id,
+            'About Section', 'Updated about section content'
+        )
+        return redirect('dashboard:about_management')
+    context = {
+        'about_obj': about_obj,
+    }
+    return render(request, 'dashboard/about_management.html', context)
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -9,14 +64,43 @@ from django.db.models import Max
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
+
 from gallery.models import Painting, Category, Artist, PaintingImage
 from events.models import Event
 from orders.models import Order
 from .models import ActivityLog
+from about.models import AboutData
+
 
 # Constants
 PAINTINGS_PER_PAGE = 12
 ORDERS_PER_PAGE = 20
+
+
+def about_management(request):
+    """Admin dashboard view to manage About section"""
+    if not (request.user.is_staff or request.user.is_superuser):
+        return redirect('dashboard:dashboard_home')
+    about_obj = AboutData.objects.first()
+    if request.method == 'POST':
+        if not about_obj:
+            about_obj = AboutData.objects.create()
+        about_obj.biography = request.POST.get('biography', '')
+        about_obj.mission_statement = request.POST.get('mission_statement', '')
+        about_obj.artist_statement = request.POST.get('artist_statement', '')
+        # Handle profile_image and video uploads
+        if 'profile_image' in request.FILES:
+            about_obj.profile_image = request.FILES['profile_image']
+        if 'video' in request.FILES:
+            about_obj.video = request.FILES['video']
+        about_obj.save()
+        messages.success(request, 'About section updated successfully!')
+        log_activity(request, 'update', 'about', about_obj.id, 'About Section', 'Updated about section content')
+        return redirect('dashboard:about_management')
+    context = {
+        'about_obj': about_obj,
+    }
+    return render(request, 'dashboard/about_management.html', context)
 
 
 def generate_unique_slug(title, exclude_id=None):

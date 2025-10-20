@@ -29,5 +29,6 @@ urlpatterns = [
     ),
     path('orders/<int:order_id>/update-status/',
          views.update_order_status, name='update_order_status'),
-    path('artist-admin/', views.frontend_admin, name='artist_admin'),
+     path('artist-admin/', views.frontend_admin, name='artist_admin'),
+     path('about/', views.about_management, name='about_management'),
 ]
