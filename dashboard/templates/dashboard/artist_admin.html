@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Artist Admin - Frontend{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Artist Admin</h1>
+            <p class="text-base-content/70">A simplified front-end interface for the artist (staff only)</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Manage Gallery</h2>
+                    <p>Upload and edit artworks directly.</p>
+                    <div class="mt-4">
+                        <a href="{% url 'dashboard:gallery_management' %}" class="btn btn-primary">Open Gallery Manager</a>
+                        <a href="{% url 'dashboard:upload_artwork' %}" class="btn btn-ghost">Upload New</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Manage Events</h2>
+                    <p>Create or edit upcoming events.</p>
+                    <div class="mt-4">
+                        <a href="{% url 'dashboard:events_management' %}" class="btn btn-secondary">Open Events Manager</a>
+                        <a href="{% url 'dashboard:create_event' %}" class="btn btn-ghost">Create Event</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-200 shadow-xl md:col-span-2">
+                <div class="card-body">
+                    <h2 class="card-title">Orders</h2>
+                    <p>View and process orders.</p>
+                    <div class="mt-4">
+                        <a href="{% url 'dashboard:orders_management' %}" class="btn btn-accent">Open Orders Manager</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

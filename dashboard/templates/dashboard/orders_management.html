@@ -1,0 +1,558 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Orders Management - Dashboard{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <!-- CSRF Token for AJAX requests -->
+        {% csrf_token %}
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">Orders Management</h1>
+                <p class="text-base-content/70">View and manage customer orders</p>
+            </div>
+            <a href="{% url 'dashboard:dashboard_home' %}" class="btn btn-ghost">
+                <i class="ph ph-arrow-left mr-2"></i>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Orders Table -->
+        {% if orders %}
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body p-0">
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr class="bg-base-300">
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td class="font-mono text-sm">#{{ order.id }}</td>
+                                <td>
+                                    <div class="font-semibold">
+                                        {% if order.user %}
+                                            {{ order.user.get_full_name|default:order.user.username }}
+                                        {% else %}
+                                            Guest Customer
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-sm text-base-content/70">
+                                        {% if order.user %}
+                                            {{ order.user.email }}
+                                        {% else %}
+                                            {{ order.guest_email|default:"No email" }}
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-sm">
+                                        {% for item in order.order_items.all %}
+                                        {{ item.product_title }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td class="font-semibold">${{ order.total }}</td>
+                                <td>
+                                    <div class="badge
+                                        {% if order.status == 'completed' %}badge-success
+                                        {% elif order.status == 'pending' %}badge-warning
+                                        {% elif order.status == 'cancelled' %}badge-error
+                                        {% else %}badge-neutral{% endif %}">
+                                        {{ order.get_status_display }}
+                                    </div>
+                                </td>
+                                <td class="text-sm">{{ order.created_at|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    <div class="dropdown dropdown-left">
+                                        <button tabindex="0" class="btn btn-sm btn-ghost">
+                                            <i class="ph ph-dots-three"></i>
+                                        </button>
+                                        <ul tabindex="0" class="dropdown-content menu z-[1] p-2 shadow bg-base-200 rounded-box w-48">
+                                            <li><a href="#" onclick="viewOrderDetails('{{ order.id }}')">View Details</a></li>
+                                            {% if order.status == 'pending' %}
+                                            <li><a href="#" onclick="updateOrderStatus('{{ order.id }}', 'processing')">Mark Processing</a></li>
+                                            <li><a href="#" onclick="updateOrderStatus('{{ order.id }}', 'completed')">Mark Completed</a></li>
+                                            {% endif %}
+                                            {% if order.status == 'processing' %}
+                                            <li><a href="#" onclick="updateOrderStatus('{{ order.id }}', 'completed')">Mark Completed</a></li>
+                                            {% endif %}
+                                            <li><a href="#" onclick="updateOrderStatus('{{ order.id }}', 'cancelled')" class="text-error">Cancel Order</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="flex justify-center mt-8">
+            <div class="join">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="join-item btn">«</a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <button class="join-item btn btn-active">{{ num }}</button>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}" class="join-item btn">{{ num }}</a>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="join-item btn">»</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body items-center text-center py-16">
+                <i class="ph ph-shopping-bag text-6xl text-base-content/30 mb-4"></i>
+                <h2 class="card-title text-2xl mb-2">No orders yet</h2>
+                <p class="text-base-content/70 mb-6">Orders will appear here once customers start purchasing your artwork.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Order Details Modal -->
+<div id="order-modal" class="modal">
+    <div class="modal-box max-w-2xl">
+        <h3 class="font-bold text-lg mb-4">Order Details</h3>
+        <div id="order-details" class="space-y-4">
+            <!-- Order details will be loaded here -->
+        </div>
+        <div class="modal-action">
+            <button onclick="closeOrderModal()" class="btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function viewOrderDetails(orderId) {
+    // Show loading state
+    const details = document.getElementById('order-details');
+    details.innerHTML = `
+        <div class="flex justify-center items-center py-8">
+            <span class="loading loading-spinner loading-lg"></span>
+            <span class="ml-2">Loading order details...</span>
+        </div>
+    `;
+    document.getElementById('order-modal').classList.add('modal-open');
+
+    // Fetch order details
+    fetch(`/dashboard/orders/${orderId}/details/`)
+        .then(response => response.json())
+        .then(data => {
+            // Build order details HTML
+            let itemsHtml = '';
+            data.items.forEach(item => {
+                itemsHtml += `
+                    <div class="flex justify-between items-center py-2 border-b border-base-300">
+                        <div>
+                            <div class="font-semibold">${item.product_title}</div>
+                            <div class="text-sm text-base-content/70">SKU: ${item.product_sku || 'N/A'}</div>
+                        </div>
+                        <div class="text-right">
+                            <div>${item.quantity} × €${item.unit_price}</div>
+                            <div class="font-semibold">€${item.total_price}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            let addressesHtml = '';
+            if (data.shipping_address) {
+                addressesHtml += `
+                    <div class="mb-4">
+                        <h4 class="font-semibold mb-2">Shipping Address</h4>
+                        <div class="text-sm">
+                            <div>${data.shipping_address.full_name}</div>
+                            <div>${data.shipping_address.line1}</div>
+                            ${data.shipping_address.line2 ? `<div>${data.shipping_address.line2}</div>` : ''}
+                            <div>${data.shipping_address.city}, ${data.shipping_address.postal_code}</div>
+                            <div>${data.shipping_address.country}</div>
+                            ${data.shipping_address.phone ? `<div>Phone: ${data.shipping_address.phone}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (data.billing_address) {
+                addressesHtml += `
+                    <div class="mb-4">
+                        <h4 class="font-semibold mb-2">Billing Address</h4>
+                        <div class="text-sm">
+                            <div>${data.billing_address.full_name}</div>
+                            <div>${data.billing_address.line1}</div>
+                            ${data.billing_address.line2 ? `<div>${data.billing_address.line2}</div>` : ''}
+                            <div>${data.billing_address.city}, ${data.billing_address.postal_code}</div>
+                            <div>${data.billing_address.country}</div>
+                            ${data.billing_address.phone ? `<div>Phone: ${data.billing_address.phone}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            let paymentsHtml = '';
+            if (data.payments.length > 0) {
+                paymentsHtml = '<h4 class="font-semibold mb-2">Payment Information</h4>';
+                data.payments.forEach(payment => {
+                    paymentsHtml += `
+                        <div class="mb-2 p-3 bg-base-200 rounded">
+                            <div class="flex justify-between">
+                                <span>${payment.provider.toUpperCase()}</span>
+                                <span class="badge badge-${payment.status === 'succeeded' ? 'success' : payment.status === 'pending' ? 'warning' : 'neutral'}">${payment.status}</span>
+                            </div>
+                            <div class="text-sm text-base-content/70">
+                                ID: ${payment.provider_payment_id}<br>
+                                Amount: ${payment.currency} ${payment.amount}<br>
+                                Date: ${payment.created_at}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Status dropdown options
+            const statusOptions = [
+                {value: 'paid', label: 'Paid'},
+                {value: 'processing', label: 'Processing'},
+                {value: 'shipped', label: 'Shipped'},
+                {value: 'cancelled', label: 'Cancelled'},
+                {value: 'refunded', label: 'Refunded'}
+            ];
+
+            let statusOptionsHtml = '';
+            statusOptions.forEach(option => {
+                const selected = option.value === data.status ? 'selected' : '';
+                statusOptionsHtml += `<option value="${option.value}" ${selected}>${option.label}</option>`;
+            });
+
+            details.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Order Header -->
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-xl font-bold">Order ${data.order_number}</h3>
+                            <p class="text-base-content/70">Created: ${data.created_at}</p>
+                            <p class="text-base-content/70">Customer: ${data.customer.name} (${data.customer.email})</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-bold">Total: €${data.total}</div>
+                            <div class="badge badge-${data.status === 'shipped' || data.status === 'completed' ? 'success' : data.status === 'processing' ? 'warning' : data.status === 'cancelled' || data.status === 'refunded' ? 'error' : 'neutral'} badge-lg">
+                                ${data.status_display}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Update -->
+                    <div class="card bg-base-200 p-4">
+                        <h4 class="font-semibold mb-3">Update Order Status</h4>
+                        <div class="flex gap-3 items-end">
+                            <div class="flex-1">
+                                <label class="label">
+                                    <span class="label-text">Status</span>
+                                </label>
+                                <select id="status-select" class="select select-bordered w-full">
+                                    ${statusOptionsHtml}
+                                </select>
+                            </div>
+                            <button onclick="updateOrderStatusFromModal(${orderId})" class="btn btn-primary">
+                                Update Status
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div>
+                        <h4 class="font-semibold mb-3">Order Items</h4>
+                        <div class="space-y-2">
+                            ${itemsHtml}
+                        </div>
+                        <div class="flex justify-end pt-2 border-t border-base-300">
+                            <div class="text-lg font-bold">Total: €${data.total}</div>
+                        </div>
+                    </div>
+
+                    <!-- Addresses -->
+                    ${addressesHtml ? `<div>${addressesHtml}</div>` : ''}
+
+                    <!-- Payment Information -->
+                    ${paymentsHtml ? `<div>${paymentsHtml}</div>` : ''}
+
+                    <!-- Refund Actions (only show if payment exists and is refundable) -->
+                    ${data.payments.length > 0 && (data.status === 'paid' || data.status === 'completed') ? `
+                    <div class="card bg-warning/10 border border-warning/20 p-4">
+                        <h4 class="font-semibold mb-3 text-warning">Refund Actions</h4>
+                        <p class="text-sm text-base-content/70 mb-3">Process a full refund for this order. This action cannot be undone.</p>
+                        <button onclick="processRefund(${orderId}, ${data.payments[0].id})" class="btn btn-warning btn-sm">
+                            <i class="ph ph-arrow-counter-clockwise mr-2"></i>
+                            Process Full Refund
+                        </button>
+                    </div>
+                    ` : ''}
+
+                    <!-- Additional Info -->
+                    <div class="text-sm text-base-content/70">
+                        <div>Last Updated: ${data.updated_at}</div>
+                        ${data.stock_shortage ? '<div class="text-warning">⚠️ Stock shortage detected</div>' : ''}
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            details.innerHTML = `
+                <div class="alert alert-error">
+                    <i class="ph ph-x-circle"></i>
+                    <span>Error loading order details. Please try again.</span>
+                </div>
+            `;
+        });
+}
+
+function updateOrderStatus(orderId, newStatus) {
+    // Show loading state
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Updating...';
+    button.disabled = true;
+
+    // Make AJAX call to update order status
+    fetch(`/dashboard/orders/${orderId}/update-status/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: `status=${newStatus}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the status badge in the table
+            const row = button.closest('tr');
+            const statusBadge = row.querySelector('.badge');
+            statusBadge.textContent = data.status_display;
+
+            // Update badge color based on status
+            statusBadge.className = 'badge';
+            if (newStatus === 'completed' || newStatus === 'shipped') {
+                statusBadge.classList.add('badge-success');
+            } else if (newStatus === 'processing') {
+                statusBadge.classList.add('badge-warning');
+            } else if (newStatus === 'cancelled' || newStatus === 'refunded') {
+                statusBadge.classList.add('badge-error');
+            } else {
+                statusBadge.classList.add('badge-neutral');
+            }
+
+            // Show success message
+            showMessage(`Order #${orderId} status updated to ${data.status_display}`, 'success');
+
+            // Close dropdown
+            const dropdown = button.closest('.dropdown');
+            dropdown.removeAttribute('open');
+        } else {
+            showMessage('Error updating order status: ' + (data.error || 'Unknown error'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Error updating order status', 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        button.textContent = originalText;
+        button.disabled = false;
+    });
+}
+
+function updateOrderStatusFromModal(orderId) {
+    const statusSelect = document.getElementById('status-select');
+    const newStatus = statusSelect.value;
+
+    // Show loading state
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Updating...';
+    button.disabled = true;
+
+    // Make AJAX call to update order status
+    fetch(`/dashboard/orders/${orderId}/update-status/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: `status=${newStatus}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the status badge in the modal
+            const statusBadge = document.querySelector('#order-details .badge');
+            statusBadge.textContent = data.status_display;
+
+            // Update badge color
+            statusBadge.className = 'badge badge-lg';
+            if (newStatus === 'completed' || newStatus === 'shipped') {
+                statusBadge.classList.add('badge-success');
+            } else if (newStatus === 'processing') {
+                statusBadge.classList.add('badge-warning');
+            } else if (newStatus === 'cancelled' || newStatus === 'refunded') {
+                statusBadge.classList.add('badge-error');
+            } else {
+                statusBadge.classList.add('badge-neutral');
+            }
+
+            // Update the status in the table as well
+            const tableRow = document.querySelector(`tr:has(td:contains("#${orderId}"))`);
+            if (tableRow) {
+                const tableBadge = tableRow.querySelector('.badge');
+                if (tableBadge) {
+                    tableBadge.textContent = data.status_display;
+                    tableBadge.className = 'badge';
+                    if (newStatus === 'completed' || newStatus === 'shipped') {
+                        tableBadge.classList.add('badge-success');
+                    } else if (newStatus === 'processing') {
+                        tableBadge.classList.add('badge-warning');
+                    } else if (newStatus === 'cancelled' || newStatus === 'refunded') {
+                        tableBadge.classList.add('badge-error');
+                    } else {
+                        tableBadge.classList.add('badge-neutral');
+                    }
+                }
+            }
+
+            // Show success message
+            showMessage(`Order #${orderId} status updated to ${data.status_display}`, 'success');
+        } else {
+            showMessage('Error updating order status: ' + (data.error || 'Unknown error'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Error updating order status', 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        button.textContent = originalText;
+        button.disabled = false;
+    });
+}
+
+function showMessage(message, type) {
+    // Create a temporary message element
+    const messageEl = document.createElement('div');
+    messageEl.className = `alert alert-${type === 'success' ? 'success' : 'error'} shadow-lg fixed top-20 right-4 z-50 max-w-sm`;
+    messageEl.innerHTML = `
+        <div>
+            <i class="ph ph-${type === 'success' ? 'check-circle' : 'x-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    document.body.appendChild(messageEl);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        messageEl.remove();
+    }, 3000);
+}
+
+function closeOrderModal() {
+    document.getElementById('order-modal').classList.remove('modal-open');
+}
+
+function processRefund(orderId, paymentId) {
+    const confirmationMessage = `
+WARNING: Refund Action
+
+You are about to process a FULL REFUND for Order #${orderId}.
+
+This will:
+• Refund the full payment amount to the customer
+• Change the order status to "Refunded"
+• This action CANNOT be undone
+
+Are you absolutely sure you want to proceed?
+    `.trim();
+
+    if (!confirm(confirmationMessage)) {
+        return;
+    }
+
+    // Show loading state
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Processing Refund...';
+    button.disabled = true;
+
+    // Make AJAX call to process refund
+    fetch(`/orders/refund/${paymentId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (response.ok && data.refunded) {
+            // Update order status to refunded
+            updateOrderStatusFromModal(orderId, 'refunded');
+
+            // Show success message
+            showMessage('Refund processed successfully', 'success');
+
+            // Close modal after a delay
+            setTimeout(() => {
+                closeOrderModal();
+            }, 2000);
+        } else {
+            showMessage('Error processing refund: ' + (data.detail || 'Unknown error'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Error processing refund', 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        button.textContent = originalText;
+        button.disabled = false;
+    });
+}
+
+// Close modal when clicking outside
+document.getElementById('order-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeOrderModal();
+    }
+});
+</script>
+{% endblock content %}

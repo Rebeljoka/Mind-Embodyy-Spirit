@@ -28,7 +28,7 @@ urlpatterns = [
     path('gallery/', include('gallery.urls')),
     path('events/', include('events.urls')),
     path('newsletter/', include('newsletter.urls')),
-    # Include About app with namespace for stable reversing
+    path('dashboard/', include('dashboard.urls')),
     path('about/', include(('about.urls', 'about'), namespace='about')),
 ]
 
@@ -41,4 +41,4 @@ if settings.DEBUG:
     ]
 
     # Serve media files in development
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # noqa: E501
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

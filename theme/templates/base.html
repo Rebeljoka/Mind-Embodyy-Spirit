@@ -68,7 +68,9 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}" />
 	<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/icon-shortcut.ico' %}" />
 
-	<body class="font-serif leading-normal tracking-normal flex flex-col min-h-screen">
+</head>
+
+<body class="font-serif leading-normal tracking-normal flex flex-col min-h-screen">
 		<!-- Navbar -->
 		<nav class="navbar justify-between bg-base-100/10 fixed top-0 left-0 right-0 backdrop-blur-md shadow-lg z-50">
 			<!-- Logo -->
@@ -268,6 +270,13 @@
 							<path d="M2.16699 9.74967H23.8337M17.2199 15.708H17.2297M17.2198 18.958H17.2295M13.2123 15.708H13.222M13.2123 18.958H13.222M9.20271 15.708H9.21244M9.20271 18.958H9.21244M7.58366 5.41634V1.08301M18.417 5.41634V1.08301M10.8337 24.9163H15.167C19.2525 24.9163 21.2953 24.9163 22.5645 23.6471C23.8337 22.3779 23.8337 20.3352 23.8337 16.2497V11.9163C23.8337 7.83083 23.8337 5.78808 22.5645 4.51888C21.2953 3.24967 19.2525 3.24967 15.167 3.24967H10.8337C6.74815 3.24967 4.7054 3.24967 3.4362 4.51888C2.16699 5.78808 2.16699 7.83084 2.16699 11.9163V16.2497C2.16699 20.3352 2.16699 22.3779 3.4362 23.6471C4.7054 24.9163 6.74815 24.9163 10.8337 24.9163Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
 						</svg>
 					</a>
+
+					{# Artist Admin (staff only) - opens the front-facing admin page #}
+					{% if user.is_authenticated and user.is_staff or user.is_superuser %}
+					<a href="{% url 'dashboard:dashboard_home' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Artist Admin">
+						<i class="ph ph-gear-six text-2xl"></i>
+					</a>
+					{% endif %}
 				</div>
 				<button type="button" aria-expanded="false" class="flex items-center justify-center rounded-full w-16 h-16 border border-base-content/20 shadow-lg focus:ring-4 focus:outline-none relative transition-colors bg-[var(--Section-Bg)]">
 					<svg class="w-5 h-5 transition-transform group-hover:rotate-45" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">

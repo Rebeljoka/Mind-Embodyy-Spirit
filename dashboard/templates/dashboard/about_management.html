@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Manage About Section{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-center mb-2">Edit About Section</h1>
+            <p class="text-center text-base-content/70">Update biography, mission, artist statement, and featured artworks.</p>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="card bg-base-200 shadow-xl p-6">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Profile Image</label>
+                {% if about_obj and about_obj.profile_image %}
+                    <img src="{{ about_obj.profile_image.url }}" alt="Profile Image" class="w-32 h-32 object-cover rounded mb-2">
+                {% endif %}
+                <input type="file" name="profile_image" class="file-input file-input-bordered w-full" />
+            </div>
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Featured Video</label>
+                {% if about_obj and about_obj.video %}
+                    <video src="{{ about_obj.video.url }}" controls class="w-full mb-2"></video>
+                {% endif %}
+                <input type="file" name="video" class="file-input file-input-bordered w-full" />
+            </div>
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Biography</label>
+                <textarea name="biography" rows="4" class="textarea textarea-bordered w-full">{{ about_obj.biography }}</textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Mission Statement</label>
+                <textarea name="mission_statement" rows="3" class="textarea textarea-bordered w-full">{{ about_obj.mission_statement }}</textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Artist Statement</label>
+                <textarea name="artist_statement" rows="3" class="textarea textarea-bordered w-full">{{ about_obj.artist_statement }}</textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">Featured Artworks</label>
+                <select name="featured_artworks" multiple class="select select-bordered w-full">
+                    {% for painting in about_obj.featured_artworks.all %}
+                        <option value="{{ painting.id }}" selected>{{ painting.title }}</option>
+                    {% endfor %}
+                    {% for painting in paintings %}
+                        {% if painting not in about_obj.featured_artworks.all %}
+                            <option value="{{ painting.id }}">{{ painting.title }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <small class="text-xs text-base-content/60">Hold Ctrl (Cmd on Mac) to select multiple artworks.</small>
+            </div>
+            <div class="mt-6 text-center">
+                <button type="submit" class="btn btn-info">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock content %}

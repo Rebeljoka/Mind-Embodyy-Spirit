@@ -10,14 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+# ...existing imports...
 from pathlib import Path
 import os
 import shutil
 import dj_database_url
 import cloudinary
 import stripe  # noqa: F401
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -67,6 +66,7 @@ INSTALLED_APPS = [
     'orders',
     'theme',
     'events',
+    'dashboard',
     'about',
 ]
 
@@ -298,12 +298,13 @@ else:
     EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
 
 # Common settings (apply in all environments)
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@default.com")   # noqa: E501
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@default.com")
 SITE_URL = os.environ.get("SITE_URL", "http://localhost:8000")
 
-# 👇 This part tells Anymail how to connect to SendGrid
+# 👇 This part tells Anymail how to connect to SendGrid.
+# The SENDGRID_API_KEY can be empty in DEBUG.
 ANYMAIL = {
-    "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY", ""),  # can be empty in DEBUG  # noqa: E501
+    "SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY", ""),
 }
 
 

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Edit About - Dashboard{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <a href="{% url 'dashboard:about_management' %}" class="btn btn-ghost">
+                    <i class="ph ph-arrow-left"></i>
+                </a>
+                <h1 class="text-3xl font-bold">Edit About Profile</h1>
+            </div>
+            <p class="text-base-content/70">Update your profile image and featured video</p>
+        </div>
+
+        <!-- Edit About Form -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+
+                    <!-- Current Profile Image -->
+                    {% if about_data.profile_image %}
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Current Profile Image</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <img src="{{ about_data.profile_image.url }}" alt="Profile Image"
+                                 class="max-w-full h-auto rounded-lg mx-auto max-h-64" />
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Profile Image Upload -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Update Profile Image</span>
+                        </label>
+                        <input type="file" name="profile_image" accept="image/*"
+                               class="file-input file-input-bordered w-full" />
+                        <div class="label">
+                            <span class="label-text-alt">Leave empty to keep current image</span>
+                        </div>
+                    </div>
+
+                    <!-- Profile Image Preview -->
+                    <div id="profile-image-preview" class="hidden">
+                        <label class="label">
+                            <span class="label-text font-semibold">New Profile Image Preview</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <img id="profile-preview-img" class="max-w-full h-auto rounded-lg mx-auto" />
+                        </div>
+                    </div>
+
+                    <!-- Current Video -->
+                    {% if about_data.video %}
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Current Featured Video</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <video controls class="max-w-full h-auto rounded-lg mx-auto max-h-64">
+                                <source src="{{ about_data.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Video Upload -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Update Featured Video</span>
+                        </label>
+                        <input type="file" name="video" accept="video/*"
+                               class="file-input file-input-bordered w-full" />
+                        <div class="label">
+                            <span class="label-text-alt">Leave empty to keep current video</span>
+                        </div>
+                    </div>
+
+                    <!-- Video Preview -->
+                    <div id="video-preview" class="hidden">
+                        <label class="label">
+                            <span class="label-text font-semibold">New Video Preview</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <video id="preview-video" controls class="max-w-full h-auto rounded-lg mx-auto">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                        <button type="submit" class="btn btn-secondary flex-1">
+                            <i class="ph ph-check mr-2"></i>
+                            Update About Profile
+                        </button>
+                        <a href="{% url 'dashboard:about_management' %}" class="btn btn-ghost">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Image preview functionality
+document.querySelector('input[name="profile_image"]').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('profile-image-preview');
+    const previewImg = document.getElementById('profile-preview-img');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.classList.add('hidden');
+    }
+});
+
+// Video preview functionality
+document.querySelector('input[name="video"]').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('video-preview');
+    const previewVideo = document.getElementById('preview-video');
+
+    if (file) {
+        const url = URL.createObjectURL(file);
+        previewVideo.src = url;
+        preview.classList.remove('hidden');
+    } else {
+        preview.classList.add('hidden');
+    }
+});
+</script>
+{% endblock content %}

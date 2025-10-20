@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}Edit Event - Dashboard{% endblock head_title %}
+
+{% block content %}
+<section class="min-h-screen bg-base-100 pt-24 pb-12">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <a href="{% url 'dashboard:events_management' %}" class="btn btn-ghost">
+                    <i class="ph ph-arrow-left"></i>
+                </a>
+                <h1 class="text-3xl font-bold">Edit Event</h1>
+            </div>
+            <p class="text-base-content/70">Update details for "{{ event.event_name }}"</p>
+        </div>
+
+        <!-- Edit Event Form -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+
+                    <!-- Event Name -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Event Name *</span>
+                        </label>
+                        <input type="text" name="event_name" value="{{ event.event_name }}"
+                               class="input input-bordered w-full" required />
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Location *</span>
+                        </label>
+                        <input type="text" name="location" value="{{ event.location }}"
+                               class="input input-bordered w-full" required />
+                    </div>
+
+                    <!-- Event Date -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Event Date *</span>
+                        </label>
+                        <input type="date" name="event_date" value="{{ event.event_date|date:'Y-m-d' }}"
+                               class="input input-bordered w-full" required />
+                        <div class="label">
+                            <span class="label-text-alt">Date cannot be in the past</span>
+                        </div>
+                    </div>
+
+                    <!-- Current Poster -->
+                    {% if event.poster %}
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Current Poster</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <img src="{{ event.poster.url }}" alt="{{ event.event_name }}"
+                                 class="max-w-full h-auto rounded-lg mx-auto max-h-64" />
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Event Poster -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Update Poster</span>
+                        </label>
+                        <input type="file" name="poster" accept="image/*"
+                               class="file-input file-input-bordered w-full" />
+                        <div class="label">
+                            <span class="label-text-alt">Leave empty to keep current poster</span>
+                        </div>
+                    </div>
+
+                    <!-- Preview Area -->
+                    <div id="image-preview" class="hidden">
+                        <label class="label">
+                            <span class="label-text font-semibold">New Poster Preview</span>
+                        </label>
+                        <div class="border-2 border-dashed border-base-300 rounded-lg p-4">
+                            <img id="preview-img" class="max-w-full h-auto rounded-lg mx-auto" />
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="flex gap-4 pt-6">
+                        <button type="submit" class="btn btn-secondary flex-1">
+                            <i class="ph ph-check mr-2"></i>
+                            Update Event
+                        </button>
+                        <a href="{% url 'dashboard:events_management' %}" class="btn btn-ghost">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Set minimum date to today
+document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.querySelector('input[name="event_date"]');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+    }
+});
+
+// Image preview functionality
+document.querySelector('input[name="poster"]').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.classList.add('hidden');
+    }
+});
+</script>
+{% endblock content %}
