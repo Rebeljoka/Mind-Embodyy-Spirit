@@ -267,15 +267,39 @@
 		</div>
 
 		{% block extra_body %}{% endblock extra_body %}
-		<footer class="mt-12 border-t border-gray-200 flex items-center">
-			<div class="mx-auto justify-center">
-				<h1>Contact</h1>
-				<p>To contact me for gallery bookings, artist talks, purachases or art viewings please email me or my curator.</p>
-				<p>Email: cecilia.kristoffersson71@gmail.com</p>
-			</div>
-		</footer>
-
-				<!-- Speed Dial & Theme Switcher Script -->
+        <footer class="mt-12 bg-base-200 border-t border-base-300 py-12">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-3xl font-bold mb-6">Contact</h1>
+                <p class="mb-8 max-w-2xl mx-auto text-lg">To contact me for gallery bookings, artist talks, purchases or art viewings please email me or my curator.</p>
+                <div class="flex flex-col md:flex-row justify-center items-start gap-8 max-w-4xl mx-auto">
+                    <div class="flex-1 text-center">
+                        <h2 class="text-xl font-semibold mb-4">Cecilia Kristoffersson</h2>
+                        <p class="mb-2">
+                            <i class="ph ph-envelope mr-2 text-black"></i>
+                            <a href="mailto:cecilia.kristoffersson71@gmail.com" class="text-black hover:underline">cecilia.kristoffersson71@gmail.com</a>
+                        </p>
+						<p class="mb-2">
+                            <i class="ph ph-phone mr-2 text-black"></i>
+                            For international inquiries, please email me (Accessible Via Navigation Menu) or my Curator.
+                        </p>
+                    </div>
+                    <div class="flex-1 text-center">
+                        <h2 class="text-xl font-semibold mb-4">Curator: Magnus Florin</h2>
+                        <p class="mb-2">
+                            <i class="ph ph-envelope mr-2 text-black"></i>
+                            <a href="mailto:k.magnus.florin@gmail.com" class="text-black hover:underline">k.magnus.florin@gmail.com</a>
+                        </p>
+                        <p class="mb-2">
+                            <i class="ph ph-phone mr-2 text-black"></i>
+                            (+46) 0708 73 42 15
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+		
+		
+		<!-- Speed Dial & Theme Switcher Script -->
 		<script>
 			// Message dismiss functionality
 			function dismissMessage(button) {
