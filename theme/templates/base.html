@@ -273,7 +273,7 @@
 
 					{# Artist Admin (staff only) - opens the front-facing admin page #}
 					{% if user.is_authenticated and user.is_staff or user.is_superuser %}
-					<a href="{% url 'dashboard:dashboard_home' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Artist Admin">
+					<a href="{% url 'dashboard:dashboard_home' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative bg-[var(--Section-Bg)]" aria-label="Artist Admin">
 						<i class="ph ph-gear-six text-2xl"></i>
 					</a>
 					{% endif %}
