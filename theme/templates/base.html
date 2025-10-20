@@ -230,24 +230,24 @@
 
 		<!-- Speed Dial Menu -->
 		<div class="fixed right-6 bottom-6 group z-50 flex speeddial-button">
-				<div id="speed-dial-menu-default" class="speed-dial-menu flex items-center hidden mr-4 space-x-2">
+				<div id="speed-dial-menu-default" class="speed-dial-menu flex items-center mr-4 space-x-2">
 					<!-- Shopping Cart Button with Counter -->
-					<a href="{% url 'orders:cart_page' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Shopping Cart">
+					<a href="{% url 'orders:cart_page' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative bg-[var(--Section-Bg)]" aria-label="Shopping Cart">
 						<span id="cart-counter-badge" class="hidden absolute -top-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-2xl font-bold shadow-lg z-10">0</span>
 						<i class="ph ph-shopping-cart text-2xl"></i>
 					</a>
 					<!-- Theme Switcher Button -->
-					<button type="button" id="theme-toggle" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Toggle Theme">
+					<button type="button" id="theme-toggle" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative bg-[var(--Section-Bg)]" aria-label="Toggle Theme">
 						<i class="ph ph-sun text-2xl"></i>
 					</button>
 					<!-- Calendar/Events Button -->
-					<a href="{% url 'events:events' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative" aria-label="Events">
+					<a href="{% url 'events:events' %}" class="flex justify-center items-center w-16 h-16 rounded-full border shadow-sm focus:outline-none relative bg-[var(--Section-Bg)]" aria-label="Events">
 						<svg class="w-6 h-6" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M2.16699 9.74967H23.8337M17.2199 15.708H17.2297M17.2198 18.958H17.2295M13.2123 15.708H13.222M13.2123 18.958H13.222M9.20271 15.708H9.21244M9.20271 18.958H9.21244M7.58366 5.41634V1.08301M18.417 5.41634V1.08301M10.8337 24.9163H15.167C19.2525 24.9163 21.2953 24.9163 22.5645 23.6471C23.8337 22.3779 23.8337 20.3352 23.8337 16.2497V11.9163C23.8337 7.83083 23.8337 5.78808 22.5645 4.51888C21.2953 3.24967 19.2525 3.24967 15.167 3.24967H10.8337C6.74815 3.24967 4.7054 3.24967 3.4362 4.51888C2.16699 5.78808 2.16699 7.83084 2.16699 11.9163V16.2497C2.16699 20.3352 2.16699 22.3779 3.4362 23.6471C4.7054 24.9163 6.74815 24.9163 10.8337 24.9163Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
 						</svg>
 					</a>
 				</div>
-				<button type="button" aria-expanded="false" class="flex items-center justify-center rounded-full w-16 h-16 border border-base-content/20 shadow-lg focus:ring-4 focus:outline-none relative transition-colors">
+				<button type="button" aria-expanded="false" class="flex items-center justify-center rounded-full w-16 h-16 border border-base-content/20 shadow-lg focus:ring-4 focus:outline-none relative transition-colors bg-[var(--Section-Bg)]">
 					<svg class="w-5 h-5 transition-transform group-hover:rotate-45" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
 						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
 					</svg>
@@ -263,81 +263,6 @@
 				<h1>Contact</h1>
 				<p>To contact me for gallery bookings, artist talks, purachases or art viewings please email me or my curator.</p>
 				<p>Email: cecilia.kristoffersson71@gmail.com</p>
-			</div>
-
-			<div class="dropdown dropdown-end lg:hidden">
-				<button class="btn btn-ghost">
-					{% trans "Menu" %}
-					<i class="ph ph-dots-three-outline-vertical text-lg"></i>
-				</button>
-				<ul tabindex="0" class="dropdown-content menu z-[1] bg-base-200 p-6 rounded-box shadow w-56 gap-2">
-					<li>
-						<div class="flex justify-center gap-2">
-							<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: black"
-								href="mailto:cecilia.kristoffersson71@gmail.com" target="_blank"
-								rel="noopener noreferrer" aria-label="Email">
-								<i class="ph ph-envelope text-white"></i>
-							</a>
-							<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: blue"
-								href="https://www.facebook.com/61559467855096/" target="_blank"
-								rel="noopener noreferrer" aria-label="Facebook">
-								<i class="ph ph-facebook-logo text-white"></i>
-							</a>
-							<a class="btn btn-circle btn-ghost btn-sm text-xl"
-								style="background: linear-gradient(135deg, #f9ce34 0%, #ee2a7b 50%, #6228d7 100%); color: white; border: none"
-								href="https://www.instagram.com/constcollectionartbyceciliak?igsh=MTRqZXVoOXVlZms5Yw=="
-								target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-								<i class="ph ph-instagram-logo text-white"></i>
-							</a>
-							<a class="btn btn-circle btn-ghost btn-sm text-xl" style="background: red"
-								href="https://youtube.com/@constcollectionartbycecilia.k?si=lzd8fJmS6eGdQDAv"
-								target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-								<i class="ph ph-youtube-logo text-white"></i>
-							</a>
-						</div>
-					</li>
-
-					<li>
-						<a href="{% url 'index' %}"
-							class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}"> {% trans
-							"Home" %} </a>
-					</li>
-					<li>
-						<a href="{% url 'gallery:collection' %}"
-							class="{% if request.resolver_match.url_name == 'collection' %}active{% endif %}"> {% trans
-							"Gallery" %} </a>
-					</li>
-					<li>
-						<a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}"> {% trans
-							"About" %} </a>
-					</li>
-					<li>
-						<a class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}"> {% trans
-							"Contact" %} </a>
-					</li>
-
-					{% if user.is_authenticated %}
-					<li>
-						<div class="divider"></div>
-					</li>
-					<li>
-						<a href="{% url 'account_email' %}">{% trans "Change Email" %}</a>
-					</li>
-					<li>
-						<a href="{% url 'account_change_password' %}">{% trans "Change Password" %}</a>
-					</li>
-					<li>
-						<a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
-					</li>
-					{% else %}
-					<li>
-						<a href="{% url 'account_login' %}" class="btn btn-sm btn-primary">{% trans "Log in" %}</a>
-					</li>
-					<li>
-						<a href="{% url 'account_signup' %}" class="btn btn-sm btn-outline">{% trans "Sign Up" %}</a>
-					</li>
-					{% endif %}
-				</ul>
 			</div>
 		</footer>
 

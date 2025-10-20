@@ -11,12 +11,9 @@
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--Headers);
-    color: var(--Headings);
 }
 
 button, .btn {
-    background-color: var(--Buttons);
-    color: var(--Background);
     font-family: var(--UI);
 }
 
@@ -98,5 +95,45 @@ p, span, li, a, body {
   .video-row .image-frame:nth-child(-n+3) {
     display: block !important;
     visibility: visible;
+  }
+}
+
+
+/* ============================================
+   Force gallery images to fill div height
+   between 768px–1440px
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1440px) {
+
+  /* shared gallery behavior */
+  .gallery-figurative .grid,
+  .gallery-dualistic .grid,
+  .gallery-perimenopausal .grid {
+    height: 100% !important;
+    display: grid !important;
+    grid-template-rows: 1fr !important;
+    align-items: stretch !important;
+  }
+
+  .gallery-figurative img,
+  .gallery-dualistic img,
+  .gallery-perimenopausal img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* ensure the container flexes properly */
+  .gallery-figurative,
+  .gallery-dualistic,
+  .gallery-perimenopausal {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .gallery-figurative > .grid,
+  .gallery-dualistic > .grid,
+  .gallery-perimenopausal > .grid {
+    flex: 1 !important;
   }
 }

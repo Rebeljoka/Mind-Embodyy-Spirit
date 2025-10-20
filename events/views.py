@@ -58,7 +58,7 @@ def event_edit_view(request, pk: int):
             messages.success(request, 'Event updated!')
         else:
             # Collect first error for quick feedback
-            first_error = next(iter(form.errors.values()))[0] if form.errors else 'Please correct the errors.'
+            first_error = next(iter(form.errors.values()))[0] if form.errors else 'Please correct the errors.'  # noqa: E501
             messages.error(request, f'Error updating event: {first_error}')
         return redirect('events:events')
 
@@ -91,7 +91,7 @@ def newEvent(request):
     """Create a new event; superuser only.
 
     This view expects a POST with fields handled by EventForm.
-    On success or failure, it redirects back to the events list and shows a flash message.
+    On success or failure, it redirects back to the events list and shows a flash message.  # noqa: E501
     """
     if not request.user.is_superuser:
         messages.error(request, "You do not have permission to add events.")
@@ -101,9 +101,9 @@ def newEvent(request):
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Your event has been successfully added.')
+            messages.success(request, 'Your event has been successfully added.')  # noqa: E501
         else:
-            first_error = next(iter(form.errors.values()))[0] if form.errors else 'Please correct the errors.'
+            first_error = next(iter(form.errors.values()))[0] if form.errors else 'Please correct the errors.'  # noqa: E501
             messages.error(request, f'Error adding event: {first_error}')
         return redirect('events:events')
 
