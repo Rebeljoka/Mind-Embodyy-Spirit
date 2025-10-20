@@ -1,7 +1,4 @@
-{% extends "base.html" %} {% load static %}
-{% block head_title %}Home - Const Collection | Art By Cecilia K.{% endblock head_title %}
-{% block main_classes %}w-full flex flex-col flex-grow pt-0 md:pt-0{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% load static %} {% block head_title %}Home - Const Collection | Art By Cecilia K.{% endblock head_title %} {% block main_classes %}w-full flex flex-col flex-grow pt-0 md:pt-0{% endblock %} {% block content %}
 
 <section class="relative min-h-screen bg-base-100">
 	<!-- Background Image -->
@@ -11,7 +8,7 @@
 
 	<!-- Content -->
 	<div class="relative z-10 w-full flex flex-col items-center pt-24 md:pt-32 video-row">
-		<h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12">Const Collection | Art By Cecilia K.</h1>
+		<h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-12 text-black">Const Collection | Art By Cecilia K.</h1>
 
 		<!-- Videos -->
 		<div class="mt-16 w-full flex flex-row justify-evenly items-center gap-6 px-6">
@@ -33,112 +30,120 @@
 
 		<!-- Welcome Text -->
 		<div class="text-center px-4 max-w-4xl mt-20">
-			<h2 class="text-xl md:text-xl mb-6">Welcome to Const Collection, the online gallery showcasing the exquisite artwork of Cecilia K. Explore a curated selection of paintings that capture the essence of creativity and emotion.</h2>
+			<h2 class="text-xl md:text-xl mb-6 text-black">Welcome to Const Collection, the online gallery showcasing the exquisite artwork of Cecilia K. Explore a curated selection of paintings that capture the essence of creativity and emotion.</h2>
 			<a href="{% url 'gallery:collection' %}" class="btn btn-primary btn-lg">Explore the Gallery</a>
 		</div>
 	</div>
 </section>
 
-<section class="grid grid-cols-3 gap-4 p-8">
-	<div class="col-span-1 bg-secondary p-6 rounded-lg flex flex-col items-center">
-		<div>
+<section class="flex flex-col">
+	<!-- Figurative Art -->
+	<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4 md:p-8 items-stretch">
+		<!-- Text/Video Section -->
+		<div class="bg-secondary p-6 rounded-lg flex flex-col justify-center order-1 lg:order-none">
 			<h1 class="text-3xl font-bold mb-6 text-center">Figurative Art</h1>
-		</div>
-		<div class="flex gap-4 w-full">
-			<aside class="flex-1 mb-6 flex justify-center items-start">
-				<video src="{% static 'media/jikinya2023.mp4' %}" controls autoplay muted loop class="w-64 h-auto"></video>
-			</aside>
-			<aside class="flex-1 mb-6">
-				<p class="text-base leading-relaxed text-center">My daughters are my primary inspiration. I'm drawn to the form, movement, and change of the female body. I grew up in Zimbabwe with an ethnomusicologist father—nights of marimbas, mbiras, drums, and dust—always both insider and outsider. That rhythm followed me to Sweden; I danced as a child and as a mother, and it lives in my daughters. Watching how they move, hold themselves, and navigate belonging shapes my work. Like me, they've straddled cultures—appearing to fit while feeling other—learning to carry difference and its loneliness. As they've grown, they've claimed that difference with pride. Their embodied awareness continues to guide my art.</p>
-			</aside>
-		</div>
-	</div>
 
-	<div class="col-span-2 bg-secondary p-6 rounded-lg">
-		<div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/FigurativeArt/noma2022.webp' %}" alt="Noma 2022" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/FigurativeArt/the-3-graces2023.webp' %}" alt="The 3 Graces 2023" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/FigurativeArt/the-birth-of-venus.2023.webp' %}" alt="The Birth of Venus 2023" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/FigurativeArt/Veins2023.webp' %}" alt="Veins 2023" class="w-full h-full object-cover" />
+			<!-- On tablet+, place video and text side by side -->
+			<div class="flex flex-col md:flex-row gap-6 w-full">
+				<aside class="flex-1 flex justify-center items-start">
+					<video src="{% static 'media/jikinya2023.mp4' %}" controls autoplay muted loop class="w-full md:w-64 lg:w-72 h-auto rounded-lg"></video>
+				</aside>
+
+				<aside class="flex-1">
+					<p class="text-base leading-relaxed text-center md:text-left">My daughters are my primary inspiration. I'm drawn to the form, movement, and change of the female body. I grew up in Zimbabwe with an ethnomusicologist father—nights of marimbas, mbiras, drums, and dust—always both insider and outsider. That rhythm followed me to Sweden; I danced as a child and as a mother, and it lives in my daughters. Watching how they move, hold themselves, and navigate belonging shapes my work. Like me, they've straddled cultures—appearing to fit while feeling other—learning to carry difference and its loneliness. As they've grown, they've claimed that difference with pride. Their embodied awareness continues to guide my art.</p>
+				</aside>
 			</div>
 		</div>
-	</div>
-</section>
 
-<section class="grid grid-cols-3 gap-4 p-8">
-	<!-- 1/3 panel (RIGHT on md+, full-width on mobile) -->
-	<div class="md:col-start-3 md:col-span-1 bg-secondary p-6 rounded-lg flex flex-col items-center">
-		<h1 class="text-3xl font-bold mb-6 text-center">Dualistic Art</h1>
-
-		<div class="flex gap-4 w-full">
-			<aside class="flex-1 mb-6 flex justify-center items-start">
-				<video src="{% static 'media/blue.mp4' %}" controls autoplay muted loop class="w-64 h-auto"></video>
-			</aside>
-			<aside class="flex-1 mb-6">
-				<p class="text-base leading-relaxed text-center">Living between cultures shaped a core idea in my work. I juxtapose real and imagined images—projecting poems and my own paintings onto my daughters’ bodies—so two fields become one. These “tattoos” try to speak a new story and empower them. Each piece illuminates the shared narratives of mothers and daughters and invites a wider conversation about what girls carry in today’s world. I’m a painter and a storyteller. Every painting is paired with a written tale about who my daughters are, who they’re becoming, and the quiet magic they hold. These modern fairytales confront the everyday challenges young women face—searching for courage, voice, beauty, imagination. As a mother-artist, I’m committed to preserving storytelling as a grounding thread amid the noise. My paintings are repositories of growth, memory, identity, and hope—a way of saying: We were here. We lived. We loved. This is what it meant.</p>
-			</aside>
-		</div>
-	</div>
-
-	<!-- 2/3 panel (LEFT on md+, full-width on mobile) -->
-	<div class="md:col-start-1 md:col-span-2 md:row-start-1 bg-secondary p-6 rounded-lg">
-		<div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/DualisticArt/shumba2022.webp' %}" alt="Shumba 2022" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/DualisticArt/sofies-well2023.webp' %}" alt="Sofie's Well 2023" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/DualisticArt/Still-Like-Air-I-Rise2022.webp' %}" alt="Still Like Air I Rise 2022" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/DualisticArt/Zenith.webp' %}" alt="Zenith 2023" class="w-full h-full object-cover" />
+		<div class="bg-secondary p-6 rounded-lg col-span-1 lg:col-span-2 flex flex-col justify-center gallery-figurative">
+			<!-- 2x2 at tablet, 4x1 at desktop -->
+			<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/FigurativeArt/noma2022.webp' %}" alt="Noma 2022" class="w-full h-full object-cover" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/FigurativeArt/the-3-graces2023.webp' %}" alt="The 3 Graces 2023" class="w-full h-full object-cover" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/FigurativeArt/the-birth-of-venus.2023.webp' %}" alt="The Birth of Venus 2023" class="w-full h-full object-cover" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/FigurativeArt/Veins2023.webp' %}" alt="Veins 2023" class="w-full h-full object-cover" />
+				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 
-<section class="grid grid-cols-3 gap-4 p-8">
-	<div class="col-span-1 bg-secondary p-6 rounded-lg flex flex-col items-center">
-		<div>
+	<!-- Dualistic Art -->
+	<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4 md:p-8 items-stretch">
+		<!-- Text/Video Section -->
+		<div class="bg-secondary p-6 rounded-lg flex flex-col justify-center order-1 lg:order-2">
+			<h1 class="text-3xl font-bold mb-6 text-center">Dualistic Art</h1>
+
+			<div class="flex flex-col md:flex-row gap-6 w-full">
+				<aside class="flex-1 flex justify-center items-start">
+					<video src="{% static 'media/blue.mp4' %}" controls autoplay muted loop class="w-full md:w-64 lg:w-72 h-auto rounded-lg"></video>
+				</aside>
+
+				<aside class="flex-1">
+					<p class="text-base leading-relaxed text-center md:text-left">Living between cultures shaped a core idea in my work. I juxtapose real and imagined images—projecting poems and my own paintings onto my daughters’ bodies—so two fields become one. These “tattoos” try to speak a new story and empower them. Each piece illuminates the shared narratives of mothers and daughters and invites a wider conversation about what girls carry in today’s world. I’m a painter and a storyteller. Every painting is paired with a written tale about who my daughters are, who they’re becoming, and the quiet magic they hold. These modern fairytales confront the everyday challenges young women face—searching for courage, voice, beauty, imagination. As a mother-artist, I’m committed to preserving storytelling as a grounding thread amid the noise. My paintings are repositories of growth, memory, identity, and hope—a way of saying: We were here. We lived. We loved. This is what it meant.</p>
+				</aside>
+			</div>
+		</div>
+
+		<div class="bg-secondary p-6 rounded-lg col-span-1 lg:col-span-2 flex flex-col justify-center gallery-figurative">
+			<!-- 2x2 at tablet, 4x1 at desktop -->
+			<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/DualisticArt/shumba2022.webp' %}" alt="Shumba 2022" class="w-full h-full object-cover rounded-md" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/DualisticArt/sofies-well2023.webp' %}" alt="Sofie's Well 2023" class="w-full h-full object-cover rounded-md" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/DualisticArt/Still-Like-Air-I-Rise2022.webp' %}" alt="Still Like Air I Rise 2022" class="w-full h-full object-cover rounded-md" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/DualisticArt/Zenith.webp' %}" alt="Zenith 2023" class="w-full h-full object-cover rounded-md" />
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Perimenopausal Art -->
+	<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4 md:p-8 items-stretch">
+		<div class="bg-secondary p-6 rounded-lg flex flex-col justify-center order-1 lg:order-none">
 			<h1 class="text-3xl font-bold mb-6 text-center">Perimenopausal Art</h1>
-		</div>
-		<div class="flex gap-4 w-full">
-			<aside class="flex-1 mb-6 flex justify-center items-start">
-				<img src="{% static 'images/PerimenopausalArt/Lilith-I2022.webp' %}"  class="w-64 h-auto" />
-			</aside>
-			<aside class="flex-1 mb-6">
-				<p class="text-base leading-relaxed text-center">My work explores selfhood through large acrylic self-portraits of the female body. As I age, I’m re-creating who I am as a woman and mother. Lilith reflects my perimenopausal era—a figure from legend who was cast out for insisting on equality. I relate to her exile: my body has ended fertility without consent, reshaping my sense of womanhood. Yet this “banishment” is also a rite of passage into a second act.
 
-These paintings are a practice of self-expression and agency. I challenge my own ideas of beauty and aging, reclaiming my image and reinventing myself. By revealing myself—physically and emotionally—I invite you to witness an unapologetic acceptance of this stage of life. The vibrant nudes declare empowerment and reject ageist limits, affirming the vitality and richness that exist beyond youth.</p>
-			</aside>
-		</div>
-	</div>
+			<div class="flex flex-col md:flex-row gap-6 w-full">
+				<aside class="flex-1 flex justify-center items-start">
+					<img src="{% static 'images/PerimenopausalArt/Lilith-I2022.webp' %}" class="w-full md:w-64 lg:w-72 h-auto rounded-lg" />
+				</aside>
 
-	<div class="col-span-2 bg-secondary p-6 rounded-lg">
-		<div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/PerimenopausalArt/alone2023.webp' %}" alt="Alone 2023" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/PerimenopausalArt/The-garden-gate2024.webp' %}" alt="The Garden Gate 2024" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/PerimenopausalArt/Lilith-I2022.webp' %}" alt="Lilith I 2022" class="w-full h-full object-cover" />
-			</div>
-			<div class="aspect-square w-full overflow-hidden rounded-md">
-				<img src="{% static 'images/PerimenopausalArt/Untold-story2023.webp' %}" alt="Untold Story 2023" class="w-full h-full object-cover" />
+				<aside class="flex-1">
+					<p class="text-base leading-relaxed text-center md:text-left">My work explores selfhood through large acrylic self-portraits of the female body. As I age, I’m re-creating who I am as a woman and mother. Lilith reflects my perimenopausal era—a figure from legend who was cast out for insisting on equality. I relate to her exile: my body has ended fertility without consent, reshaping my sense of womanhood. Yet this “banishment” is also a rite of passage into a second act. These paintings are a practice of self-expression and agency. I challenge my own ideas of beauty and aging, reclaiming my image and reinventing myself. By revealing myself—physically and emotionally—I invite you to witness an unapologetic acceptance of this stage of life. The vibrant nudes declare empowerment and reject ageist limits, affirming the vitality and richness that exist beyond youth.</p>
+				</aside>
 			</div>
 		</div>
-	</div>
+
+		<div class="bg-secondary p-6 rounded-lg col-span-1 lg:col-span-2 flex flex-col justify-center gallery-figurative">
+			<!-- 2x2 at tablet, 4x1 at desktop -->
+			<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/PerimenopausalArt/alone2023.webp' %}" alt="Alone 2023" class="w-full h-full object-cover rounded-md" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/PerimenopausalArt/The-garden-gate2024.webp' %}" alt="The Garden Gate 2024" class="w-full h-full object-cover rounded-md" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/PerimenopausalArt/Lilith-I2022.webp' %}" alt="Lilith I 2022" class="w-full h-full object-cover rounded-md" />
+				</div>
+				<div class="md:aspect-square w-full overflow-hidden rounded-md">
+					<img src="{% static 'images/PerimenopausalArt/Untold-story2023.webp' %}" alt="Untold Story 2023" class="w-full h-full object-cover rounded-md" />
+				</div>
+			</div>
+		</div>
+	</section>
 </section>
 
 {% endblock content %}
